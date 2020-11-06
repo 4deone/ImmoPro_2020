@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fond_ecran"
+    tools:context=".NewUserActivity">
+
+    <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+        android:id="@+id/logoIv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo"/>
+
+    <TextView
+        android:id="@+id/xplicationTv"
+        android:layout_below="@+id/logoIv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        android:padding="10dp"
+        android:text="@string/immopro_nvote_agent_immobilier_de_poche"
+        />
+
+    <EditText
+        android:id="@+id/userPasswordTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/xplicationTv"
+        android:layout_margin="20dp"
+        android:background="@color/white"
+        android:drawableEnd="@drawable/ic_pass"
+        android:hint="@string/mot_de_passe"
+        android:inputType="textPassword"
+        android:padding="20dp" />
+
+    <EditText
+        android:id="@+id/userPasswordConfirmationTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userPasswordTv"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+        android:drawableEnd="@drawable/ic_pass"
+        android:hint="@string/confirmation_du_mot_de_passe"
+        android:inputType="textPassword"
+        android:padding="20dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/checkPasswordFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="30dp"
+        android:src="@drawable/ic_done"
+        android:contentDescription="@string/todo_email_fab" />
+
+</RelativeLayout>

@@ -1,0 +1,7 @@
+
+P	java:S110"<This class has 9 parents which is greater than 5 authorized.(˜¸¶
+o
+java:S1450"RRemove the "pId" field and declare it as a local variable in the relevant methods.(äŸ»±8şù£ÊÙ.
+g
+java:S1128"KRemove this unused import 'com.google.firebase.database.DatabaseReference'.(ÉÓ¹8’¸ÑÙ.
+t	java:S116"XRename this field "toolbar_image" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(À“ı§8’¸ÑÙ.

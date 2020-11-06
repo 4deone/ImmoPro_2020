@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "430249570081",
+    "firebase_url": "https://imo-pro-b592d.firebaseio.com",
+    "project_id": "imo-pro-b592d",
+    "storage_bucket": "imo-pro-b592d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430249570081:android:66a3cfffbcab436b0e9860",
+        "android_client_info": {
+          "package_name": "cm.deone.corp.imopro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "430249570081-c2ofv5mr7a8lqake515r6a7lpc7afsj7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHd8-w5RH3Isss4pY5R1kB8S4VFVPjwSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "430249570081-c2ofv5mr7a8lqake515r6a7lpc7afsj7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

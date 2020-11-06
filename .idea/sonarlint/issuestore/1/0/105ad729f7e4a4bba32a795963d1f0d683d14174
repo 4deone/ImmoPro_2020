@@ -1,0 +1,13 @@
+
+w
+java:S1450"ZRemove the "userQuality" field and declare it as a local variable in the relevant methods.(õ¶øÑ8Ü¬×Ø.
+v
+java:S1450"TRemove the "email" field and declare it as a local variable in the relevant methods.(ª«Õìùÿÿÿÿ8ˆç€×Ø.
+
+java:S1450"_Remove the "checkPasswordFab" field and declare it as a local variable in the relevant methods.(´ª­üÿÿÿÿ8á‘“×Ø.
+†
+java:S1450"iRemove the "userPasswordConfirmationTv" field and declare it as a local variable in the relevant methods.(¾ÛŞ‰8Ç—’×Ø.
+Q	java:S110"<This class has 9 parents which is greater than 5 authorized.(ŒÃŒ
+z
+java:S1450"]Remove the "userPasswordTv" field and declare it as a local variable in the relevant methods.(™øê¶8ç»‘×Ø.
+J	java:S108'")Either remove or fill this block of code.(€–õ›ıÿÿÿÿ8ÖÑ›×Ø.

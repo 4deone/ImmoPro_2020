@@ -1,0 +1,88 @@
+
+K
+java:S1604ß"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8½Âæ—Ù.
+^	java:S125æ"<This block of commented-out lines of code should be removed.(ªŸÛ¯úÿÿÿÿ8½Âæ—Ù.
+¤
+java:S1186£"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8½Âæ—Ù.
+W	java:S1104"<This class has 9 parents which is greater than 5 authorized.(Öı¯8àªşôØ.
+C	java:S131~""Add a default case to this switch.(×ö³–úÿÿÿÿ8ïğÀ—Ù.
+Q
+java:S1128"4Remove this unused import 'android.content.Context'.(©Ê‰è8ªáÜ—Ù.
+U
+java:S1874¢"2Remove this use of "setMessage"; it is deprecated.(¿¶œ°ûÿÿÿÿ8ˆùÂ—Ù.
+i
+java:S1192Î"FDefine a constant instead of duplicating this literal "Users" 4 times.(Öåá½ÿÿÿÿÿ8ˆùÂ—Ù.
+F
+java:S1604"(Make this anonymous inner class a lambda(¨È÷8ˆùÂ—Ù.
+_
+java:S2259p"BA "NullPointerException" could be thrown; "data" is nullable here.(¿´“¿8ïğÀ—Ù.
+X
+java:S1874I"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8ìÛüÙ.
+U
+java:S1874¥"2Remove this use of "setMessage"; it is deprecated.(æ¿‹µùÿÿÿÿ8ˆùÂ—Ù.
+F
+java:S1604ä"(Make this anonymous inner class a lambda(ŞÇÓ÷8½Âæ—Ù.
+K
+java:S1604Œ"(Make this anonymous inner class a lambda(Ì¼Ôúÿÿÿÿ8ˆùÂ—Ù.
+~
+java:S1450@"aRemove the "postNotificationSw" field and declare it as a local variable in the relevant methods.(‹Å¶ò8û¿½õØ.
+K
+java:S1604¯"(Make this anonymous inner class a lambda(Õ°¹îÿÿÿÿÿ8¦åÂ—Ù.
+K
+java:S1604¶"(Make this anonymous inner class a lambda(Ê´·îüÿÿÿÿ8¯¹Ä—Ù.
+€
+java:S1450A"dRemove the "commentNotificationSw" field and declare it as a local variable in the relevant methods.(èÛ½]8àªşôØ.
+U
+java:S1874«"2Remove this use of "setMessage"; it is deprecated.(ÔáÃùÿÿÿÿ8ˆùÂ—Ù.
+¤
+java:S1186š"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8½Âæ—Ù.
+d
+java:S1144õ"ARemove this unused private "updateAvatarInPostAndComment" method.(ï‹à§şÿÿÿÿ8½Âæ—Ù.
+U
+java:S1874¨"2Remove this use of "setMessage"; it is deprecated.(¹ıèüÿÿÿÿ8ˆùÂ—Ù.
+i
+java:S1192¦"FDefine a constant instead of duplicating this literal "uName" 3 times.(ù¯Š³ûÿÿÿÿ8ˆùÂ—Ù.
+q
+java:S3252²"NUse static access with "android.provider.MediaStore$MediaColumns" for "TITLE".(š‹æÜıÿÿÿÿ8½Âæ—Ù.
+F
+java:S1604ø"(Make this anonymous inner class a lambda(ŞÇÓ÷8½Âæ—Ù.
+F
+java:S1604Ù"(Make this anonymous inner class a lambda(’áñú8½Âæ—Ù.
+y
+java:S3252³"[Use static access with "android.provider.MediaStore$Images$ImageColumns" for "DESCRIPTION".(ŠÉå8½Âæ—Ù.
+F
+java:S1604€"(Make this anonymous inner class a lambda(õò˜8ˆùÂ—Ù.
+m
+java:S1301~"KReplace this "switch" statement by "if" statements to increase readability.(×ö³–úÿÿÿÿ8ïğÀ—Ù.
+O
+java:S1199"-Extract this nested code block into a method.(®¹ƒúÿÿÿÿ8ïğÀ—Ù.
+K
+java:S1604ê"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8½Âæ—Ù.
+F
+java:S1604‹"(Make this anonymous inner class a lambda(¨È÷8½Âæ—Ù.
+F
+java:S1604’"(Make this anonymous inner class a lambda(õò˜8ˆùÂ—Ù.
+Y
+java:S1874 "6Remove this use of "ProgressDialog"; it is deprecated.(ÚšÊùıÿÿÿÿ8ïğÀ—Ù.
+K
+java:S1604ì"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8½Âæ—Ù.
+
+java:S1488«"^Immediately return this expression instead of assigning it to the temporary variable "result".(ÖÔíÊûÿÿÿÿ8½Âæ—Ù.
+F
+java:S1604Ï"(Make this anonymous inner class a lambda(Õä8½Âæ—Ù.
+P
+java:S1199‹"-Extract this nested code block into a method.(Ï¥‰§üÿÿÿÿ8ïğÀ—Ù.
+f
+java:S1192Ö"HDefine a constant instead of duplicating this literal "uAvatar" 3 times.(Ï²Š8½Âæ—Ù.
+¤
+java:S1186ƒ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8½Âæ—Ù.
+F
+java:S1604õ"(Make this anonymous inner class a lambda(ºÙİ¤8ˆùÂ—Ù.
+K
+java:S1604Ì"(Make this anonymous inner class a lambda(Â‡¯†üÿÿÿÿ8½Âæ—Ù.
+K
+java:S1604ş"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8½Âæ—Ù.
+K
+java:S1604î"(Make this anonymous inner class a lambda(Ì¼Ôúÿÿÿÿ8ˆùÂ—Ù.
+F
+java:S1604¸"(Make this anonymous inner class a lambda(Õä8¬—ß—Ù.

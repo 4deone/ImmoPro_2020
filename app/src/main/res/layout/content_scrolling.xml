@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/commentsRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/footerRl"
+            android:layout_below="@+id/headRl" />
+
+        <RelativeLayout
+            android:id="@+id/footerRl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="#9FD3D3D3"
+            android:layout_alignParentBottom="true" >
+
+            <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                android:id="@+id/myAvatarIv"
+                android:src="@drawable/ic_user"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <ImageButton
+                android:id="@+id/sendCommentIb"
+                android:background="@null"
+                android:src="@drawable/ic_send"
+                android:layout_alignParentEnd="true"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <EditText
+                android:layout_toEndOf="@+id/myAvatarIv"
+                android:layout_toStartOf="@+id/sendCommentIb"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:hint="@string/votre_commentaire"
+                android:inputType="textCapSentences"
+                android:paddingStart="5dp"
+                android:layout_height="50dp" />
+        </RelativeLayout>
+
+    </RelativeLayout>-->
+
+</androidx.core.widget.NestedScrollView>

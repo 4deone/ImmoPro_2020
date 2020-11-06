@@ -1,0 +1,24 @@
+
+O
+java:S1481§"8Remove this unused "notificationManager" local variable.(øÔª
+^
+java:S1854§"GRemove this useless assignment to local variable "notificationManager".(øÔª
+Q	java:S1257"<This block of commented-out lines of code should be removed.(‘şÜ
+M
+java:S1481”"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ
+M
+java:S1481µ"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ
+i
+java:S1871º"MThis branch's code block is the same as the block for the branch on line 184.(íå©Èûÿÿÿÿ
+J
+java:S10668"/Merge this if statement with the enclosing one.(Äî¶¡øÿÿÿÿ
+O
+java:S1117f":Rename "intent" which hides the field declared at line 36.(‰şŒD
+K
+java:S1874Ä"/Remove this use of "Builder"; it is deprecated.(î«ıÿÿÿÿ
+Q	java:S110 "<This class has 6 parents which is greater than 5 authorized.(µò¾×
+\
+java:S1854”"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ
+\
+java:S1854µ"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ
+Y	java:S125™"<This block of commented-out lines of code should be removed.(µÅÓÎ8ªôÄÊÙ.
