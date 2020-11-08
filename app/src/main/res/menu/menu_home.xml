@@ -18,4 +18,10 @@
         android:icon="@drawable/ic_menu_settings"
         app:showAsAction="withText"/>
 
+    <item  android:id="@+id/menu_add_image"
+        android:title= "Ajouter une image"
+        android:icon="@drawable/ic_menu_settings"
+        android:visible="false"
+        app:showAsAction="withText"/>
+
 </menu>

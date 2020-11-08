@@ -1,7 +1,26 @@
 
-P	java:S110"<This class has 9 parents which is greater than 5 authorized.(˜¸¶
-o
-java:S1450"RRemove the "pId" field and declare it as a local variable in the relevant methods.(äŸ»±8şù£ÊÙ.
+P	java:S110"<This class has 9 parents which is greater than 5 authorized.(˜¸¶
+V
+java:S1128"9Remove this unused import 'com.squareup.picasso.Picasso'.(£œ¿×8ßæ·íÙ.
+_
+java:S1128"=Remove this unused import 'cm.deone.corp.imopro.models.Post'.(ñ±Êøÿÿÿÿ8ßæ·íÙ.
+S
+java:S1128"1Remove this unused import 'android.widget.Toast'.(©›ïÍúÿÿÿÿ8ßæ·íÙ.
+W
+java:S1128"5Remove this unused import 'android.widget.ImageView'.(ú¯ëàüÿÿÿÿ8 ‘“íÙ.
+`
+java:S1128">Remove this unused import 'androidx.appcompat.widget.Toolbar'.(ÔËûİùÿÿÿÿ8ßæ·íÙ.
 g
-java:S1128"KRemove this unused import 'com.google.firebase.database.DatabaseReference'.(ÉÓ¹8’¸ÑÙ.
-t	java:S116"XRename this field "toolbar_image" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(À“ı§8’¸ÑÙ.
+java:S1128"KRemove this unused import 'com.google.firebase.database.DatabaseReference'.(ÉÓ¹8’¸ÑÙ.
+c
+java:S1128"FRemove this unused import 'com.google.firebase.database.DataSnapshot'.(şÇŒ„8ßæ·íÙ.
+\
+java:S1128"?Remove this unused import 'com.google.firebase.database.Query'.(ş¶Å®8ßæ·íÙ.
+E
+java:S1604K"(Make this anonymous inner class a lambda(şÿ³¼8›ìŒíÙ.
+g
+java:S1128"JRemove this unused import 'com.google.firebase.database.FirebaseDatabase'.(×Ë—8ßæ·íÙ.
+n
+java:S1128"LRemove this unused import 'com.google.firebase.database.ValueEventListener'.(‹ŞÜ‹ıÿÿÿÿ8ßæ·íÙ.
+i
+java:S1128"GRemove this unused import 'com.google.firebase.database.DatabaseError'.(ˆÔµıÿÿÿÿ8ßæ·íÙ.

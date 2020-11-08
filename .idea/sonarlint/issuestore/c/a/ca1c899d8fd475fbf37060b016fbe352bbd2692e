@@ -1,8 +1,20 @@
 
-j
-java:S1871{"MThis branch's code block is the same as the block for the branch on line 121.(œÿä—8¼Èå¨Ù.
-Q	java:S110 "<This class has 9 parents which is greater than 5 authorized.(Æ¼¾Î
-W
-java:S18744"5Remove this use of "getActionView"; it is deprecated.(§ÑŠ”üÿÿÿÿ8É§¥Ù.
 k
-java:S1871˜"MThis branch's code block is the same as the block for the branch on line 150.(œÿä—8ùàæ¨Ù.
+java:S1871€"MThis branch's code block is the same as the block for the branch on line 126.(œÿä—8¼Èå¨Ù.
+O
+java:S1481È"1Remove this unused "firebaseUser" local variable.(Ý¬ÛÑ8øÓÜìÙ.
+¤
+java:S1186¹"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8ùøÚìÙ.
+W
+java:S18749"5Remove this use of "getActionView"; it is deprecated.(§ÑŠ”üÿÿÿÿ8ùøÚìÙ.
+^
+java:S1854È"@Remove this useless assignment to local variable "firebaseUser".(Ý¬ÛÑ8øÓÜìÙ.
+¤
+java:S1186Ž"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8ùøÚìÙ.
+Q	java:S110$"<This class has 9 parents which is greater than 5 authorized.(Æ¼¾Î
+k
+java:S1871ª"MThis branch's code block is the same as the block for the branch on line 168.(œÿä—8ùàæ¨Ù.
+]
+java:S1874É":Remove this use of "FirebaseInstanceId"; it is deprecated.(äÏ©²üÿÿÿÿ8 ¨™ðÙ.
+S
+java:S1874É"0Remove this use of "getToken"; it is deprecated.(äÏ©²üÿÿÿÿ8 ¨™ðÙ.

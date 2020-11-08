@@ -12,6 +12,13 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_post" />
 
+    <ProgressBar
+        android:id="@+id/loadingPb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp" />
+
     <LinearLayout
         android:id="@+id/itemLl"
         android:layout_below="@+id/itemCoverIv"
@@ -72,6 +79,13 @@
             android:layout_height="40dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_user" />
+
+        <ProgressBar
+            android:id="@+id/loadingUserPb"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="6dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
 
         <TextView
             android:id="@+id/itemUserNameTv"

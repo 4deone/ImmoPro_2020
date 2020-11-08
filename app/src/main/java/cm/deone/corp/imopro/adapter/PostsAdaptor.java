@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -72,14 +74,34 @@ public class PostsAdaptor extends RecyclerView.Adapter<PostsAdaptor.MyHolder> {
         holder.itemTitrePostTv.setText(titre);
         holder.itemDescriptionPostTv.setText(description);
 
-        holder.itemVuesPostTv.setText(vues);
-        holder.itemLikesPostTv.setText(likes);
-        holder.itemCommentsPostTv.setText(comments);
+        holder.itemVuesPostTv.setText(Integer.parseInt(vues) <= 1 ? context.getResources().getString(R.string.nombre_vue, vues) : context.getResources().getString(R.string.nombre_vues, vues));
+        holder.itemLikesPostTv.setText(Integer.parseInt(likes) <= 1 ? context.getResources().getString(R.string.nombre_like, likes) : context.getResources().getString(R.string.nombre_likes, likes));
+        holder.itemCommentsPostTv.setText(Integer.parseInt(comments) <= 1 ? context.getResources().getString(R.string.nombre_comment, comments) : context.getResources().getString(R.string.nombre_comments, comments));
 
         try {
-            Picasso.get().load(cover).placeholder(R.drawable.ic_post).into(holder.itemCoverIv);
+            Picasso.get().load(cover).placeholder(R.drawable.ic_post).into(holder.itemCoverIv, new Callback() {
+                @Override
+                public void onSuccess() {
+                    holder.loadingPb.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.d("Post_Adaptor", e.getMessage());
+                }
+            });
         }catch(Exception e){
-            Picasso.get().load(R.drawable.ic_post).into(holder.itemCoverIv);
+            Picasso.get().load(R.drawable.ic_post).into(holder.itemCoverIv, new Callback() {
+                @Override
+                public void onSuccess() {
+                    holder.loadingPb.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.d("Post_Adaptor", e.getMessage());
+                }
+            });
         }
         getUserInfos(holder, ""+creator);
     }
@@ -99,9 +121,29 @@ public class PostsAdaptor extends RecyclerView.Adapter<PostsAdaptor.MyHolder> {
                         }
 
                         try {
-                            Picasso.get().load(user.getuAvatar()).placeholder(R.drawable.ic_user).into(holder.itemUserAvatarIv);
+                            Picasso.get().load(user.getuAvatar()).placeholder(R.drawable.ic_user).into(holder.itemUserAvatarIv, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    holder.loadingUserPb.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.d("Post_Adaptor", e.getMessage());
+                                }
+                            });
                         }catch(Exception e){
-                            Picasso.get().load(R.drawable.ic_user).into(holder.itemUserAvatarIv);
+                            Picasso.get().load(R.drawable.ic_user).into(holder.itemUserAvatarIv, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    holder.loadingUserPb.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.d("Post_Adaptor", e.getMessage());
+                                }
+                            });
                         }
                     }
 
@@ -127,6 +169,8 @@ public class PostsAdaptor extends RecyclerView.Adapter<PostsAdaptor.MyHolder> {
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
+        ProgressBar loadingPb;
+        ProgressBar loadingUserPb;
         ImageView itemCoverIv;
         ImageView itemUserAvatarIv;
         TextView itemVuesPostTv;
@@ -139,6 +183,8 @@ public class PostsAdaptor extends RecyclerView.Adapter<PostsAdaptor.MyHolder> {
 
         MyHolder(@NonNull View itemView) {
             super(itemView);
+            loadingPb = itemView.findViewById(R.id.loadingPb);
+            loadingUserPb = itemView.findViewById(R.id.loadingUserPb);
             itemCoverIv = itemView.findViewById(R.id.itemCoverIv);
             itemUserAvatarIv = itemView.findViewById(R.id.itemUserAvatarIv);
             itemVuesPostTv = itemView.findViewById(R.id.itemVuesPostTv);

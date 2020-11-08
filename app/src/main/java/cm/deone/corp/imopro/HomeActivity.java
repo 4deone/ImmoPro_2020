@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 import cm.deone.corp.imopro.adapter.PostsAdaptor;
 import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.models.ViewsClickListener;
+import cm.deone.corp.imopro.notification.Token;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -45,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         checkUsers();
         initVues();
         allPosts();
+        updateToken();
     }
 
     @Override
@@ -132,6 +135,7 @@ public class HomeActivity extends AppCompatActivity {
                         public void onItemClick(View view, int position) {
                             Intent intent = new Intent(HomeActivity.this, PostActivity.class);
                             intent.putExtra("pId", postList.get(position).getpId());
+                            intent.putExtra("pCreator", postList.get(position).getpCreator());
                             startActivity(intent);
                         }
 
@@ -175,6 +179,7 @@ public class HomeActivity extends AppCompatActivity {
                         public void onItemClick(View view, int position) {
                             Intent intent = new Intent(HomeActivity.this, PostActivity.class);
                             intent.putExtra("pId", postList.get(position).getpId());
+                            intent.putExtra("pCreator", postList.get(position).getpCreator());
                             startActivity(intent);
                         }
 
@@ -191,6 +196,13 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updateToken(){
+        FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+        String refreshToken= FirebaseInstanceId.getInstance().getToken();
+        Token token = new Token(refreshToken);
+        FirebaseDatabase.getInstance().getReference("Tokens").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(token);
     }
 
 }

@@ -44,7 +44,7 @@
         android:drawableEnd="@drawable/ic_description"
         android:gravity="top"
         android:minHeight="300dp"
-        android:hint="Description du post"
+        android:hint="Description: 1S+2C+1D+1C\nQuartier: Bastos\nPrix: 25000 XFA\netc..."
         android:inputType="textMultiLine|textCapSentences"
         android:padding="20dp" />
 

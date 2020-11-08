@@ -23,7 +23,17 @@
     <string name="todo_cover_post_item">TODO COVER POST ITEM</string>
     <string name="votre_commentaire">Votre commentaire</string>
     <string name="todo_toolbar_image">TODO TOOLBAR IMAGE</string>
-    <string name="nombre_vue">%s Vues</string>
-    <string name="nombre_like">%s Likes</string>
-    <string name="nombre_comment">%s Comments</string>
+    <string name="nombre_vue">%s Vue</string>
+    <string name="nombre_vues">%s Vues</string>
+    <string name="nombre_like">%s Like</string>
+    <string name="nombre_likes">%s Likes</string>
+    <string name="nombre_comment">%s Comment</string>
+    <string name="nombre_comments">%s Comments</string>
+    <string name="note_post">%s/20</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="todo_like">TODO LIKE</string>
+    <string name="todo_favorite">TODO FAVORITE</string>
+    <string name="todo_share">TODO SHARE</string>
+    <string name="todo_note">TODO NOTE</string>
 </resources>
