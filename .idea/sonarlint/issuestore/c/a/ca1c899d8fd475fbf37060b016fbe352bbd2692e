@@ -1,20 +1,20 @@
 
-k
-java:S1871€"MThis branch's code block is the same as the block for the branch on line 126.(œÿä—8¼Èå¨Ù.
-O
-java:S1481È"1Remove this unused "firebaseUser" local variable.(İ¬ÛÑ8øÓÜìÙ.
-¤
-java:S1186¹"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8ùøÚìÙ.
-W
-java:S18749"5Remove this use of "getActionView"; it is deprecated.(§ÑŠ”üÿÿÿÿ8ùøÚìÙ.
-^
-java:S1854È"@Remove this useless assignment to local variable "firebaseUser".(İ¬ÛÑ8øÓÜìÙ.
-¤
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8ùøÚìÙ.
+S
+java:S1874Û"0Remove this use of "getToken"; it is deprecated.(äÏ©²üÿÿÿÿ8Í¶›ÀÚ.
 Q	java:S110$"<This class has 9 parents which is greater than 5 authorized.(Æ¼¾Î
 k
-java:S1871ª"MThis branch's code block is the same as the block for the branch on line 168.(œÿä—8ùàæ¨Ù.
+java:S1871»"MThis branch's code block is the same as the block for the branch on line 185.(œÿä—8Í¶›ÀÚ.
+¤
+java:S1186Ë"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8Í¶›ÀÚ.
+^
+java:S1854Ú"@Remove this useless assignment to local variable "firebaseUser".(İ¬ÛÑ8Í¶›ÀÚ.
+¤
+java:S1186Ÿ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8Í¶›ÀÚ.
+W
+java:S1874I"5Remove this use of "getActionView"; it is deprecated.(§ÑŠ”üÿÿÿÿ8Ì¶›ÀÚ.
 ]
-java:S1874É":Remove this use of "FirebaseInstanceId"; it is deprecated.(äÏ©²üÿÿÿÿ8 ¨™ğÙ.
-S
-java:S1874É"0Remove this use of "getToken"; it is deprecated.(äÏ©²üÿÿÿÿ8 ¨™ğÙ.
+java:S1874Û":Remove this use of "FirebaseInstanceId"; it is deprecated.(äÏ©²üÿÿÿÿ8Í¶›ÀÚ.
+O
+java:S1481Ú"1Remove this unused "firebaseUser" local variable.(İ¬ÛÑ8Í¶›ÀÚ.
+k
+java:S1871"MThis branch's code block is the same as the block for the branch on line 142.(œÿä—8Í¶›ÀÚ.

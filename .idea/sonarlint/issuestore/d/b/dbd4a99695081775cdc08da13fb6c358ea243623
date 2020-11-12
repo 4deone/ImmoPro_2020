@@ -1,33 +1,41 @@
 
-m
-java:S1301Y"KReplace this "switch" statement by "if" statements to increase readability.(×ö³–úÿÿÿÿ8³ÉÅ¢Ù.
-
-java:S1488¶"^Immediately return this expression instead of assigning it to the temporary variable "result".(ÖÔíÊûÿÿÿÿ8³ÉÅ¢Ù.
-y
-java:S3252Î"[Use static access with "android.provider.MediaStore$Images$ImageColumns" for "DESCRIPTION".(ØöÄµ8³ÉÅ¢Ù.
-O
-java:S1199f"-Extract this nested code block into a method.(Ï¥‰§üÿÿÿÿ8³ÉÅ¢Ù.
+W	java:S1104"<This class has 9 parents which is greater than 5 authorized.(†ÄÜi8³ÉÅ¢Ù.
+K
+java:S1604Ï"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8Ù¬ª¯Ú.
 F
-java:S1604œ"(Make this anonymous inner class a lambda(¨È÷8³ÉÅ¢Ù.
-Y
-java:S1874“"6Remove this use of "ProgressDialog"; it is deprecated.(¿Ú•ğúÿÿÿÿ8³ÉÅ¢Ù.
-W	java:S110("<This class has 9 parents which is greater than 5 authorized.(†ÄÜi8³ÉÅ¢Ù.
-_
-java:S2259z"BA "NullPointerException" could be thrown; "data" is nullable here.(¿´“¿8³ÉÅ¢Ù.
-U
-java:S1874€"2Remove this use of "setMessage"; it is deprecated.(Ğô¸ùøÿÿÿÿ8·áØ¨Ù.
+java:S1604‚"(Make this anonymous inner class a lambda(ÑÂğ8Ù¬ª¯Ú.
+s	java:S117é"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Øº†©ûÿÿÿÿ8Ù¬ª¯Ú.
+s	java:S117ë"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ş¾Úúÿÿÿÿ8Ù¬ª¯Ú.
 K
-java:S1604·"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8·áØ¨Ù.
-X
-java:S18744"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8³ÉÅ¢Ù.
-C	java:S131Y""Add a default case to this switch.(×ö³–úÿÿÿÿ8³ÉÅ¢Ù.
-K
-java:S1604•"(Make this anonymous inner class a lambda(­¦ƒüÿÿÿÿ8·áØ¨Ù.
-K
-java:S1604¯"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8·áØ¨Ù.
-q
-java:S3252Í"NUse static access with "android.provider.MediaStore$MediaColumns" for "TITLE".(Õ™‹Öşÿÿÿÿ8—’ë¡Ù.
+java:S1604Ã"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ù¬ª¯Ú.
+~
+java:S3252é"[Use static access with "android.provider.MediaStore$Images$ImageColumns" for "DESCRIPTION".(£ûùÚûÿÿÿÿ8³ÉÅ¢Ù.
 O
-java:S1199Z"-Extract this nested code block into a method.(®¹ƒúÿÿÿÿ8³ÉÅ¢Ù.
+java:S1199g"-Extract this nested code block into a method.(®¹ƒúÿÿÿÿ8³ÉÅ¢Ù.
+
+java:S1488Ñ"^Immediately return this expression instead of assigning it to the temporary variable "result".(ÖÔíÊûÿÿÿÿ8³ÉÅ¢Ù.
+n	java:S117ê"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÊÄ—×8Ù¬ª¯Ú.
+X
+java:S1874@"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8³ÉÅ¢Ù.
+`
+java:S2259‡"BA "NullPointerException" could be thrown; "data" is nullable here.(¿´“¿8³ÉÅ¢Ù.
 K
-java:S1604£"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8·áØ¨Ù.
+java:S1604µ"(Make this anonymous inner class a lambda(­¦ƒüÿÿÿÿ8Ù¬ª¯Ú.
+Y
+java:S1874®"6Remove this use of "ProgressDialog"; it is deprecated.(¿Ú•ğúÿÿÿÿ8³ÉÅ¢Ù.
+m
+java:S1301f"KReplace this "switch" statement by "if" statements to increase readability.(×ö³–úÿÿÿÿ8³ÉÅ¢Ù.
+K
+java:S1604ß"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ù¬ª¯Ú.
+U
+java:S1874 "2Remove this use of "setMessage"; it is deprecated.(Ğô¸ùøÿÿÿÿ8Ù¬ª¯Ú.
+n	java:S117ì"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±¼¦»8î±¦¯Ú.
+F
+java:S1604·"(Make this anonymous inner class a lambda(¨È÷8³ÉÅ¢Ù.
+C	java:S131f""Add a default case to this switch.(×ö³–úÿÿÿÿ8³ÉÅ¢Ù.
+E
+java:S1604ˆ"(Make this anonymous inner class a lambda(–§º8Ù¬ª¯Ú.
+O
+java:S1199s"-Extract this nested code block into a method.(Ï¥‰§üÿÿÿÿ8³ÉÅ¢Ù.
+k
+java:S3252è"NUse static access with "android.provider.MediaStore$MediaColumns" for "TITLE".(ÂµøD8—’ë¡Ù.

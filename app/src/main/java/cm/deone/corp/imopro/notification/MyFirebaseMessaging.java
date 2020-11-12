@@ -71,7 +71,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
             }
 
-        }else if (notificationType.equals("PostNotification")){
+        }else if (notificationType.equals("PostNotification") || notificationType.equals("GalleryNotification")){
 
             String sender = remoteMessage.getData().get("sender");
             String pId = remoteMessage.getData().get("pId");
@@ -98,7 +98,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         int notificationID = new Random().nextInt(3000);
 
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
-            setupArticleNotificationChannel(notificationManager);
+            setupNotificationChannel(notificationManager);
         }
 
         Intent intent = new Intent(this, PostActivity.class);
@@ -124,7 +124,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setupArticleNotificationChannel(NotificationManager notificationManager) {
+    private void setupNotificationChannel(NotificationManager notificationManager) {
         CharSequence channelName = "New Notification";
         String channelDescription = "Device to device post notification";
 

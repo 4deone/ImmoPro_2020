@@ -229,8 +229,8 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
 
     private void pickFromCamera() {
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "Article Image Icon Title");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "Article Image Icon Description");
+        values.put(MediaStore.Images.Media.TITLE, "Post Image Icon Title");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Post Image Icon Description");
         imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -254,7 +254,7 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
         }
 
         if (TextUtils.isEmpty(description)){
-            Toast.makeText(CreatePostActivity.this, "Saisissez le slogan", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreatePostActivity.this, "Saisissez une description", Toast.LENGTH_SHORT).show();
             return;
         }
 

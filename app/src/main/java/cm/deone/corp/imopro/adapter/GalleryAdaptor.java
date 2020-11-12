@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import cm.deone.corp.imopro.R;
+import cm.deone.corp.imopro.models.Gallery;
 import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.models.User;
 import cm.deone.corp.imopro.models.ViewsClickListener;
@@ -35,12 +36,12 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
 
     private Context context;
     private ViewsClickListener listener;
-    private List<String> imageList;
+    private final List<Gallery> galleryList;
     private String myUID;
 
-    public GalleryAdaptor(Context context, List<String> imageList) {
+    public GalleryAdaptor(Context context, List<Gallery> galleryList) {
         this.context = context;
-        this.imageList = imageList;
+        this.galleryList = galleryList;
     }
 
     @NonNull
@@ -53,7 +54,15 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
     @Override
     public void onBindViewHolder(@NonNull final MyHolder holder, final int position) {
 
-        String image = imageList.get(position);
+        String image = galleryList.get(position).getgImage();
+        String description = galleryList.get(position).getgDescription();
+        String timestamp = galleryList.get(position).getgDate();
+
+        Calendar cal = Calendar.getInstance(Locale.FRANCE);
+        cal.setTimeInMillis(Long.parseLong(timestamp));
+        String dateTime = DateFormat.format("EEEE dd MMMM yyyy", cal).toString();
+
+        holder.descriptionTv.setText(description+"\n"+dateTime);
 
         try {
             Picasso.get().load(image).placeholder(R.drawable.ic_post).into(holder.itemGalleryIv, new Callback() {
@@ -84,7 +93,7 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
 
     @Override
     public int getItemCount() {
-        return imageList.size();
+        return galleryList.size();
     }
 
     public void setOnItemClickListener(ViewsClickListener listener){
@@ -95,12 +104,14 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
 
         ImageView itemGalleryIv;
         ProgressBar loadingPb;
+        TextView descriptionTv;
 
         MyHolder(@NonNull View itemView) {
             super(itemView);
 
             itemGalleryIv = itemView.findViewById(R.id.itemGalleryIv);
             loadingPb = itemView.findViewById(R.id.loadingPb);
+            descriptionTv = itemView.findViewById(R.id.descriptionTv);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);

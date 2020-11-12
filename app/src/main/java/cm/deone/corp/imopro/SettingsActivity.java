@@ -59,6 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private static final String TOPIC_POST_NOTIFICATION = "POST";
     private static final String TOPIC_COMMENT_NOTIFICATION = "COMMENT";
+    private static final String TOPIC_GALLERY_NOTIFICATION = "GALLERY";
 
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
@@ -76,6 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SwitchCompat postNotificationSw;
     private SwitchCompat commentNotificationSw;
+    private SwitchCompat galleryNotificationSw;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -104,6 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean isPostEnable = sharedPreferences.getBoolean(""+TOPIC_POST_NOTIFICATION, false);
         boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION, false);
+        boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION, false);
 
         if (isPostEnable) {
             postNotificationSw.setChecked(true);
@@ -115,6 +118,12 @@ public class SettingsActivity extends AppCompatActivity {
             commentNotificationSw.setChecked(true);
         }else{
             commentNotificationSw.setChecked(false);
+        }
+
+        if (isGalleryEnable) {
+            galleryNotificationSw.setChecked(true);
+        }else{
+            galleryNotificationSw.setChecked(false);
         }
 
         postNotificationSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -140,6 +149,19 @@ public class SettingsActivity extends AppCompatActivity {
                     suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
                 }else{
                     unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
+                }
+            }
+        });
+        galleryNotificationSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
+                }else{
+                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
                 }
             }
         });
@@ -197,7 +219,15 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         checkUsers();
+        getUserInfos();
         super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        checkUsers();
+        getUserInfos();
+        super.onResume();
     }
 
     @Override
@@ -279,6 +309,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         postNotificationSw = findViewById(R.id.postNotificationSw);
         commentNotificationSw = findViewById(R.id.commentNotificationSw);
+        galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
 
         avatarIv = findViewById(R.id.avatarIv);
 

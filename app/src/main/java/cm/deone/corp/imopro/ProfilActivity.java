@@ -69,6 +69,18 @@ public class ProfilActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
+    protected void onStart() {
+        checkUser();
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        checkUser();
+        super.onResume();
+    }
+
+    @Override
     public void onClick(View v) {
         if (v.getId()==R.id.profilFab){
             verificationSaisie();

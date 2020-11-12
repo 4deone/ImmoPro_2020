@@ -26,34 +26,18 @@
         android:textStyle="bold"
         android:text="Titre du post" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/postImagesRv"
+    <ImageView
+        android:id="@+id/postCoverRv"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_height="300dp"
-        tools:listitem="@layout/item_gallery"
+        android:layout_height="350dp"
+        android:src="@drawable/ic_post"
         android:layout_below="@+id/postTitreTv"/>
 
-    <TextView
-        android:id="@+id/postDescriptionETv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/postImagesRv"
-        android:background="@color/white"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:gravity="top"
-        android:minHeight="200dp"
-        android:text="Description du post"
-        android:layout_above="@+id/footerPost"
-        android:padding="10dp" />
-
     <LinearLayout
-        android:id="@+id/footerPost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/postTitreTv"
+        android:background="#AFFFFFFF"
         android:gravity="center"
         android:padding="10dp"
         android:orientation="horizontal">
@@ -106,6 +90,31 @@
             android:background="@null"
             android:layout_height="wrap_content" />
 
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/postDescriptionETv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postCoverRv"
+        android:textColor="@color/black"
+        android:gravity="top"
+        android:minHeight="150dp"
+        android:textStyle="italic"
+        android:text="Description du post"
+        android:layout_above="@+id/footerPost"
+        android:padding="10dp" />
+
+    <LinearLayout
+        android:id="@+id/footerPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#AFFFFFFF"
+        android:gravity="center"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
         <ImageButton
             android:id="@+id/likeIb"
             android:layout_weight="1"
@@ -138,6 +147,15 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:src="@drawable/ic_share"
+            android:background="@null"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/todo_share" />
+
+        <ImageButton
+            android:id="@+id/signalerIb"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:src="@drawable/ic_no_signaler"
             android:background="@null"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo_share" />

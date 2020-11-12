@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ImoPro">
-        <activity android:name=".PostActivity"></activity>
+        <activity android:name=".CreateGalleryActivity"></activity>
+        <activity android:name=".PostActivity" />
         <activity android:name=".CreatePostActivity" />
         <activity android:name=".NewUserActivity" />
         <activity android:name=".SettingsActivity" />

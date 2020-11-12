@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_margin="10dp"
+    android:background="@color/fond_ecran">
+
+    <EditText
+        android:id="@+id/noteEdtv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="10dp"
+        android:inputType="number"
+        android:maxLength="2"
+        android:hint="Votre note sur 20"/>
+
+</RelativeLayout>

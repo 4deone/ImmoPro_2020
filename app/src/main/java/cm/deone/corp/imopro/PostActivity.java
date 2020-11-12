@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -24,15 +26,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import cm.deone.corp.imopro.fragments.CommentFragment;
+import cm.deone.corp.imopro.fragments.GalleryFragment;
 import cm.deone.corp.imopro.fragments.HomeFragment;
 import cm.deone.corp.imopro.fragments.NotificationsFragment;
 import cm.deone.corp.imopro.models.Post;
 
 public class PostActivity extends AppCompatActivity {
 
+    private DatabaseReference ref;
+    private boolean userVue;
     private String pId;
     private String pCreator;
     private String myUID;
+    private String myVUES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +46,46 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post);
         checkUser();
         initVues();
+        getMyVue();
+        getPost();
     }
 
     @Override
     protected void onStart() {
         checkUser();
+        getMyVue();
+        getPost();
         super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        checkUser();
+        getMyVue();
+        getPost();
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        if(valMyVues!=null){
+            ref.removeEventListener(valMyVues);
+        }
+        if(postInfosVal!=null){
+            ref.removeEventListener(postInfosVal);
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(valMyVues!=null){
+            ref.removeEventListener(valMyVues);
+        }
+        if(postInfosVal!=null){
+            ref.removeEventListener(postInfosVal);
+        }
+        super.onDestroy();
     }
 
     private void checkUser() {
@@ -61,6 +101,8 @@ public class PostActivity extends AppCompatActivity {
     private void initVues() {
         pId = getIntent().getStringExtra("pId");
         pCreator = getIntent().getStringExtra("pCreator");
+        userVue = true;
+        ref = FirebaseDatabase.getInstance().getReference();
         BottomNavigationView navigationView = findViewById(R.id.bottom_navigation);
         navigationView.getMenu().clear();
         if (pCreator.equals(myUID)){
@@ -78,6 +120,7 @@ public class PostActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putString("pId", pId);
+        bundle.putString("pCreator", pCreator);
         fragment.setArguments(bundle);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -85,12 +128,15 @@ public class PostActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private final BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()){
                 case R.id.menu_post_home:
                     pushFragment(new HomeFragment());
+                    return true;
+                case R.id.menu_post_gallery:
+                    pushFragment(new GalleryFragment());
                     return true;
                 case R.id.menu_post_comments:
                     pushFragment(new CommentFragment());
@@ -104,6 +150,54 @@ public class PostActivity extends AppCompatActivity {
         }
     };
 
+    private void getPost() {
+        Query query = ref.child("Posts").orderByKey().equalTo(pId);
+        query.addValueEventListener(postInfosVal);
+    }
 
+    private void getMyVue() {
+        if (!pCreator.equals(myUID)){
+            Query query = ref.child("Vues").child(pId).orderByKey().equalTo(myUID);
+            query.addValueEventListener(valMyVues);
+        }
+    }
+
+    private final ValueEventListener valMyVues = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            for (DataSnapshot ds : snapshot.getChildren()){
+                myVUES = ds.getValue().toString();
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final ValueEventListener postInfosVal =  new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            for (DataSnapshot ds : snapshot.getChildren()){
+                Post post = ds.getValue(Post.class);
+                if (userVue){
+                    if (!pCreator.equals(myUID)){
+                        ref.child("Posts").child(pId).child("pNVues").setValue(""+ (Integer.parseInt(post.getpNVues()) + 1));
+                        if (TextUtils.isEmpty(myVUES))
+                            ref.child("Vues").child(pId).child(myUID).setValue("1");
+                        else
+                            ref.child("Vues").child(pId).child(myUID).setValue(""+ (Integer.parseInt(myVUES) + 1));
+                    }
+                    userVue = false;
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
 
 }

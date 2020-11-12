@@ -36,4 +36,5 @@
     <string name="todo_favorite">TODO FAVORITE</string>
     <string name="todo_share">TODO SHARE</string>
     <string name="todo_note">TODO NOTE</string>
+    <string name="gallery_notifications">Gallery Notifications</string>
 </resources>

@@ -1,26 +1,20 @@
 
-P	java:S110"<This class has 9 parents which is greater than 5 authorized.(˜¸¶
-V
-java:S1128"9Remove this unused import 'com.squareup.picasso.Picasso'.(£œ¿×8ßæ·íÙ.
-_
-java:S1128"=Remove this unused import 'cm.deone.corp.imopro.models.Post'.(ñ±Êøÿÿÿÿ8ßæ·íÙ.
-S
-java:S1128"1Remove this unused import 'android.widget.Toast'.(©›ïÍúÿÿÿÿ8ßæ·íÙ.
 W
-java:S1128"5Remove this unused import 'android.widget.ImageView'.(ú¯ëàüÿÿÿÿ8 ‘“íÙ.
+java:S1128"5Remove this unused import 'android.widget.ImageView'.(ú¯ëàüÿÿÿÿ8 ‘“íÙ.
+T
+java:S2589R"7Remove this expression which always evaluates to "true"(Ø®½è8™Æ¡ÈÛ.
+Y
+java:S2589J"7Remove this expression which always evaluates to "true"(çÊÅÎøÿÿÿÿ8†¯ ÈÛ.
+K
+java:S1604ƒ"(Make this anonymous inner class a lambda(É¿ìîùÿÿÿÿ8Ê—¡ÈÛ.
+Y
+java:S2589U"7Remove this expression which always evaluates to "true"(çÊÅÎøÿÿÿÿ8™Æ¡ÈÛ.
+T
+java:S2589G"7Remove this expression which always evaluates to "true"(Ø®½è8Ì„ ÈÛ.
+V
+java:S1128"9Remove this unused import 'com.squareup.picasso.Picasso'.(£œ¿×8ßæ·íÙ.
+O
+java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ8÷éÏÇÛ.
 `
 java:S1128">Remove this unused import 'androidx.appcompat.widget.Toolbar'.(ÔËûİùÿÿÿÿ8ßæ·íÙ.
-g
-java:S1128"KRemove this unused import 'com.google.firebase.database.DatabaseReference'.(ÉÓ¹8’¸ÑÙ.
-c
-java:S1128"FRemove this unused import 'com.google.firebase.database.DataSnapshot'.(şÇŒ„8ßæ·íÙ.
-\
-java:S1128"?Remove this unused import 'com.google.firebase.database.Query'.(ş¶Å®8ßæ·íÙ.
-E
-java:S1604K"(Make this anonymous inner class a lambda(şÿ³¼8›ìŒíÙ.
-g
-java:S1128"JRemove this unused import 'com.google.firebase.database.FirebaseDatabase'.(×Ë—8ßæ·íÙ.
-n
-java:S1128"LRemove this unused import 'com.google.firebase.database.ValueEventListener'.(‹ŞÜ‹ıÿÿÿÿ8ßæ·íÙ.
-i
-java:S1128"GRemove this unused import 'com.google.firebase.database.DatabaseError'.(ˆÔµıÿÿÿÿ8ßæ·íÙ.
+P	java:S110""<This class has 9 parents which is greater than 5 authorized.(˜¸¶

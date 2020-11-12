@@ -51,6 +51,22 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        checkUsers();
+        allPosts();
+        updateToken();
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        checkUsers();
+        allPosts();
+        updateToken();
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
         MenuItem searchItem = menu.findItem(R.id.menu_search);

@@ -8,6 +8,12 @@
         android:icon="@drawable/ic_menu_dashboard"
         app:showAsAction="ifRoom"/>
 
+    <item  android:id="@+id/menu_post_gallery"
+        android:title= "Gallery"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_gallery"
+        app:showAsAction="ifRoom"/>
+
     <item  android:id="@+id/menu_post_comments"
         android:title= "Comments"
         android:enabled="true"

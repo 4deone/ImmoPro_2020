@@ -1,14 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/fond_ecran"
     tools:context=".fragments.CommentFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/purple_200"
+        app:subtitleTextColor="@color/white"
+        app:titleTextColor="@color/white" >
 
-</FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                android:id="@+id/coverPostIv"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_post"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/titreTv"
+                android:text="Post titre"
+                android:layout_toEndOf="@+id/coverPostIv"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/nbreComments"
+                android:text="0 Commentaires"
+                android:layout_toEndOf="@+id/coverPostIv"
+                android:layout_below="@+id/titreTv"
+                android:textColor="@color/white"
+                android:textStyle="italic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/commentsRv"
+        android:layout_above="@+id/commentFooterRl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_below="@+id/toolbar"/>
+
+    <RelativeLayout
+        android:id="@+id/commentFooterRl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
+
+        <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+            android:id="@+id/userIv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_user"
+            android:scaleType="centerCrop"/>
+
+        <EditText
+            android:id="@+id/commentEdtv"
+            android:hint="Votre commentaire"
+            android:background="@color/white"
+            android:layout_toEndOf="@+id/userIv"
+            android:layout_toStartOf="@+id/sendIb"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/sendIb"
+            android:text="0 Commentaires"
+            android:background="@null"
+            android:src="@drawable/ic_send"
+            android:layout_alignParentEnd="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
