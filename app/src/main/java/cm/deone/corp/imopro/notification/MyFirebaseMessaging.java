@@ -46,49 +46,32 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         notificationType = remoteMessage.getData().get("notificationType");
 
-        if (notificationType.equals("CommentNotification")){
-
+        if (notificationType.equals("CommentNotification") || notificationType.equals("GalleryNotification")){
             String sent = remoteMessage.getData().get("sent");
             String user = remoteMessage.getData().get("user");
-
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
             if(firebaseUser != null && sent.equals(firebaseUser.getUid())){
-                //sendNotification(remoteMessage);
                 if (!savedCurrentUser.equals(user)){
-
                     if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
-
                         sendOAndAboveNotification(remoteMessage);
-
                     }else{
-
                         sendNormalNotification(remoteMessage);
-
                     }
-
                 }
-
             }
 
-        }else if (notificationType.equals("PostNotification") || notificationType.equals("GalleryNotification")){
-
+        }else if (notificationType.equals("PostNotification")){
             String sender = remoteMessage.getData().get("sender");
             String pId = remoteMessage.getData().get("pId");
             String pTitre = remoteMessage.getData().get("pTitre");
             String pDescription = remoteMessage.getData().get("pDescription");
-
             if (!sender.equals(savedCurrentUser)){
-
                 showPostNotification(
                         ""+pId,
                         ""+pTitre,
                         ""+pDescription);
-
             }
-
         }
-
     }
 
     private void showPostNotification(String pId, String pTitre, String pDescription) {
@@ -152,7 +135,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         if (notificationType.equals("CommentNotification")){
             intent = new Intent(this, PostActivity.class);
-        }/*else if (notificationType.equals("ChatNotification")){
+        }/*else if (notificationType.equals("GalleryNotification")){
             intent = new Intent(this, ChatActivity.class);
         }*/
 

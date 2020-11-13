@@ -11,6 +11,7 @@ public class Post {
     private String pNVues;
     private String pNComments;
     private String pNSignals;
+    private String pNShares;
     private String pCreator;
     private String pPublicOrPrivate;
 
@@ -20,7 +21,7 @@ public class Post {
     public Post(String pId, String pCover, String pDate, String pTitre,
                 String pDescription, String pNote, String pNLikes,
                 String pNVues, String pNComments, String pNSignals,
-                String pCreator, String pPublicOrPrivate) {
+                String pNShares, String pCreator, String pPublicOrPrivate) {
         this.pId = pId;
         this.pCover = pCover;
         this.pDate = pDate;
@@ -31,6 +32,7 @@ public class Post {
         this.pNVues = pNVues;
         this.pNComments = pNComments;
         this.pNSignals = pNSignals;
+        this.pNShares = pNShares;
         this.pCreator = pCreator;
         this.pPublicOrPrivate = pPublicOrPrivate;
     }
@@ -73,6 +75,14 @@ public class Post {
 
     public void setpDescription(String pDescription) {
         this.pDescription = pDescription;
+    }
+
+    public String getpNShares() {
+        return pNShares;
+    }
+
+    public void setpNShares(String pNShares) {
+        this.pNShares = pNShares;
     }
 
     public String getpNote() {

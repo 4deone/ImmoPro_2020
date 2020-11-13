@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,21 +28,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import cm.deone.corp.imopro.CreatePostActivity;
 import cm.deone.corp.imopro.MainActivity;
 import cm.deone.corp.imopro.R;
 import cm.deone.corp.imopro.adapter.CommentAdaptor;
 import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.models.User;
-import cm.deone.corp.imopro.models.ViewsClickListener;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 public class CommentFragment extends Fragment {
 

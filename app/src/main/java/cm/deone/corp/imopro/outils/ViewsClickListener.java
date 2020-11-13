@@ -1,4 +1,4 @@
-package cm.deone.corp.imopro.models;
+package cm.deone.corp.imopro.outils;
 
 import android.view.View;
 

@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +29,7 @@ import java.util.Locale;
 import cm.deone.corp.imopro.R;
 import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.models.User;
-import cm.deone.corp.imopro.models.ViewsClickListener;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 public class PostsAdaptor extends RecyclerView.Adapter<PostsAdaptor.MyHolder> {
 

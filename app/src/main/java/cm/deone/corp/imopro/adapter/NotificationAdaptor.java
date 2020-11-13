@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import cm.deone.corp.imopro.R;
-import cm.deone.corp.imopro.models.ViewsClickListener;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 public class NotificationAdaptor extends RecyclerView.Adapter<NotificationAdaptor.MyHolder> {
 

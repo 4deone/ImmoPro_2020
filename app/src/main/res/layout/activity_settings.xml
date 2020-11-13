@@ -60,11 +60,10 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:text="Dévise"
-                android:textSize="14sp"
-                android:textStyle="italic"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:padding="2dp"/>
+                android:padding="2dp"
+                android:drawableStart="@drawable/ic_devise"/>
 
             <TextView
                 android:id="@+id/emailTv"
@@ -72,11 +71,10 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:text="User email"
-                android:textSize="14sp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
-                app:drawableEndCompat="@drawable/ic_mail" />
+                android:gravity="center"
+                android:drawableStart="@drawable/ic_mail" />
 
             <TextView
                 android:id="@+id/phoneTv"
@@ -84,10 +82,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
-                android:textSize="14sp"
                 android:text="User phone"
                 android:textColor="@color/black"
-                app:drawableEndCompat="@drawable/ic_phone" />
+                android:gravity="center"
+                android:drawableStart="@drawable/ic_phone" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/postNotificationSw"

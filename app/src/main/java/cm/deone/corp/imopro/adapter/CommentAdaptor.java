@@ -2,12 +2,10 @@ package cm.deone.corp.imopro.adapter;
 
 import android.content.Context;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,11 +15,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -31,7 +26,7 @@ import java.util.Locale;
 import cm.deone.corp.imopro.R;
 import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.User;
-import cm.deone.corp.imopro.models.ViewsClickListener;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder> {
 

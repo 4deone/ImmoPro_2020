@@ -2,10 +2,11 @@ package cm.deone.corp.imopro.fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +23,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,12 +37,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
-import java.util.Map;
 
 import cm.deone.corp.imopro.MainActivity;
 import cm.deone.corp.imopro.R;
-import cm.deone.corp.imopro.SettingsActivity;
 import cm.deone.corp.imopro.models.Post;
 
 public class HomeFragment extends Fragment  implements View.OnClickListener{
@@ -55,6 +55,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     private String pId;
     private String pCreator;
     private String myUID;
+    private String numShared;
     private Post post;
 
     private boolean mProcessLikes = false;
@@ -71,6 +72,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     private TextView likeTv;
     private TextView commentTv;
     private TextView noteTv;
+    private TextView warningTv;
 
 
     private ImageView postCoverRv;
@@ -101,7 +103,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         checkUser();
         initVues();
         getPostInformations();
-        getPostNote();
+        setNumShared();
         setLiked();
         setSignaled();
         setFavorite();
@@ -113,7 +115,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     public void onStart() {
         checkUser();
         getPostInformations();
-        getPostNote();
+        setNumShared();
         setLiked();
         setSignaled();
         setFavorite();
@@ -124,7 +126,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     public void onResume() {
         checkUser();
         getPostInformations();
-        getPostNote();
+        setNumShared();
         setLiked();
         setSignaled();
         setFavorite();
@@ -133,41 +135,23 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
 
     @Override
     public void onStop() {
-        if(valPostFavorite!=null){
-            reference.removeEventListener(valPostFavorite);
-        }
-        if(valPostNotes!=null){
-            reference.removeEventListener(valPostNotes);
-        }
-        if(postInfosVal!=null){
-            reference.removeEventListener(postInfosVal);
-        }
-        if(valSetSignaled!=null){
-            reference.removeEventListener(valSetSignaled);
-        }
-        if(valeSetLiked!=null){
-            reference.removeEventListener(valeSetLiked);
-        }
+        reference.removeEventListener(valPostFavorite);
+        reference.removeEventListener(valPostNotes);
+        reference.removeEventListener(postInfosVal);
+        reference.removeEventListener(valSetSignaled);
+        reference.removeEventListener(valeSetLiked);
+        reference.removeEventListener(valSharedPost);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        if(valPostFavorite!=null){
-            reference.removeEventListener(valPostFavorite);
-        }
-        if(valPostNotes!=null){
-            reference.removeEventListener(valPostNotes);
-        }
-        if(postInfosVal!=null){
-            reference.removeEventListener(postInfosVal);
-        }
-        if(valSetSignaled!=null){
-            reference.removeEventListener(valSetSignaled);
-        }
-        if(valeSetLiked!=null){
-            reference.removeEventListener(valeSetLiked);
-        }
+        reference.removeEventListener(valPostFavorite);
+        reference.removeEventListener(valPostNotes);
+        reference.removeEventListener(postInfosVal);
+        reference.removeEventListener(valSetSignaled);
+        reference.removeEventListener(valeSetLiked);
+        reference.removeEventListener(valSharedPost);
         super.onDestroy();
     }
 
@@ -221,9 +205,10 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         likeTv = view.findViewById(R.id.likeTv);
         commentTv = view.findViewById(R.id.commentTv);
         noteTv = view.findViewById(R.id.noteTv);
-        signalerIb = view.findViewById(R.id.signalerIb);
+        warningTv = view.findViewById(R.id.warningTv);
 
         noteIb = view.findViewById(R.id.noteIb);
+        signalerIb = view.findViewById(R.id.signalerIb);
         likeIb = view.findViewById(R.id.likeIb);
         favoriteIb = view.findViewById(R.id.favoriteIb);
         shareIb = view.findViewById(R.id.shareIb);
@@ -253,7 +238,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     }
 
     private void setSignaled() {
-        reference.child("Warnings").child(pId).addValueEventListener(valSetSignaled);
+        reference.child("Signals").child(pId).child(myUID).addValueEventListener(valSetSignaled);
     }
 
     private void setLiked() {
@@ -262,12 +247,14 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
 
     private void likePost() {
         if (mProcessLikes){
-            reference.child("Posts").child(post.getpId()).child("pNLikes").setValue(""+ (Integer.parseInt(post.getpNLikes()) - 1));
+            reference.child("Posts").child(post.getpId()).child("pNLikes")
+                    .setValue(""+ (Integer.parseInt(post.getpNLikes()) - 1));
             reference.child("Likes").child(post.getpId()).child(myUID).removeValue();
             mProcessLikes = false;
             likeIb.setImageResource(R.drawable.ic_no_like);
         }else {
-            reference.child("Posts").child(post.getpId()).child("pNLikes").setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
+            reference.child("Posts").child(post.getpId()).child("pNLikes")
+                    .setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
             reference.child("Likes").child(post.getpId()).child(myUID).setValue("Liked");
             mProcessLikes = true;
             likeIb.setImageResource(R.drawable.ic_like);
@@ -308,21 +295,28 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     }
 
     private void setPostNote(String note) {
-        reference.child("Notes").child(pId).child(myUID).setValue(note);
-    }
-
-    private void getPostNote() {
-        reference.child("Notes").child(pId).addValueEventListener(valPostNotes);
+        reference.child("Notes").child(pId).child(myUID).setValue(note)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                reference.child("Notes").child(pId).addValueEventListener(valPostNotes);
+            }
+        });
     }
 
     private void showGiveWarningDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Signaler ce post");
-        builder.setMessage("Etes-vous sur de vouloir signaler ce post ?")
+        builder.setMessage(mProcessSignal ? "Etes-vous sur de vouloir supprimer le signalement ce post ?" : "Etes-vous sur de vouloir signaler ce post ?")
                 .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        procederAuSignalement();
+                        if (mProcessSignal){
+                            setPostSignal("");
+                        }
+                        else{
+                            procederAuSignalement();
+                        }
                     }
                 }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
             @Override
@@ -363,17 +357,96 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
 
     private void setPostSignal(String signaler) {
         if (mProcessSignal){
-            reference.child("Posts").child(post.getpId()).child("pNSignals").setValue(""+ (Integer.parseInt(post.getpNSignals()) - 1));
-            reference.child("Warnings").child(post.getpId()).child(myUID).removeValue();
+            reference.child("Posts").child(post.getpId()).child("pNSignals")
+                    .setValue(""+ (Integer.parseInt(post.getpNSignals()) - 1));
+            reference.child("Signals").child(post.getpId()).child(myUID).removeValue();
             mProcessSignal = false;
             likeIb.setImageResource(R.drawable.ic_no_like);
         }else {
-            reference.child("Posts").child(post.getpId()).child("pNSignals").setValue(""+ (Integer.parseInt(post.getpNSignals()) + 1));
-            reference.child("Warnings").child(post.getpId()).child(myUID).setValue("Signaled");
+            reference.child("Posts").child(post.getpId()).child("pNSignals")
+                    .setValue(""+ (Integer.parseInt(post.getpNSignals()) + 1));
+            reference.child("Signals").child(post.getpId()).child(myUID).setValue(signaler);
             mProcessSignal = true;
             likeIb.setImageResource(R.drawable.ic_like);
         }
     }
+
+    private void sharePost(String pTitle, String pDescription) {
+        BitmapDrawable bitmapDrawable = (BitmapDrawable)postCoverRv.getDrawable();
+        if (bitmapDrawable == null){
+            shareTextOnly(pTitle, pDescription);
+        }else {
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            shareImageAndTextOnly(pTitle, pDescription, bitmap);
+        }
+    }
+
+    private void shareImageAndTextOnly(String pTitle, String pDescription, Bitmap bitmap) {
+        String shareBody = pTitle + "\n" + pDescription + "\n" + getActivity().getResources().getString(R.string.sign);
+        Uri uri = saveImageToShare(bitmap);
+        Intent sIntent =new Intent(Intent.ACTION_SEND);
+        sIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        sIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        sIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
+        sIntent.setType("image/png");
+        getActivity().startActivity(Intent.createChooser(sIntent, "Share Via"));
+        sharedPost();
+    }
+
+    private Uri saveImageToShare(Bitmap bitmap) {
+        File imageFolder = new File(getActivity().getCacheDir(), "images");
+        Uri uri = null;
+        try {
+            imageFolder.mkdirs();
+            File file = new File(imageFolder, "shared_image.png");
+            FileOutputStream stream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+            stream.flush();
+            stream.close();
+            uri = FileProvider.getUriForFile(getActivity(), "cm.deone.corp.imopro.fileprovider", file);
+
+        }catch (Exception e){
+            Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return uri;
+    }
+
+    private void shareTextOnly(String pTitle, String pDescription) {
+        String shareBody = pTitle + "\n"+ pDescription + "\n" + getActivity().getResources().getString(R.string.sign);
+        Intent sIntent =new Intent(Intent.ACTION_SEND);
+        sIntent.setType("text/plain");
+        sIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
+        sIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        getActivity().startActivity(Intent.createChooser(sIntent, "Share Via"));
+        sharedPost();
+    }
+
+    private void sharedPost() {
+        reference.child("Posts").child(post.getpId()).child("pNShares").setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
+        if (TextUtils.isEmpty(numShared)){
+            reference.child("Shares").child(post.getpId()).child(myUID).setValue("1");
+        }else{
+            reference.child("Shares").child(post.getpId()).child(myUID).setValue(""+ (Integer.parseInt(numShared) + 1));
+        }
+    }
+
+    private void setNumShared() {
+        reference.child("Shares").child(pId).child(myUID).addValueEventListener(valSharedPost);
+    }
+
+    private final ValueEventListener valSharedPost = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            for (DataSnapshot ds : snapshot.getChildren()){
+                numShared = ds.getValue().toString();
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private final ValueEventListener valPostFavorite = new ValueEventListener() {
         @Override
@@ -402,6 +475,11 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
             }
             note = note/snapshot.getChildrenCount();
             noteTv.setText(""+note+"/20");
+
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("pNote", ""+note);
+
+            reference.child("Posts").child(pId).updateChildren(hashMap);
         }
 
         @Override
@@ -415,35 +493,54 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             for (DataSnapshot ds : snapshot.getChildren()){
                 post = ds.getValue(Post.class);
-
                 if (post.getpCreator().equals(myUID)){
-                    vueTv.setVisibility(View.VISIBLE);
-                    likeTv.setVisibility(View.VISIBLE);
-                    commentTv.setVisibility(View.VISIBLE);
 
-                    vueTv.setText(Integer.parseInt(post.getpNVues()) <= 1 ? view.getResources().getString(R.string.nombre_vue, post.getpNVues()) :
-                            view.getResources().getString(R.string.nombre_vues, post.getpNVues()));
-                    likeTv.setText(Integer.parseInt(post.getpNLikes()) <= 1 ? view.getResources().getString(R.string.nombre_like, post.getpNLikes()) :
-                            view.getResources().getString(R.string.nombre_likes, post.getpNLikes()));
-                    commentTv.setText(Integer.parseInt(post.getpNComments()) <= 1 ? view.getResources().getString(R.string.nombre_comment, post.getpNComments()) :
-                            view.getResources().getString(R.string.nombre_comments, post.getpNComments()));
-                    noteTv.setText(view.getResources().getString(R.string.note_post, post.getpNote()));
+                    warningTv.setVisibility(View.VISIBLE);
+
+                    vueTv.setText(Integer.parseInt(post.getpNVues()) <= 1 ? view.getResources()
+                            .getString(R.string.nombre_vue, post.getpNVues()) : view.getResources()
+                            .getString(R.string.nombre_vues, post.getpNVues()));
+                    likeTv.setText(Integer.parseInt(post.getpNLikes()) <= 1 ? view.getResources()
+                            .getString(R.string.nombre_like, post.getpNLikes()) : view.getResources()
+                            .getString(R.string.nombre_likes, post.getpNLikes()));
+                    commentTv.setText(Integer.parseInt(post.getpNComments()) <= 1 ? view.getResources()
+                            .getString(R.string.nombre_comment, post.getpNComments()) : view.getResources()
+                            .getString(R.string.nombre_comments, post.getpNComments()));
+
+                    if (ds.child("pNote").exists())
+                        noteTv.setText(view.getResources().getString(R.string.note_post, post.getpNote()));
+                    else
+                        noteTv.setText("0/20");
+
+                    if (ds.child("pNSignals").exists())
+                        warningTv.setText(view.getResources().getString(R.string.warning_post, post.getpNSignals()));
+                    else
+                        warningTv.setText("0 Warning");
 
                     likeIb.setVisibility(View.GONE);
                     favoriteIb.setVisibility(View.GONE);
                     noteIb.setVisibility(View.GONE);
                     signalerIb.setVisibility(View.GONE);
-                }else{
-                    vueTv.setVisibility(View.GONE);
-                    likeTv.setVisibility(View.GONE);
-                    commentTv.setVisibility(View.GONE);
 
-                    noteTv.setGravity(Gravity.CENTER);
+                }else{
+
+                    reference.child("Vues").child(post.getpId()).child(myUID)
+                            .addValueEventListener(myNumbVuesVal);
+                    reference.child("Comments").child(post.getpId())
+                            .orderByChild("cCreator").equalTo(myUID)
+                            .addValueEventListener(myNumbCommentsVal);
+                    reference.child("Shares").child(post.getpId()).child(myUID)
+                            .addValueEventListener(myNumbSharesVal);
+                    reference.child("Notes").child(post.getpId()).child(myUID)
+                            .addValueEventListener(myNoteVal);
+
+                    warningTv.setVisibility(View.GONE);
 
                     likeIb.setVisibility(View.VISIBLE);
                     favoriteIb.setVisibility(View.VISIBLE);
                     noteIb.setVisibility(View.VISIBLE);
                     signalerIb.setVisibility(View.VISIBLE);
+
                 }
 
                 postTitreTv.setText(post.getpTitre());
@@ -464,10 +561,82 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         }
     };
 
+    private final ValueEventListener myNumbCommentsVal = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            long count = snapshot.getChildrenCount();
+            commentTv.setText(count <= 1 ? view.getResources()
+                    .getString(R.string.nombre_comment, ""+count) : view.getResources()
+                    .getString(R.string.nombre_comments, ""+count));
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final ValueEventListener myNumbSharesVal = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (!snapshot.exists()){
+                likeTv.setText(view.getResources().getString(R.string.nombre_share, "0"));
+                shareIb.setImageResource(R.drawable.ic_no_share);
+            }else{
+                likeTv.setText(Integer.parseInt(snapshot.getValue().toString()) <= 1 ? view.getResources()
+                        .getString(R.string.nombre_share, snapshot.getValue().toString()) : view.getResources()
+                        .getString(R.string.nombre_shares, snapshot.getValue().toString()));
+                shareIb.setImageResource(R.drawable.ic_share);
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final ValueEventListener myNoteVal = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (!snapshot.exists()){
+                noteIb.setImageResource(R.drawable.ic_no_note);
+                noteTv.setText(view.getResources().getString(R.string.note_post, "0"));
+            } else{
+                noteIb.setImageResource(R.drawable.ic_note);
+                noteTv.setText((Integer.parseInt(snapshot.getValue().toString()) <= 1) ? view.getResources()
+                        .getString(R.string.note_post, snapshot.getValue().toString()) : view.getResources()
+                        .getString(R.string.note_post, snapshot.getValue().toString()));
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final ValueEventListener myNumbVuesVal = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (TextUtils.isEmpty(snapshot.getValue().toString()))
+                vueTv.setText(view.getResources().getString(R.string.nombre_vue, "0"));
+            else
+                vueTv.setText(Integer.parseInt(snapshot.getValue().toString()) <= 1 ? view.getResources()
+                        .getString(R.string.nombre_vue, snapshot.getValue().toString()) : view.getResources()
+                        .getString(R.string.nombre_vues, snapshot.getValue().toString()));
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
     private final ValueEventListener valSetSignaled = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            if (dataSnapshot.hasChild(myUID)){
+            if (dataSnapshot.exists()){
                 signalerIb.setImageResource(R.drawable.ic_signaler);
                 mProcessSignal = true;
             }else {
@@ -508,7 +677,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         }else if (v.getId() == R.id.favoriteIb && !post.getpCreator().equals(myUID)){
             favoritePost();
         }else if (v.getId() == R.id.shareIb){
-
+            sharePost(post.getpTitre(), post.getpDescription());
         }else if (v.getId() == R.id.noteIb && !post.getpCreator().equals(myUID)){
             showGiveNoteDialog();
         }else if (v.getId() == R.id.signalerIb && !post.getpCreator().equals(myUID)){

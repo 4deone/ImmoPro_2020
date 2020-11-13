@@ -9,16 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -28,9 +22,7 @@ import java.util.Locale;
 
 import cm.deone.corp.imopro.R;
 import cm.deone.corp.imopro.models.Gallery;
-import cm.deone.corp.imopro.models.Post;
-import cm.deone.corp.imopro.models.User;
-import cm.deone.corp.imopro.models.ViewsClickListener;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder> {
 

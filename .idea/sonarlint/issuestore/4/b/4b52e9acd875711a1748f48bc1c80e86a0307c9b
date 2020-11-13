@@ -1,33 +1,33 @@
 
-P
-java:S1874Ã"2Remove this use of "setMessage"; it is deprecated.(é©Ä²8Ù¦šûØ.
-F
-java:S1604¦"(Make this anonymous inner class a lambda(¨È÷8èÄ®Ù.
-
-java:S1488ü"^Immediately return this expression instead of assigning it to the temporary variable "result".(ÖÔíÊûÿÿÿÿ8Ù¦šûØ.
-O
-java:S1199k"-Extract this nested code block into a method.(Ï¥‰§üÿÿÿÿ8Ù¦šûØ.
-Y
-java:S1874™"6Remove this use of "ProgressDialog"; it is deprecated.(¿Ú•ğúÿÿÿÿ8Ù¦šûØ.
-m
-java:S1301^"KReplace this "switch" statement by "if" statements to increase readability.(×ö³–úÿÿÿÿ8Ù¦šûØ.
-X
-java:S1874="6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8Ù¦šûØ.
-K
-java:S1604Í"(Make this anonymous inner class a lambda(­¦ƒüÿÿÿÿ8Ù¦šûØ.
-C	java:S131^""Add a default case to this switch.(×ö³–úÿÿÿÿ8Ù¦šûØ.
-K
-java:S1604Ù"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ù¦šûØ.
-O
-java:S1199_"-Extract this nested code block into a method.(®¹ƒúÿÿÿÿ8Ù¦šûØ.
-]	java:S110'"<This class has 9 parents which is greater than 5 authorized.(ƒåœˆùÿÿÿÿ8Ù¦šûØ.
-~
-java:S3252”"[Use static access with "android.provider.MediaStore$Images$ImageColumns" for "DESCRIPTION".(êÜô¶ıÿÿÿÿ8åüªÙ.
 K
 java:S1604ò"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ù¦šûØ.
-_
-java:S2259"BA "NullPointerException" could be thrown; "data" is nullable here.(¿´“¿8•È¢Ù.
-q
-java:S3252“"NUse static access with "android.provider.MediaStore$MediaColumns" for "TITLE".(ö’úâüÿÿÿÿ8åüªÙ.
+O
+java:S1199_"-Extract this nested code block into a method.(®¹ƒúÿÿÿÿ8Ù¦šûØ.
+F
+java:S1604¦"(Make this anonymous inner class a lambda(¨È÷8èÄ®Ù.
+P
+java:S1874Ã"2Remove this use of "setMessage"; it is deprecated.(é©Ä²8Ù¦šûØ.
+O
+java:S1199k"-Extract this nested code block into a method.(Ï¥‰§üÿÿÿÿ8Ù¦šûØ.
+
+java:S1488ü"^Immediately return this expression instead of assigning it to the temporary variable "result".(ÖÔíÊûÿÿÿÿ8Ù¦šûØ.
+Y
+java:S1874™"6Remove this use of "ProgressDialog"; it is deprecated.(¿Ú•ğúÿÿÿÿ8Ù¦šûØ.
 K
 java:S1604é"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8Ù¦šûØ.
+]	java:S110'"<This class has 9 parents which is greater than 5 authorized.(ƒåœˆùÿÿÿÿ8Ù¦šûØ.
+_
+java:S2259"BA "NullPointerException" could be thrown; "data" is nullable here.(¿´“¿8•È¢Ù.
+K
+java:S1604Ù"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ù¦šûØ.
+K
+java:S1604Í"(Make this anonymous inner class a lambda(­¦ƒüÿÿÿÿ8Ù¦šûØ.
+m
+java:S1301^"KReplace this "switch" statement by "if" statements to increase readability.(×ö³–úÿÿÿÿ8Ù¦šûØ.
+q
+java:S3252“"NUse static access with "android.provider.MediaStore$MediaColumns" for "TITLE".(ö’úâüÿÿÿÿ8åüªÙ.
+X
+java:S1874="6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8Ù¦šûØ.
+~
+java:S3252”"[Use static access with "android.provider.MediaStore$Images$ImageColumns" for "DESCRIPTION".(êÜô¶ıÿÿÿÿ8åüªÙ.
+C	java:S131^""Add a default case to this switch.(×ö³–úÿÿÿÿ8Ù¦šûØ.

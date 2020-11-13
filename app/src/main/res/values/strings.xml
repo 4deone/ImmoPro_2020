@@ -37,4 +37,8 @@
     <string name="todo_share">TODO SHARE</string>
     <string name="todo_note">TODO NOTE</string>
     <string name="gallery_notifications">Gallery Notifications</string>
+    <string name="sign">Exper\'immo - by DEONE - 2020</string>
+    <string name="warning_post">%s Warning</string>
+    <string name="nombre_share">%s Share</string>
+    <string name="nombre_shares">%s Shares</string>
 </resources>

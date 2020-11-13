@@ -23,7 +23,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -34,8 +33,7 @@ import cm.deone.corp.imopro.MainActivity;
 import cm.deone.corp.imopro.R;
 import cm.deone.corp.imopro.adapter.GalleryAdaptor;
 import cm.deone.corp.imopro.models.Gallery;
-import cm.deone.corp.imopro.models.Post;
-import cm.deone.corp.imopro.models.ViewsClickListener;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 public class GalleryFragment extends Fragment {
 

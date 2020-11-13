@@ -193,7 +193,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Vous allez recevoir de notifications";
+                        String msg = "Vous n'allez plus recevoir de notifications";
                         if(!task.isSuccessful()){
                             msg = "Subscription failed";
                         }
@@ -207,7 +207,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Vous n'allez plus recevoir de notifications";
+                        String msg = "Vous allez recevoir de notifications";
                         if(!task.isSuccessful()){
                             msg = "Unsubscription failed";
                         }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -30,7 +31,7 @@ import java.util.List;
 
 import cm.deone.corp.imopro.adapter.PostsAdaptor;
 import cm.deone.corp.imopro.models.Post;
-import cm.deone.corp.imopro.models.ViewsClickListener;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 import cm.deone.corp.imopro.notification.Token;
 
 public class HomeActivity extends AppCompatActivity {
@@ -89,6 +90,10 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         if (fUser != null){
             myUID = fUser.getUid();
+            SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("Current_USERID", myUID);
+            editor.apply();
         }else{
             startActivity(new Intent(HomeActivity.this, MainActivity.class));
             finish();

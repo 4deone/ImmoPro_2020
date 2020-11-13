@@ -273,6 +273,8 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
         hashMapPost.put("pNLikes", "0");
         hashMapPost.put("pNVues", "0");
         hashMapPost.put("pNComments", "0");
+        hashMapPost.put("pNShares", "0");
+        hashMapPost.put("pNSignals", "0");
 
         if (publicOrPrivateCb.isChecked()){
             hashMapPost.put("pPublicOrPrivate", "public");

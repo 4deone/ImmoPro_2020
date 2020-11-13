@@ -31,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:src="@drawable/ic_post"
+        android:scaleType="centerCrop"
         android:layout_below="@+id/postTitreTv"/>
 
     <LinearLayout
@@ -41,6 +42,18 @@
         android:gravity="center"
         android:padding="10dp"
         android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/warningTv"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="5 Warning"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:background="@null"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/vueTv"
@@ -137,7 +150,7 @@
             android:id="@+id/noteIb"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:src="@drawable/ic_note"
+            android:src="@drawable/ic_no_note"
             android:background="@null"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo_note" />
@@ -146,7 +159,7 @@
             android:id="@+id/shareIb"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:src="@drawable/ic_share"
+            android:src="@drawable/ic_no_share"
             android:background="@null"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo_share" />
