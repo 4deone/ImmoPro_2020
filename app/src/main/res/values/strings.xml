@@ -13,8 +13,8 @@
     <string name="nom_complet">Nom complet</string>
     <string name="d_connecter_votre_compte">Déconnecter votre compte</string>
     <string name="supprimer_votre_compte">Supprimer votre compte</string>
-    <string name="post_notifications">Post notifications</string>
-    <string name="comment_notifications">Comment notifications</string>
+    <string name="post_notifications">Post</string>
+    <string name="comment_notifications">Comment</string>
     <string name="edit_profil">Edit profil</string>
     <string name="settings">Settings</string>
     <string name="ajouter_un_post">Ajouter un post</string>
@@ -36,7 +36,7 @@
     <string name="todo_favorite">TODO FAVORITE</string>
     <string name="todo_share">TODO SHARE</string>
     <string name="todo_note">TODO NOTE</string>
-    <string name="gallery_notifications">Gallery Notifications</string>
+    <string name="gallery_notifications">Gallery</string>
     <string name="sign">Exper\'immo - by DEONE - 2020</string>
     <string name="warning_post">%s Warning</string>
     <string name="nombre_share">%s Share</string>

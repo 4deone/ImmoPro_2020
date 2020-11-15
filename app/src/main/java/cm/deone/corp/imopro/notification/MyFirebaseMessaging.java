@@ -31,9 +31,10 @@ import java.util.Random;
 import cm.deone.corp.imopro.PostActivity;
 import cm.deone.corp.imopro.R;
 
+import static cm.deone.corp.imopro.outils.Constant.ADMIN_CHANNEL_ID;
+
 public class MyFirebaseMessaging extends FirebaseMessagingService {
 
-    private static final String ADMIN_CHANNEL_ID = "admin_channel";
     private String notificationType;
     private Intent intent;
 

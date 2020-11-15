@@ -45,10 +45,10 @@ import cm.deone.corp.imopro.MainActivity;
 import cm.deone.corp.imopro.R;
 import cm.deone.corp.imopro.models.Post;
 
-public class HomeFragment extends Fragment  implements View.OnClickListener{
+import static cm.deone.corp.imopro.outils.Constant.TAG_POST_CREATOR;
+import static cm.deone.corp.imopro.outils.Constant.TAG_POST_ID;
 
-    private static final String TAG_POST_ID = "pId";
-    private static final String TAG_POST_CREATOR = "pCreator";
+public class HomeFragment extends Fragment  implements View.OnClickListener{
 
     private DatabaseReference reference;
 

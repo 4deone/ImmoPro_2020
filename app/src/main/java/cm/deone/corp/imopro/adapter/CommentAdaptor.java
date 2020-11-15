@@ -28,10 +28,10 @@ import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.User;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
-public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder> {
+import static cm.deone.corp.imopro.outils.Constant.MSG_TYPE_IN;
+import static cm.deone.corp.imopro.outils.Constant.MSG_TYPE_OUT;
 
-    private static final int MSG_TYPE_IN = 0;
-    private static final int MSG_TYPE_OUT = 1;
+public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder> {
 
     private FirebaseUser firebaseUser;
 

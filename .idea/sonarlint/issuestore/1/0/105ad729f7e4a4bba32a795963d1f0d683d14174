@@ -1,13 +1,26 @@
 
-w
-java:S1450"ZRemove the "userQuality" field and declare it as a local variable in the relevant methods.(õ¶øÑ8Ü¬×Ø.
-v
-java:S1450"TRemove the "email" field and declare it as a local variable in the relevant methods.(ª«Õìùÿÿÿÿ8ˆç€×Ø.
+E
+java:S1604`"(Make this anonymous inner class a lambda(…äìş8ë¹èµÜ.
+K
+java:S1604Š"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8ë¹èµÜ.
+Q
+java:S1128"4Remove this unused import 'android.content.Context'.(©Ê‰è8ë¹èµÜ.
+O
+java:S1874D"2Remove this use of "setMessage"; it is deprecated.(¬ÀÅ„8ë¹èµÜ.
+E
+java:S1604~"(Make this anonymous inner class a lambda(³Ö×•8ë¹èµÜ.
+[
+java:S1117X"9Rename "email" which hides the field declared at line 32.(ò¢ô¥şÿÿÿÿ8ë¹èµÜ.
+J
+java:S1604u"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8ë¹èµÜ.
 
-java:S1450"_Remove the "checkPasswordFab" field and declare it as a local variable in the relevant methods.(´ª­üÿÿÿÿ8á‘“×Ø.
-†
-java:S1450"iRemove the "userPasswordConfirmationTv" field and declare it as a local variable in the relevant methods.(¾ÛŞ‰8Ç—’×Ø.
-Q	java:S110"<This class has 9 parents which is greater than 5 authorized.(ŒÃŒ
-z
-java:S1450"]Remove the "userPasswordTv" field and declare it as a local variable in the relevant methods.(™øê¶8ç»‘×Ø.
-J	java:S108'")Either remove or fill this block of code.(€–õ›ıÿÿÿÿ8ÖÑ›×Ø.
+java:S1450'"_Remove the "checkPasswordFab" field and declare it as a local variable in the relevant methods.(´ª­üÿÿÿÿ8á‘“×Ø.
+X
+java:S1874#"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8ë¹èµÜ.
+Q	java:S110"<This class has 9 parents which is greater than 5 authorized.(ŒÃŒ
+X
+java:S1874@"6Remove this use of "ProgressDialog"; it is deprecated.(¿Ú•ğúÿÿÿÿ8ë¹èµÜ.
+E
+java:S1604S"(Make this anonymous inner class a lambda(³Ö×•8ë¹èµÜ.
+J
+java:S1604h"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8ë¹èµÜ.

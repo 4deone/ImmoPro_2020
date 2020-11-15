@@ -1,5 +1,6 @@
 package cm.deone.corp.imopro.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -30,10 +34,14 @@ import java.util.List;
 
 import cm.deone.corp.imopro.CreateGalleryActivity;
 import cm.deone.corp.imopro.MainActivity;
+import cm.deone.corp.imopro.PhotoActivity;
 import cm.deone.corp.imopro.R;
 import cm.deone.corp.imopro.adapter.GalleryAdaptor;
 import cm.deone.corp.imopro.models.Gallery;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
+
+import static cm.deone.corp.imopro.outils.Constant.TAG_POST_CREATOR;
+import static cm.deone.corp.imopro.outils.Constant.TAG_POST_ID;
 
 public class GalleryFragment extends Fragment {
 
@@ -41,6 +49,9 @@ public class GalleryFragment extends Fragment {
     private String pCreator;
     private String myUID;
     private View view;
+
+    private final float mScaleFactor = 1.0f;
+    private ScaleGestureDetector scaleGestureDetector;
 
     private List<Gallery> galleryList;
     private RecyclerView postImagesRv;
@@ -51,8 +62,6 @@ public class GalleryFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM = "pId";
-    private static final String ARG_PARAM1 = "pCreator";
 
 
     public GalleryFragment() {
@@ -64,8 +73,8 @@ public class GalleryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            pId = getArguments().getString(ARG_PARAM);
-            pCreator = getArguments().getString(ARG_PARAM1);
+            pId = getArguments().getString(TAG_POST_ID);
+            pCreator = getArguments().getString(TAG_POST_CREATOR);
         }
     }
 
@@ -130,7 +139,10 @@ public class GalleryFragment extends Fragment {
                 galleryAdaptor.setOnItemClickListener(new ViewsClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-
+                        Intent intent = new Intent(getActivity(), PhotoActivity.class);
+                        intent.putExtra("gImage", ""+galleryList.get(position).getgImage());
+                        intent.putExtra("gDescription", ""+galleryList.get(position).getgDescription());
+                        startActivity(intent);
                     }
 
                     @Override
@@ -170,4 +182,7 @@ public class GalleryFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }

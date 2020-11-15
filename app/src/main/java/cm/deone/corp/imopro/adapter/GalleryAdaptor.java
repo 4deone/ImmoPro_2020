@@ -1,9 +1,12 @@
 package cm.deone.corp.imopro.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -126,4 +129,5 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
             return true;
         }
     }
+
 }

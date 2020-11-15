@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ImoPro">
-        <activity android:name=".CreateGalleryActivity"></activity>
+        <activity android:name=".PhotoActivity"></activity>
+        <activity android:name=".CreateGalleryActivity" />
         <activity android:name=".PostActivity" />
         <activity android:name=".CreatePostActivity" />
         <activity android:name=".NewUserActivity" />
@@ -42,6 +43,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="cm.deone.corp.imopro.fileprovider"

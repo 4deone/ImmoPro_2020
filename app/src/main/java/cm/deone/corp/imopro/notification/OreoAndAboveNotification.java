@@ -11,10 +11,11 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import static cm.deone.corp.imopro.outils.Constant.ID;
+import static cm.deone.corp.imopro.outils.Constant.NAME;
+
 public class OreoAndAboveNotification  extends ContextWrapper {
 
-    private static final String ID = "some_id";
-    private static final String NAME = "FirebaseAPP";
     private NotificationManager notificationManager;
 
    public OreoAndAboveNotification(Context base) {

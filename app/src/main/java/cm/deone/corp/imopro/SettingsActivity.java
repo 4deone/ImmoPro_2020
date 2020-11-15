@@ -1,18 +1,8 @@
 package cm.deone.corp.imopro;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +20,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -55,16 +54,15 @@ import java.util.HashMap;
 
 import cm.deone.corp.imopro.models.User;
 
-public class SettingsActivity extends AppCompatActivity {
+import static cm.deone.corp.imopro.outils.Constant.CAMERA_REQUEST_CODE;
+import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_CAMERA_CODE;
+import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_GALLERY_CODE;
+import static cm.deone.corp.imopro.outils.Constant.STORAGE_REQUEST_CODE;
+import static cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION;
 
-    private static final String TOPIC_POST_NOTIFICATION = "POST";
-    private static final String TOPIC_COMMENT_NOTIFICATION = "COMMENT";
-    private static final String TOPIC_GALLERY_NOTIFICATION = "GALLERY";
-
-    private static final int CAMERA_REQUEST_CODE = 100;
-    private static final int STORAGE_REQUEST_CODE = 200;
-    private static final int IMAGE_PICK_GALLERY_CODE = 300;
-    private static final int IMAGE_PICK_CAMERA_CODE = 400;
+public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private String[] cameraPermissions;
     private String[] storagePermissions;
@@ -93,99 +91,16 @@ public class SettingsActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
 
+    boolean isShow = true;
+    int scrollRange = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
         initVues();
-
         checkUsers();
-
         getUserInfos();
-
-        boolean isPostEnable = sharedPreferences.getBoolean(""+TOPIC_POST_NOTIFICATION, false);
-        boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION, false);
-        boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION, false);
-
-        if (isPostEnable) {
-            postNotificationSw.setChecked(true);
-        }else{
-            postNotificationSw.setChecked(false);
-        }
-
-        if (isCommentEnable) {
-            commentNotificationSw.setChecked(true);
-        }else{
-            commentNotificationSw.setChecked(false);
-        }
-
-        if (isGalleryEnable) {
-            galleryNotificationSw.setChecked(true);
-        }else{
-            galleryNotificationSw.setChecked(false);
-        }
-
-        postNotificationSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_POST_NOTIFICATION, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_POST_NOTIFICATION);
-                }else{
-                    unsuscribeNotification(""+TOPIC_POST_NOTIFICATION);
-                }
-            }
-        });
-        commentNotificationSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
-                }else{
-                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
-                }
-            }
-        });
-        galleryNotificationSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
-                }else{
-                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
-                }
-            }
-        });
-
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = true;
-            int scrollRange = -1;
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if(scrollRange == -1){
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-
-                if (scrollRange+verticalOffset == 0){
-                    //collapsingToolbarLayout.setTitle("One");
-                    toolbar.setBackgroundColor(Color.parseColor("#FFBB86FC"));
-                    isShow = true;
-                }else if (isShow){
-                    //collapsingToolbarLayout.setTitle("Two");
-                    toolbar.setBackgroundColor(Color.TRANSPARENT);
-                }
-            }
-        });
-
     }
 
     private void unsuscribeNotification(String topic) {
@@ -321,6 +236,33 @@ public class SettingsActivity extends AppCompatActivity {
 
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        boolean isPostEnable = sharedPreferences.getBoolean(""+TOPIC_POST_NOTIFICATION, false);
+        boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION, false);
+        boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION, false);
+
+        if (isPostEnable) {
+            postNotificationSw.setChecked(true);
+        }else{
+            postNotificationSw.setChecked(false);
+        }
+
+        if (isCommentEnable) {
+            commentNotificationSw.setChecked(true);
+        }else{
+            commentNotificationSw.setChecked(false);
+        }
+
+        if (isGalleryEnable) {
+            galleryNotificationSw.setChecked(true);
+        }else{
+            galleryNotificationSw.setChecked(false);
+        }
+
+        postNotificationSw.setOnCheckedChangeListener(this);
+        commentNotificationSw.setOnCheckedChangeListener(this);
+        galleryNotificationSw.setOnCheckedChangeListener(this);
+
     }
 
     private void checkUsers(){
@@ -689,4 +631,40 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()){
+            case R.id.postNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_POST_NOTIFICATION, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_POST_NOTIFICATION);
+                }else{
+                    unsuscribeNotification(""+TOPIC_POST_NOTIFICATION);
+                }
+                break;
+            case R.id.commentNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
+                }else{
+                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
+                }
+                break;
+            case R.id.galleryNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
+                }else{
+                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
+                }
+                break;
+            default:
+        }
+    }
 }

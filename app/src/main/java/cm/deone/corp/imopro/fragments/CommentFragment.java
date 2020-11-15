@@ -42,6 +42,8 @@ import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.models.User;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
+import static cm.deone.corp.imopro.outils.Constant.TAG_POST_ID;
+
 public class CommentFragment extends Fragment {
 
     private DatabaseReference reference;
@@ -63,10 +65,6 @@ public class CommentFragment extends Fragment {
 
     private Post post;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM = "pId";
-
     public CommentFragment() {
         // Required empty public constructor
     }
@@ -76,7 +74,7 @@ public class CommentFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            pId = getArguments().getString(ARG_PARAM);
+            pId = getArguments().getString(TAG_POST_ID);
         }
     }
 

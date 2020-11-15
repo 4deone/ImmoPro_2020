@@ -49,12 +49,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreatePostActivity extends AppCompatActivity implements View.OnClickListener {
+import static cm.deone.corp.imopro.outils.Constant.CAMERA_REQUEST_CODE;
+import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_CAMERA_CODE;
+import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_GALLERY_CODE;
+import static cm.deone.corp.imopro.outils.Constant.STORAGE_REQUEST_CODE;
 
-    private static final int CAMERA_REQUEST_CODE = 100;
-    private static final int STORAGE_REQUEST_CODE = 200;
-    private static final int IMAGE_PICK_GALLERY_CODE = 300;
-    private static final int IMAGE_PICK_CAMERA_CODE = 400;
+public class CreatePostActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String[] cameraPermissions;
     private String[] storagePermissions;
