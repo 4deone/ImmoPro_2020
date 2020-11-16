@@ -222,40 +222,40 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
 
     private void favoritePost() {
         if (mProcessFavorites){
-            reference.child("Favorites").child(post.getpId()).child(myUID).removeValue();
+            reference.child("Posts").child(post.getpId()).child("Favorites").child(myUID).removeValue();
             mProcessFavorites = false;
             favoriteIb.setImageResource(R.drawable.ic_no_favorite);
         }else {
-            reference.child("Favorites").child(post.getpId()).child(myUID).setValue("Favotite");
+            reference.child("Posts").child(post.getpId()).child("Favorites").child(myUID).setValue("Favotite");
             mProcessFavorites = true;
             favoriteIb.setImageResource(R.drawable.ic_favorite);
         }
     }
 
     private void setFavorite() {
-        Query query = reference.child("Favorites").child(pId);
+        Query query = reference.child("Posts").child(pId).child("Favorites");
         query.addValueEventListener(valPostFavorite);
     }
 
     private void setSignaled() {
-        reference.child("Signals").child(pId).child(myUID).addValueEventListener(valSetSignaled);
+        reference.child("Posts").child(pId).child("Signalements").child(myUID).addValueEventListener(valSetSignaled);
     }
 
     private void setLiked() {
-        reference.child("Likes").child(pId).addValueEventListener(valeSetLiked);
+        reference.child("Posts").child(pId).child("Likes").addValueEventListener(valeSetLiked);
     }
 
     private void likePost() {
         if (mProcessLikes){
             reference.child("Posts").child(post.getpId()).child("pNLikes")
                     .setValue(""+ (Integer.parseInt(post.getpNLikes()) - 1));
-            reference.child("Likes").child(post.getpId()).child(myUID).removeValue();
+            reference.child("Posts").child(post.getpId()).child("Likes").child(myUID).removeValue();
             mProcessLikes = false;
             likeIb.setImageResource(R.drawable.ic_no_like);
         }else {
             reference.child("Posts").child(post.getpId()).child("pNLikes")
                     .setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
-            reference.child("Likes").child(post.getpId()).child(myUID).setValue("Liked");
+            reference.child("Posts").child(post.getpId()).child("Likes").child(myUID).setValue("Liked");
             mProcessLikes = true;
             likeIb.setImageResource(R.drawable.ic_like);
         }
@@ -295,11 +295,11 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     }
 
     private void setPostNote(String note) {
-        reference.child("Notes").child(pId).child(myUID).setValue(note)
+        reference.child("Posts").child(pId).child("Notes").child(myUID).setValue(note)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                reference.child("Notes").child(pId).addValueEventListener(valPostNotes);
+                reference.child("Posts").child(pId).child("Notes").addValueEventListener(valPostNotes);
             }
         });
     }
@@ -312,7 +312,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (mProcessSignal){
-                            setPostSignal("");
+                            setPostSignalement("");
                         }
                         else{
                             procederAuSignalement();
@@ -344,7 +344,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
                     return;
                 }
 
-                setPostSignal(""+signaler);
+                setPostSignalement(""+signaler);
             }
         }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
@@ -355,17 +355,17 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         builder.create().show();
     }
 
-    private void setPostSignal(String signaler) {
+    private void setPostSignalement(String signaler) {
         if (mProcessSignal){
             reference.child("Posts").child(post.getpId()).child("pNSignals")
                     .setValue(""+ (Integer.parseInt(post.getpNSignals()) - 1));
-            reference.child("Signals").child(post.getpId()).child(myUID).removeValue();
+            reference.child("Posts").child(post.getpId()).child("Signalements").child(myUID).removeValue();
             mProcessSignal = false;
             likeIb.setImageResource(R.drawable.ic_no_like);
         }else {
             reference.child("Posts").child(post.getpId()).child("pNSignals")
                     .setValue(""+ (Integer.parseInt(post.getpNSignals()) + 1));
-            reference.child("Signals").child(post.getpId()).child(myUID).setValue(signaler);
+            reference.child("Posts").child(post.getpId()).child("Signalements").child(myUID).setValue(signaler);
             mProcessSignal = true;
             likeIb.setImageResource(R.drawable.ic_like);
         }
@@ -424,14 +424,14 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     private void sharedPost() {
         reference.child("Posts").child(post.getpId()).child("pNShares").setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
         if (TextUtils.isEmpty(numShared)){
-            reference.child("Shares").child(post.getpId()).child(myUID).setValue("1");
+            reference.child("Posts").child(post.getpId()).child("Shares").child(myUID).setValue("1");
         }else{
-            reference.child("Shares").child(post.getpId()).child(myUID).setValue(""+ (Integer.parseInt(numShared) + 1));
+            reference.child("Posts").child(post.getpId()).child("Shares").child(myUID).setValue(""+ (Integer.parseInt(numShared) + 1));
         }
     }
 
     private void setNumShared() {
-        reference.child("Shares").child(pId).child(myUID).addValueEventListener(valSharedPost);
+        reference.child("Posts").child(pId).child("Shares").child(myUID).addValueEventListener(valSharedPost);
     }
 
     private final ValueEventListener valSharedPost = new ValueEventListener() {
@@ -524,14 +524,14 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
 
                 }else{
 
-                    reference.child("Vues").child(post.getpId()).child(myUID)
+                    reference.child("Posts").child(post.getpId()).child("Vues").child(myUID)
                             .addValueEventListener(myNumbVuesVal);
-                    reference.child("Comments").child(post.getpId())
+                    reference.child("Posts").child(post.getpId()).child("Comments")
                             .orderByChild("cCreator").equalTo(myUID)
                             .addValueEventListener(myNumbCommentsVal);
-                    reference.child("Shares").child(post.getpId()).child(myUID)
+                    reference.child("Posts").child(post.getpId()).child("Shares").child(myUID)
                             .addValueEventListener(myNumbSharesVal);
-                    reference.child("Notes").child(post.getpId()).child(myUID)
+                    reference.child("Posts").child(post.getpId()).child("Notes").child(myUID)
                             .addValueEventListener(myNoteVal);
 
                     warningTv.setVisibility(View.GONE);

@@ -1,15 +1,14 @@
 
+Q	java:S110$"<This class has 6 parents which is greater than 5 authorized.(µò¾×
+V
+java:S1117X":Rename "intent" which hides the field declared at line 39.(‰şŒD8Ã˜îìÛ.
 Y	java:S125‹"<This block of commented-out lines of code should be removed.(€¶„î8Ã˜îìÛ.
 T
-java:S1481†"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ8Ã˜îìÛ.
-^	java:S125«"<This block of commented-out lines of code should be removed.(èÍ“œúÿÿÿÿ8‚Š‘‘Û.
+java:S1481§"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ8Ã˜îìÛ.
+c
+java:S1854†"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ8Ã˜îìÛ.
 c
 java:S1854§"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ8Ã˜îìÛ.
-J
-java:S10667"/Merge this if statement with the enclosing one.(Äî¶¡øÿÿÿÿ
-T
-java:S1481§"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ8Ã˜îìÛ.
-Q	java:S110$"<This class has 6 parents which is greater than 5 authorized.(µò¾×
 R
 java:S1874¶"/Remove this use of "Builder"; it is deprecated.(î«ıÿÿÿÿ8Ã˜îìÛ.
 p
@@ -20,8 +19,9 @@ V
 java:S1481™"8Remove this unused "notificationManager" local variable.(øÔª8Ã˜îìÛ.
 e
 java:S1854™"GRemove this useless assignment to local variable "notificationManager".(øÔª8Ã˜îìÛ.
+^	java:S125«"<This block of commented-out lines of code should be removed.(èÍ“œúÿÿÿÿ8‚Š‘‘Û.
+J
+java:S10667"/Merge this if statement with the enclosing one.(Äî¶¡øÿÿÿÿ
 ^	java:S125­"<This block of commented-out lines of code should be removed.(èÍ“œúÿÿÿÿ8Ã˜îìÛ.
-c
-java:S1854†"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ8Ã˜îìÛ.
-V
-java:S1117X":Rename "intent" which hides the field declared at line 39.(‰şŒD8Ã˜îìÛ.
+T
+java:S1481†"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ8Ã˜îìÛ.

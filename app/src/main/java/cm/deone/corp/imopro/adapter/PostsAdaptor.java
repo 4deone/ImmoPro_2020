@@ -106,8 +106,7 @@ public class PostsAdaptor extends RecyclerView.Adapter<PostsAdaptor.MyHolder> {
     }
 
     private void getUserInfos(final MyHolder holder, String creator) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-        reference.addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()){

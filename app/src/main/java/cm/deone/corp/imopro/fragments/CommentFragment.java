@@ -163,7 +163,7 @@ public class CommentFragment extends Fragment {
 
     private void allComments() {
         commentList = new ArrayList<>();
-        DatabaseReference refComment = reference.child("Comments").child(pId);
+        DatabaseReference refComment = reference.child("Posts").child(pId).child("Comments");
         refComment.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -249,7 +249,7 @@ public class CommentFragment extends Fragment {
     }
 
     private void uploadData(HashMap<String, String> hashMapComment, String timestamp) {
-        DatabaseReference refUpload = reference.child("Comments").child(pId);
+        DatabaseReference refUpload = reference.child("Posts").child(pId).child("Comments");
         refUpload.child(timestamp).setValue(hashMapComment).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

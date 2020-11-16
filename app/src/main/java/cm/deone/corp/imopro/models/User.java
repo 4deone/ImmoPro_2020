@@ -7,19 +7,21 @@ public class User {
     private String uDate;
     private String uName;
     private String uRole;
+    private String uNcomment;
     private String uPhone;
     private String uDevise;
 
     public User() {
     }
 
-    public User(String uId, String uAvatar, String uEmail, String uDate, String uName, String uRole, String uPhone, String uDevise) {
+    public User(String uId, String uAvatar, String uEmail, String uDate, String uName, String uRole, String uNcomment, String uPhone, String uDevise) {
         this.uId = uId;
         this.uAvatar = uAvatar;
         this.uEmail = uEmail;
         this.uDate = uDate;
         this.uName = uName;
         this.uRole = uRole;
+        this.uNcomment = uNcomment;
         this.uPhone = uPhone;
         this.uDevise = uDevise;
     }
@@ -42,6 +44,14 @@ public class User {
 
     public String getuEmail() {
         return uEmail;
+    }
+
+    public String getuNcomment() {
+        return uNcomment;
+    }
+
+    public void setuNcomment(String uNcomment) {
+        this.uNcomment = uNcomment;
     }
 
     public void setuEmail(String uEmail) {

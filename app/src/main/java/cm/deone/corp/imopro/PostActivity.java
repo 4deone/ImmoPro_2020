@@ -157,7 +157,7 @@ public class PostActivity extends AppCompatActivity {
 
     private void getMyVue() {
         if (!pCreator.equals(myUID)){
-            Query query = ref.child("Vues").child(pId).orderByKey().equalTo(myUID);
+            Query query = ref.child("Posts").child(pId).child("Vues").orderByKey().equalTo(myUID);
             query.addValueEventListener(valMyVues);
         }
     }
@@ -185,9 +185,9 @@ public class PostActivity extends AppCompatActivity {
                     if (!pCreator.equals(myUID)){
                         ref.child("Posts").child(pId).child("pNVues").setValue(""+ (Integer.parseInt(post.getpNVues()) + 1));
                         if (TextUtils.isEmpty(myVUES))
-                            ref.child("Vues").child(pId).child(myUID).setValue("1");
+                            ref.child("Posts").child(pId).child("Vues").child(myUID).setValue("1");
                         else
-                            ref.child("Vues").child(pId).child(myUID).setValue(""+ (Integer.parseInt(myVUES) + 1));
+                            ref.child("Posts").child(pId).child("Vues").child(myUID).setValue(""+ (Integer.parseInt(myVUES) + 1));
                     }
                     userVue = false;
                 }

@@ -186,6 +186,7 @@ public class ProfilActivity extends AppCompatActivity implements View.OnClickLis
         hashMapUser.put("uName", fullName);
         hashMapUser.put("uPhone", phone);
         hashMapUser.put("uDevise", devise);
+        hashMapUser.put("uNcomment", "0");
 
         saveUserData(hashMapUser);
     }

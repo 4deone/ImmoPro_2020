@@ -60,6 +60,8 @@ public class CreateGalleryActivity extends AppCompatActivity {
     private String[] cameraPermissions;
     private String[] storagePermissions;
 
+    private DatabaseReference reference;
+
     private Uri imageUri;
 
     private String myUID;
@@ -108,6 +110,7 @@ public class CreateGalleryActivity extends AppCompatActivity {
 
     private void initVues() {
         pId = getIntent().getStringExtra("pId");
+        reference = FirebaseDatabase.getInstance().getReference();
         iTemCoverIv = findViewById(R.id.iTemCoverIv);
         itemDescriptionEdtv = findViewById(R.id.itemDescriptionEdtv);
         createPostFab = findViewById(R.id.createPostFab);
@@ -241,8 +244,7 @@ public class CreateGalleryActivity extends AppCompatActivity {
     }
 
     private void uploadData(HashMap<String, String> hashMapImage, String timestamp) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Gallery");
-        reference.child(pId).child(timestamp).setValue(hashMapImage)
+        reference.child("Posts").child(pId).child("Gallery").child(timestamp).setValue(hashMapImage)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
