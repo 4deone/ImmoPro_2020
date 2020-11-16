@@ -51,8 +51,6 @@ c
 3app/src/main/res/drawable-anydpi/ic_no_favorite.xml,b/1/b1470ea556046063a72ae3e33e4913e46c3ec2b4
 \
 ,app/src/main/res/drawable-anydpi/ic_note.xml,e/d/eda1e7d5d7ca1eac77bd2bb03917009cd3500262
-S
-#app/src/main/res/menu/menu_home.xml,b/2/b29cc600ce5bef1fd6ffb97a1d9fd5219ab12a8e
 w
 Gapp/src/main/java/cm/deone/corp/imopro/adapter/NotificationAdaptor.java,2/f/2fa16f30618c1d87206c102fe28eb1473586b2c2
 r
@@ -83,8 +81,6 @@ _
 /app/src/main/res/layout/item_comment_system.xml,5/7/57a66ea14ad884f99dee6915d68d6832bb796769
 V
 &app/src/main/res/menu/menu_gallery.xml,a/6/a64456a44b50ca93e3b10eaa2a998272ac507e99
-R
-"app/src/main/res/menu/nav_post.xml,d/1/d1dc9a3331173186af0e0aecf4429bf5999b3aa6
 V
 &app/src/main/res/menu/nav_post_his.xml,2/7/27dff82956c81c46476eab554f4ffbcc3da09227
 Å
@@ -139,7 +135,5 @@ U
 %app/src/main/res/layout/item_post.xml,c/9/c93a562e619fa8652e1f96b2db154b274becae05
 a
 1app/src/main/res/layout-v21/activity_settings.xml,9/f/9f7b0412930b16fadd67bce2d970e990b8eaeaf1
-S
-#app/src/main/res/values/strings.xml,d/2/d2281fbb3027de2722081a53408dd77628bf080e
 Z
 *app/src/main/res/layout/activity_photo.xml,0/f/0f440b25e574ae9cf8f92d08de336affd2952faf

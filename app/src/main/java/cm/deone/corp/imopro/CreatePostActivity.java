@@ -166,14 +166,48 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void initVues(){
+        Intent intent = getIntent();
+
         coverIv = findViewById(R.id.coverIv);
         postTitreEdtv = findViewById(R.id.postTitreEdtv);
         postDescriptionEdtv = findViewById(R.id.postDescriptionEdtv);
+
+        getDataFromAnotherApplication(intent);
+
         createPostFab = findViewById(R.id.createPostFab);
         publicOrPrivateCb = findViewById(R.id.publicOrPrivateCb);
         progressDialog = new ProgressDialog(this);
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    }
+
+    private void getDataFromAnotherApplication(Intent intent) {
+        String action = intent.getAction();
+        String type = intent.getType();
+        if (Intent.ACTION_SEND.equals(action) && type != null){
+
+            if ("text/plain".equals(type)){
+                handleSendText(intent);
+            }else if (type.startsWith("image")){
+                handleSendImage(intent);
+            }
+
+        }
+    }
+
+    private void handleSendImage(Intent intent) {
+        Uri uri = (Uri)intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (uri!=null){
+            imageUri = uri;
+            coverIv.setImageURI(imageUri);
+        }
+    }
+
+    private void handleSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText!=null){
+            postDescriptionEdtv.setText(getString(R.string.show_description_from_another_app, sharedText));
+        }
     }
 
     private void showAvatarPickDialog() {

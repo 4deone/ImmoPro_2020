@@ -21,7 +21,20 @@
         android:theme="@style/Theme.ImoPro">
         <activity android:name=".CreateGalleryActivity" />
         <activity android:name=".PostActivity" />
-        <activity android:name=".CreatePostActivity" />
+
+        <activity android:name=".CreatePostActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".NewUserActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".ProfilActivity" />

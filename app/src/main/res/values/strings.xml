@@ -41,4 +41,5 @@
     <string name="warning_post">%s Warning</string>
     <string name="nombre_share">%s Share</string>
     <string name="nombre_shares">%s Shares</string>
+    <string name="show_description_from_another_app">Description : \n%1$s</string>
 </resources>

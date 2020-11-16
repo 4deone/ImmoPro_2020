@@ -34,7 +34,7 @@ import cm.deone.corp.imopro.models.Post;
 public class PostActivity extends AppCompatActivity {
 
     private DatabaseReference ref;
-    private boolean userVue;
+    private boolean userVue = true;
     private String pId;
     private String pCreator;
     private String myUID;
@@ -101,8 +101,7 @@ public class PostActivity extends AppCompatActivity {
     private void initVues() {
         pId = getIntent().getStringExtra("pId");
         pCreator = getIntent().getStringExtra("pCreator");
-        userVue = true;
-        ref = FirebaseDatabase.getInstance().getReference();
+        ref = FirebaseDatabase.getInstance().getReference("Posts");
         BottomNavigationView navigationView = findViewById(R.id.bottom_navigation);
         navigationView.getMenu().clear();
         if (pCreator.equals(myUID)){
@@ -151,13 +150,13 @@ public class PostActivity extends AppCompatActivity {
     };
 
     private void getPost() {
-        Query query = ref.child("Posts").orderByKey().equalTo(pId);
+        Query query = ref.orderByKey().equalTo(pId);
         query.addValueEventListener(postInfosVal);
     }
 
     private void getMyVue() {
         if (!pCreator.equals(myUID)){
-            Query query = ref.child("Posts").child(pId).child("Vues").orderByKey().equalTo(myUID);
+            Query query = ref.child(pId).child("Vues").orderByKey().equalTo(myUID);
             query.addValueEventListener(valMyVues);
         }
     }
