@@ -22,8 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:textColor="@color/white"
-        android:textSize="15sp"
-        app:autoSizeStepGranularity="4sp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeMinTextSize="15sp"
         android:padding="10dp"
         android:textStyle="bold"
         android:text="Titre du post" />

@@ -1,20 +1,22 @@
 
-]
-java:S1874à":Remove this use of "FirebaseInstanceId"; it is deprecated.(äÏ©²üÿÿÿÿ8Í¶›ÀÚ.
-^
-java:S1854ß"@Remove this useless assignment to local variable "firebaseUser".(İ¬ÛÑ8Í¶›ÀÚ.
-O
-java:S1481ß"1Remove this unused "firebaseUser" local variable.(İ¬ÛÑ8Í¶›ÀÚ.
+X	java:S110'"<This class has 9 parents which is greater than 5 authorized.(Æ¼¾Î8ˆ®ôãŞ.
 W
-java:S1874J"5Remove this use of "getActionView"; it is deprecated.(§ÑŠ”üÿÿÿÿ8Ì¶›ÀÚ.
+java:S1874N"5Remove this use of "getActionView"; it is deprecated.(§ÑŠ”üÿÿÿÿ8ˆ®ôãŞ.
+¤
+java:S1186³"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8´…öŞ.
+O
+java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ8öŒÔÉŞ.
+O
+java:S1481û"1Remove this unused "firebaseUser" local variable.(İ¬ÛÑ8´…öŞ.
 k
-java:S1871•"MThis branch's code block is the same as the block for the branch on line 147.(œÿä—8Í¶›ÀÚ.
-Q	java:S110%"<This class has 9 parents which is greater than 5 authorized.(Æ¼¾Î
+java:S1871Õ"MThis branch's code block is the same as the block for the branch on line 211.(œÿä—8„–“äŞ.
+^
+java:S1854û"@Remove this useless assignment to local variable "firebaseUser".(İ¬ÛÑ8´…öŞ.
 ¤
-java:S1186¤"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8Í¶›ÀÚ.
-¤
-java:S1186Ğ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8Í¶›ÀÚ.
+java:S1186å"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Í¢ÄÁøÿÿÿÿ8´…öŞ.
+J
+java:S1604x"(Make this anonymous inner class a lambda(øËÊıÿÿÿÿÿ8ëŠ„äŞ.
+]
+java:S1874ü":Remove this use of "FirebaseInstanceId"; it is deprecated.(äÏ©²üÿÿÿÿ8´…öŞ.
 S
-java:S1874à"0Remove this use of "getToken"; it is deprecated.(äÏ©²üÿÿÿÿ8Í¶›ÀÚ.
-k
-java:S1871À"MThis branch's code block is the same as the block for the branch on line 190.(œÿä—8Í¶›ÀÚ.
+java:S1874ü"0Remove this use of "getToken"; it is deprecated.(äÏ©²üÿÿÿÿ8´…öŞ.

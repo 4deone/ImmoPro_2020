@@ -12,11 +12,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,9 +39,11 @@ import cm.deone.corp.imopro.notification.Token;
 public class HomeActivity extends AppCompatActivity {
 
     private String myUID;
+    private String search;
     private RecyclerView postsRv;
     private List<Post> postList;
     private PostsAdaptor postsAdaptor;
+    private FloatingActionButton searchFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,14 +106,27 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initVues(){
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Home - Immopro");
+        toolbar.setTitle(this.getResources().getString(R.string.app_name));
+        toolbar.setSubtitle(this.getResources().getString(R.string.app_subtitle));
         setSupportActionBar(toolbar);
+        searchFab = findViewById(R.id.searchFab);
         postsRv = findViewById(R.id.postsRv);
         LinearLayoutManager llManager = new LinearLayoutManager(this);
         llManager.setStackFromEnd(true);
         postsRv.setHasFixedSize(true);
         postsRv.setLayoutManager(llManager);
+        searchFab.setOnClickListener(searchListener);
     }
+
+    private final View.OnClickListener searchListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // Create new search
+            Intent intent = new Intent(HomeActivity.this, CreateSearchActivity.class);
+            intent.putExtra("sDescription", search);
+            startActivity(intent);
+        }
+    };
 
     private void manageSearchView(SearchView searchView) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -144,9 +161,8 @@ public class HomeActivity extends AppCompatActivity {
                 postList.clear();
                 for(DataSnapshot ds : snapshot.getChildren()){
                     Post post = ds.getValue(Post.class);
-                    if (post.getpPublicOrPrivate().equals("public")){
-                        postList.add(post);
-                    }else if(post.getpCreator().equals(myUID)){
+                    assert post != null;
+                    if (!ds.child("BlockedUsers").hasChild(myUID) && (post.getpPublicOrPrivate().equals("public") || post.getpCreator().equals(myUID))){
                         postList.add(post);
                     }
                     postsAdaptor = new PostsAdaptor(HomeActivity.this, postList, myUID);
@@ -165,6 +181,12 @@ public class HomeActivity extends AppCompatActivity {
 
                         }
                     });
+                }
+                if (postList.isEmpty()){
+                    search = "";
+                    searchFab.setVisibility(View.VISIBLE);
+                }else{
+                    searchFab.setVisibility(View.GONE);
                 }
             }
 
@@ -187,7 +209,7 @@ public class HomeActivity extends AppCompatActivity {
                     Post post = ds.getValue(Post.class);
                     if (post.getpTitre().toLowerCase().contains(searchQuery.toLowerCase()) ||
                             post.getpDescription().toLowerCase().contains(searchQuery.toLowerCase())){
-                        if (post.getpPublicOrPrivate().equals("public")){
+                        if (post.getpPublicOrPrivate().equals("public") || post.getpCreator().equals(myUID) || !ds.child("BlockedUsers").hasChild(myUID)){
                             postList.add(post);
                         }else if(post.getpCreator().equals(myUID)){
                             postList.add(post);
@@ -209,6 +231,13 @@ public class HomeActivity extends AppCompatActivity {
 
                         }
                     });
+                }
+                if (postList.isEmpty()){
+                    search = "";
+                    searchFab.setVisibility(View.VISIBLE);
+                } else{
+                    search = searchQuery;
+                    searchFab.setVisibility(View.GONE);
                 }
             }
 

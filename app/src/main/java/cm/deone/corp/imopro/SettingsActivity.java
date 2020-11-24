@@ -3,12 +3,16 @@ package cm.deone.corp.imopro;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -51,6 +55,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import cm.deone.corp.imopro.models.User;
 
@@ -62,32 +67,30 @@ import static cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION;
 
-public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
 
     private String[] cameraPermissions;
     private String[] storagePermissions;
 
     private Uri imageUri;
 
-    private Toolbar toolbar;
-    private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
-    private SwitchCompat postNotificationSw;
-    private SwitchCompat commentNotificationSw;
-    private SwitchCompat galleryNotificationSw;
-
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
+    private SharedPreferences.Editor editor ;
 
     private ImageView avatarIv;
 
     private TextView deviseTv;
     private TextView emailTv;
     private TextView phoneTv;
+
+    private TextView languageTv;
+
     private ProgressDialog progressDialog;
 
     private String myUID;
+    private String myLanguage;
 
     private FirebaseAuth firebaseAuth;
 
@@ -97,38 +100,11 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLocale();
         setContentView(R.layout.activity_settings);
         initVues();
         checkUsers();
         getUserInfos();
-    }
-
-    private void unsuscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Vous n'allez plus recevoir de notifications";
-                        if(!task.isSuccessful()){
-                            msg = "Subscription failed";
-                        }
-                        Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void suscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Vous allez recevoir de notifications";
-                        if(!task.isSuccessful()){
-                            msg = "Unsubscription failed";
-                        }
-                        Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     @Override
@@ -209,11 +185,49 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         }
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()){
+            case R.id.postNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_POST_NOTIFICATION, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_POST_NOTIFICATION);
+                }else{
+                    unsuscribeNotification(""+TOPIC_POST_NOTIFICATION);
+                }
+                break;
+            case R.id.commentNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
+                }else{
+                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
+                }
+                break;
+            case R.id.galleryNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
+                }else{
+                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
+                }
+                break;
+            default:
+        }
+    }
+
     private void initVues(){
 
-        appBarLayout = findViewById(R.id.appBarLayout);
+        AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(getResources().getString(R.string.settings));
         setSupportActionBar(toolbar);
 
         sharedPreferences = getSharedPreferences("Notification_SP", MODE_PRIVATE);
@@ -222,15 +236,17 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Update User informations");
 
-        postNotificationSw = findViewById(R.id.postNotificationSw);
-        commentNotificationSw = findViewById(R.id.commentNotificationSw);
-        galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
+        SwitchCompat postNotificationSw = findViewById(R.id.postNotificationSw);
+        SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
+        SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
 
         avatarIv = findViewById(R.id.avatarIv);
 
         deviseTv = findViewById(R.id.deviseTv);
         emailTv = findViewById(R.id.emailTv);
         phoneTv = findViewById(R.id.phoneTv);
+
+        languageTv = findViewById(R.id.languageTv);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -263,6 +279,13 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         commentNotificationSw.setOnCheckedChangeListener(this);
         galleryNotificationSw.setOnCheckedChangeListener(this);
 
+        languageTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSelectLanguageDialog();
+            }
+        });
+
     }
 
     private void checkUsers(){
@@ -292,6 +315,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                         deviseTv.setText(user.getuDevise());
                         emailTv.setText(user.getuEmail());
                         phoneTv.setText(user.getuPhone());
+
+                        languageTv.setText(myLanguage.equals("fr") ? "Français" : "Anglais");
 
                         try {
                             Picasso.get().load(user.getuAvatar()).placeholder(R.drawable.ic_user).into(avatarIv);
@@ -358,6 +383,34 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             }
         });
         builder.create().show();
+    }
+
+    private void unsuscribeNotification(String topic) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Vous n'allez plus recevoir de notifications";
+                        if(!task.isSuccessful()){
+                            msg = "Subscription failed";
+                        }
+                        Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void suscribeNotification(String topic) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Vous allez recevoir de notifications";
+                        if(!task.isSuccessful()){
+                            msg = "Unsubscription failed";
+                        }
+                        Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void showEditProfileDialog() {
@@ -470,9 +523,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     }
 
     private void showImagePicDialog() {
-        String[] options = {"Camera", "Gallery"};
+        String[] options = {this.getResources().getString(R.string.camera), this.getResources().getString(R.string.gallery)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Pick Images");
+        builder.setTitle(this.getResources().getString(R.string.pick_image));
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -631,40 +684,52 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         });
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()){
-            case R.id.postNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_POST_NOTIFICATION, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_POST_NOTIFICATION);
-                }else{
-                    unsuscribeNotification(""+TOPIC_POST_NOTIFICATION);
+    private void showSelectLanguageDialog() {
+        String[] options = {this.getResources().getString(R.string.francais), this.getResources().getString(R.string.anglais)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(this.getResources().getString(R.string.select_language));
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0){
+                    setLocale("fr");
+                    recreate();
+                }else if (which == 1){
+                    setLocale("en");
+                    recreate();
                 }
-                break;
-            case R.id.commentNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
-                }else{
-                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
-                }
-                break;
-            case R.id.galleryNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
-                }else{
-                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
-                }
-                break;
-            default:
-        }
+            }
+        });
+        builder.create().show();
     }
+
+    private void setLocale(String language) {
+
+        Locale locale = new Locale(language.toLowerCase());
+        Locale.setDefault(locale);
+
+        Resources resource = getBaseContext().getResources();
+
+        Configuration config = resource.getConfiguration();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(locale);
+        } else {
+            config.locale = locale;
+        }
+
+        resource.updateConfiguration(config, resource.getDisplayMetrics());
+
+        SharedPreferences.Editor spEditor = getSharedPreferences("Language_SP", MODE_PRIVATE).edit();
+        spEditor.putString("My_Lang", language);
+        spEditor.apply();
+
+    }
+
+    public void loadLocale(){
+        SharedPreferences sp = getSharedPreferences("Language_SP", MODE_PRIVATE);
+        myLanguage = sp.getString("My_Lang", "");
+        setLocale(""+myLanguage);
+    }
+
 }

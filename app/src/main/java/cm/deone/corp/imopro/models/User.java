@@ -10,11 +10,16 @@ public class User {
     private String uNcomment;
     private String uPhone;
     private String uDevise;
+    private boolean isLocked = false;
 
     public User() {
     }
 
-    public User(String uId, String uAvatar, String uEmail, String uDate, String uName, String uRole, String uNcomment, String uPhone, String uDevise) {
+    public User(String uId, String uAvatar,
+                String uEmail, String uDate,
+                String uName, String uRole,
+                String uNcomment, String uPhone,
+                String uDevise, boolean isLocked) {
         this.uId = uId;
         this.uAvatar = uAvatar;
         this.uEmail = uEmail;
@@ -24,6 +29,7 @@ public class User {
         this.uNcomment = uNcomment;
         this.uPhone = uPhone;
         this.uDevise = uDevise;
+        this.isLocked = isLocked;
     }
 
     public String getuId() {
@@ -44,14 +50,6 @@ public class User {
 
     public String getuEmail() {
         return uEmail;
-    }
-
-    public String getuNcomment() {
-        return uNcomment;
-    }
-
-    public void setuNcomment(String uNcomment) {
-        this.uNcomment = uNcomment;
     }
 
     public void setuEmail(String uEmail) {
@@ -82,6 +80,14 @@ public class User {
         this.uRole = uRole;
     }
 
+    public String getuNcomment() {
+        return uNcomment;
+    }
+
+    public void setuNcomment(String uNcomment) {
+        this.uNcomment = uNcomment;
+    }
+
     public String getuPhone() {
         return uPhone;
     }
@@ -96,5 +102,13 @@ public class User {
 
     public void setuDevise(String uDevise) {
         this.uDevise = uDevise;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

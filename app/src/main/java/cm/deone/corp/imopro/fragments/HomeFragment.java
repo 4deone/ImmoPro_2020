@@ -26,6 +26,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -105,6 +106,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         getPostInformations();
         setNumShared();
         setLiked();
+        setNote();
         setSignaled();
         setFavorite();
         return view;
@@ -117,6 +119,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         getPostInformations();
         setNumShared();
         setLiked();
+        setNote();
         setSignaled();
         setFavorite();
         super.onStart();
@@ -128,6 +131,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         getPostInformations();
         setNumShared();
         setLiked();
+        setNote();
         setSignaled();
         setFavorite();
         super.onResume();
@@ -193,13 +197,14 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
 
     private void initVues() {
         toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setTitle("Infos du post");
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
         reference = FirebaseDatabase.getInstance().getReference();
 
         postCoverRv = view.findViewById(R.id.postCoverRv);
-        postTitreTv = view.findViewById(R.id.postTitreTv);
         postDescriptionETv = view.findViewById(R.id.postDescriptionETv);
+        postTitreTv = view.findViewById(R.id.postTitreTv);
 
         vueTv = view.findViewById(R.id.vueTv);
         likeTv = view.findViewById(R.id.likeTv);
@@ -226,10 +231,19 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
             mProcessFavorites = false;
             favoriteIb.setImageResource(R.drawable.ic_no_favorite);
         }else {
-            reference.child("Posts").child(post.getpId()).child("Favorites").child(myUID).setValue("Favotite");
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("fId", myUID);
+            hashMap.put("fDate", timestamp);
+
+            reference.child("Posts").child(post.getpId()).child("Favorites").child(myUID).setValue(hashMap);
             mProcessFavorites = true;
             favoriteIb.setImageResource(R.drawable.ic_favorite);
         }
+    }
+
+    private void setNote() {
+        reference.child("Posts").child(pId).child("Notes").addValueEventListener(valPostNotes);
     }
 
     private void setFavorite() {
@@ -238,7 +252,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     }
 
     private void setSignaled() {
-        reference.child("Posts").child(pId).child("Signalements").child(myUID).addValueEventListener(valSetSignaled);
+        reference.child("Posts").child(pId).child("Signalements").orderByChild("sId").equalTo(myUID).addValueEventListener(valSetSignaled);
     }
 
     private void setLiked() {
@@ -255,9 +269,18 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         }else {
             reference.child("Posts").child(post.getpId()).child("pNLikes")
                     .setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
-            reference.child("Posts").child(post.getpId()).child("Likes").child(myUID).setValue("Liked");
+
+            String timestamp = String.valueOf(System.currentTimeMillis());
+
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("lId", myUID);
+            hashMap.put("lDate", timestamp);
+
+            reference.child("Posts").child(post.getpId()).child("Likes").child(myUID).setValue(hashMap);
             mProcessLikes = true;
             likeIb.setImageResource(R.drawable.ic_like);
+
+            //addToHisNotifications(""+post.getpCreator(), ""+post.getpId(), "Aime votre post");
         }
     }
 
@@ -295,11 +318,24 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     }
 
     private void setPostNote(String note) {
-        reference.child("Posts").child(pId).child("Notes").child(myUID).setValue(note)
+
+        String timestamp = String.valueOf(System.currentTimeMillis());
+
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("nId", myUID);
+        hashMap.put("nNote", note);
+        hashMap.put("nDate", timestamp);
+
+        reference.child("Posts").child(pId).child("Notes").child(myUID).setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                reference.child("Posts").child(pId).child("Notes").addValueEventListener(valPostNotes);
+                Toast.makeText(getActivity(), "Note ajouté avec succès", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -365,7 +401,14 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         }else {
             reference.child("Posts").child(post.getpId()).child("pNSignals")
                     .setValue(""+ (Integer.parseInt(post.getpNSignals()) + 1));
-            reference.child("Posts").child(post.getpId()).child("Signalements").child(myUID).setValue(signaler);
+
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("sId", myUID);
+            hashMap.put("sMessage", signaler);
+            hashMap.put("sDate", timestamp);
+
+            reference.child("Posts").child(post.getpId()).child("Signalements").child(myUID).setValue(hashMap);
             mProcessSignal = true;
             likeIb.setImageResource(R.drawable.ic_like);
         }
@@ -382,7 +425,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     }
 
     private void shareImageAndTextOnly(String pTitle, String pDescription, Bitmap bitmap) {
-        String shareBody = pTitle + "\n" + pDescription + "\n" + getActivity().getResources().getString(R.string.sign);
+        String shareBody = pTitle + "\n" + pDescription + "\n" + getActivity().getResources().getString(R.string.signature);
         Uri uri = saveImageToShare(bitmap);
         Intent sIntent =new Intent(Intent.ACTION_SEND);
         sIntent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -412,7 +455,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     }
 
     private void shareTextOnly(String pTitle, String pDescription) {
-        String shareBody = pTitle + "\n"+ pDescription + "\n" + getActivity().getResources().getString(R.string.sign);
+        String shareBody = pTitle + "\n"+ pDescription + "\n" + getActivity().getResources().getString(R.string.signature);
         Intent sIntent =new Intent(Intent.ACTION_SEND);
         sIntent.setType("text/plain");
         sIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
@@ -471,7 +514,8 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             float note = 0;
             for (DataSnapshot ds : snapshot.getChildren()){
-                note = note + Float.parseFloat(ds.getValue().toString());
+                String item = ds.child("nNote").getValue(String.class);
+                note = note + Float.parseFloat(item);
             }
             note = note/snapshot.getChildrenCount();
             noteTv.setText(""+note+"/20");
@@ -513,7 +557,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
                         noteTv.setText("0/20");
 
                     if (ds.child("pNSignals").exists())
-                        warningTv.setText(view.getResources().getString(R.string.warning_post, post.getpNSignals()));
+                        warningTv.setText(view.getResources().getString(R.string.signalement_post, post.getpNSignals()));
                     else
                         warningTv.setText("0 Warning");
 
@@ -529,9 +573,9 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
                     reference.child("Posts").child(post.getpId()).child("Comments")
                             .orderByChild("cCreator").equalTo(myUID)
                             .addValueEventListener(myNumbCommentsVal);
-                    reference.child("Posts").child(post.getpId()).child("Shares").child(myUID)
+                    reference.child("Posts").child(post.getpId()).child("Shares")
                             .addValueEventListener(myNumbSharesVal);
-                    reference.child("Posts").child(post.getpId()).child("Notes").child(myUID)
+                    reference.child("Posts").child(post.getpId()).child("Notes").orderByChild("nId").equalTo(myUID)
                             .addValueEventListener(myNoteVal);
 
                     warningTv.setVisibility(View.GONE);
@@ -579,13 +623,13 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     private final ValueEventListener myNumbSharesVal = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
-            if (!snapshot.exists()){
+            if (!snapshot.hasChild(myUID)){
                 likeTv.setText(view.getResources().getString(R.string.nombre_share, "0"));
                 shareIb.setImageResource(R.drawable.ic_no_share);
             }else{
-                likeTv.setText(Integer.parseInt(snapshot.getValue().toString()) <= 1 ? view.getResources()
-                        .getString(R.string.nombre_share, snapshot.getValue().toString()) : view.getResources()
-                        .getString(R.string.nombre_shares, snapshot.getValue().toString()));
+                likeTv.setText(Integer.parseInt(snapshot.child(myUID).getValue().toString()) <= 1 ? view.getResources()
+                        .getString(R.string.nombre_share, snapshot.child(myUID).getValue().toString()) : view.getResources()
+                        .getString(R.string.nombre_shares, snapshot.child(myUID).getValue().toString()));
                 shareIb.setImageResource(R.drawable.ic_share);
             }
         }
@@ -603,10 +647,9 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
                 noteIb.setImageResource(R.drawable.ic_no_note);
                 noteTv.setText(view.getResources().getString(R.string.note_post, "0"));
             } else{
+                String item = snapshot.child(myUID).child("nNote").getValue(String.class);
                 noteIb.setImageResource(R.drawable.ic_note);
-                noteTv.setText((Integer.parseInt(snapshot.getValue().toString()) <= 1) ? view.getResources()
-                        .getString(R.string.note_post, snapshot.getValue().toString()) : view.getResources()
-                        .getString(R.string.note_post, snapshot.getValue().toString()));
+                noteTv.setText(view.getResources().getString(R.string.note_post, item));
             }
         }
 
@@ -668,6 +711,31 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
             Toast.makeText(getActivity(), ""+databaseError.getMessage(), Toast.LENGTH_SHORT).show();
         }
     };
+
+    private void addToHisNotifications(String hisUid, String pId, String notification){
+        String timestamp = String.valueOf(System.currentTimeMillis());
+
+        HashMap<Object, String> hashMap = new HashMap<>();
+        hashMap.put("pId", pId);
+        hashMap.put("timestamp", timestamp);
+        hashMap.put("pUid", hisUid);
+        hashMap.put("notification", notification);
+        hashMap.put("sUid", myUID);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public void onClick(View v) {

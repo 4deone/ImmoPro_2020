@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,15 +28,18 @@ import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.User;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
-public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder> {
+import static cm.deone.corp.imopro.outils.Constant.MSG_TYPE_IN;
+import static cm.deone.corp.imopro.outils.Constant.MSG_TYPE_OUT;
+
+public class ChatAdaptor extends RecyclerView.Adapter<ChatAdaptor.MyHolder> {
 
     private FirebaseUser firebaseUser;
 
-    private final Context context;
+    private Context context;
     private ViewsClickListener listener;
-    private final List<Comment> commentList;
+    private List<Comment> commentList;
 
-    public CommentAdaptor(Context context, List<Comment> commentList) {
+    public ChatAdaptor(Context context, List<Comment> commentList) {
         this.context = context;
         this.commentList = commentList;
     }
@@ -45,8 +47,14 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment, parent, false);
-        return new MyHolder(view);
+        if (viewType == MSG_TYPE_IN){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_in, parent, false);
+            return new MyHolder(view);
+        }else if (viewType == MSG_TYPE_OUT){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_out, parent, false);
+            return new MyHolder(view);
+        }
+        return null;
     }
 
     @Override
@@ -54,38 +62,34 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
 
         String creator = commentList.get(position).getcCreator();
         getHisInformation(holder, ""+creator);
-
         String message = commentList.get(position).getcMessage();
-        holder.commentTv.setText(message);
-
+        holder.hisCommentTv.setText(message);
         String timestamp = commentList.get(position).getcDate();
         Calendar cal = Calendar.getInstance(Locale.FRANCE);
         cal.setTimeInMillis(Long.parseLong(timestamp));
         String dateTime = DateFormat.format("EEEE, dd MMMM yyyy hh:mm a", cal).toString();
         holder.timeTv.setText(dateTime);
+        getHisInformation(holder, creator);
 
     }
 
     private void getHisInformation(MyHolder holder, String creator) {
-        FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("User").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     User user = ds.getValue(User.class);
-                    if (user.getuId().equals(creator)){
-                        holder.hisNameTv.setText(user.getuName());
-                        try {
-                            Picasso.get().load(user.getuAvatar()).placeholder(R.drawable.ic_user).into(holder.avatarIv);
-                        } catch (Exception e) {
-                            Picasso.get().load(R.drawable.ic_user).into(holder.avatarIv);
-                        }
+                    try {
+                        Picasso.get().load(user.getuAvatar()).placeholder(R.drawable.ic_user).into(holder.userLikedAvatarIv);
+                    } catch (Exception e) {
+                        Picasso.get().load(R.drawable.ic_user).into(holder.userLikedAvatarIv);
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(context, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -95,23 +99,31 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
         return commentList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (commentList.get(position).getcCreator().equals(firebaseUser.getUid())){
+            return MSG_TYPE_OUT;
+        }else{
+            return MSG_TYPE_IN;
+        }
+    }
+
     public void setOnItemClickListener(ViewsClickListener listener){
         this.listener = listener;
     }
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
-        ImageView avatarIv;
-        TextView hisNameTv;
-        TextView commentTv;
+        ImageView userLikedAvatarIv;
+        TextView hisCommentTv;
         TextView timeTv;
 
         MyHolder(@NonNull View itemView) {
             super(itemView);
 
-            avatarIv = itemView.findViewById(R.id.avatarIv);
-            hisNameTv = itemView.findViewById(R.id.hisNameTv);
-            commentTv = itemView.findViewById(R.id.commentTv);
+            userLikedAvatarIv = itemView.findViewById(R.id.userLikedAvatarIv);
+            hisCommentTv = itemView.findViewById(R.id.hisCommentTv);
             timeTv = itemView.findViewById(R.id.timeTv);
 
             itemView.setOnClickListener(this);

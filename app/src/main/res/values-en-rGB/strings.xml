@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ImmoPro</string>
+
+    <string name="app_subtitle">Your pocket real estate agent</string>
+
+    <string name="language">Change language</string>
+
+    <string name="votre_email">Your email</string>
+    <string name="mot_de_passe">Password</string>
+    <string name="confirmation_du_mot_de_passe">Confirm your password</string>
+    <string name="immopro_nvote_agent_immobilier_de_poche">ImmoPro \n Your pocket real estate agent.</string>
+    <string name="nom_complet">Full Name</string>
+    <string name="d_connecter_votre_compte">Disconnect your account</string>
+    <string name="supprimer_votre_compte">Delete your account</string>
+    <string name="edit_profil">Edit profile</string>
+    <string name="ajouter_un_post">Add post</string>
+    <string name="votre_commentaire">Your comment</string>
+
+    <string name="nombre_vue">%s View</string>
+    <string name="nombre_vues">%s Views</string>
+    <string name="nombre_like">%s Like</string>
+    <string name="nombre_likes">%s Likes</string>
+    <string name="nombre_comment">%s Comment</string>
+    <string name="nombre_comments">%s Comments</string>
+    <string name="note_post">%s/20</string>
+    <string name="signalement_post">%s Report</string>
+    <string name="signalements_post">%s Reports</string>
+    <string name="nombre_share">%s Share</string>
+    <string name="nombre_shares">%s Shares</string>
+    <string name="show_description_from_another_app">Description : \n%1$s</string>
+
+    <string name="email">email</string>
+    <string name="userQuality">userQuality</string>
+    <string name="gallery_notifications">Gallery</string>
+    <string name="search">Search</string>
+    <string name="settings">Settings</string>
+    <string name="post_notifications">Post</string>
+    <string name="comment_notifications">Comment</string>
+    <string name="d_vise">Slogan</string>
+    <string name="t_l_phone">Phone</string>
+
+    <string name="signature">Exper\'immo - by DEONE - 2020</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="todo_submit_profil">TODO SUBMIT PROFIL</string>
+    <string name="todo_email_fab">TODO EMAIL FAB</string>
+    <string name="todo_like">TODO LIKE</string>
+    <string name="todo_favorite">TODO FAVORITE</string>
+    <string name="todo_share">TODO SHARE</string>
+    <string name="todo_note">TODO NOTE</string>
+    <string name="todo_toolbar_image">TODO TOOLBAR IMAGE</string>
+    <string name="todo_create_post">TODO CREATE POST</string>
+    <string name="todo_cover_post_item">TODO COVER POST ITEM</string>
+
+    <string name="francais">French</string>
+    <string name="anglais">English</string>
+    <string name="langue">Language</string>
+    <string name="votre_t_l_phone">Your phone</string>
+    <string name="informations_personnelles">Personal informations</string>
+    <string name="select_language">Select a language</string>
+    <string name="pick_image">Pick image</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="notifications">Notifications</string>
+
+</resources>

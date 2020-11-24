@@ -23,4 +23,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/searchFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:layout_margin="30dp"
+        android:src="@drawable/ic_menu_search"
+        android:contentDescription="@string/todo_submit_profil" />
+
 </RelativeLayout>

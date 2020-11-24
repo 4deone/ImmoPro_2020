@@ -1,12 +1,14 @@
 package cm.deone.corp.imopro.adapter;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,65 +16,55 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import cm.deone.corp.imopro.R;
+import cm.deone.corp.imopro.models.Gallery;
+import cm.deone.corp.imopro.models.NotChildItem;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
-public class NotificationAdaptor extends RecyclerView.Adapter<NotificationAdaptor.MyHolder> {
+public class NotificationChildAdapter extends RecyclerView.Adapter<NotificationChildAdapter.MyHolder> {
 
     private Context context;
     private ViewsClickListener listener;
-    private List<String> imageList;
-    private String myUID;
+    private final List<NotChildItem> notChildItemList;
 
-    public NotificationAdaptor(Context context, List<String> imageList) {
+    public NotificationChildAdapter(Context context, List<NotChildItem> notChildItemList) {
         this.context = context;
-        this.imageList = imageList;
+        this.notChildItemList = notChildItemList;
     }
 
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification_child, parent, false);
         return new MyHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MyHolder holder, final int position) {
 
-        String image = imageList.get(position);
+        NotChildItem notChildItem = notChildItemList.get(position);
 
-        try {
-            Picasso.get().load(image).placeholder(R.drawable.ic_post).into(holder.itemGalleryIv, new Callback() {
-                @Override
-                public void onSuccess() {
-                    holder.loadingPb.setVisibility(View.GONE);
-                }
+        String titre = notChildItem.getnActivite();
+        String description = notChildItem.getnMessage();
+        String timestamp = notChildItem.getnTime();
 
-                @Override
-                public void onError(Exception e) {
-                    Log.d("Gallery_Adaptor", e.getMessage());
-                }
-            });
-        }catch(Exception e){
-            Picasso.get().load(R.drawable.ic_post).into(holder.itemGalleryIv, new Callback() {
-                @Override
-                public void onSuccess() {
-                    holder.loadingPb.setVisibility(View.GONE);
-                }
+        /*Calendar cal = Calendar.getInstance(Locale.FRANCE);
+        cal.setTimeInMillis(Long.parseLong(timestamp));
+        String dateTime = DateFormat.format("EEEE dd MMMM yyyy", cal).toString();*/
 
-                @Override
-                public void onError(Exception e) {
-                    Log.d("Gallery_Adaptor", e.getMessage());
-                }
-            });
-        }
+        holder.titreTv.setText(titre);
+        holder.notifTv.setText(description);
+        holder.timeTv.setText(timestamp);
+
     }
 
     @Override
     public int getItemCount() {
-        return imageList.size();
+        return notChildItemList.size();
     }
 
     public void setOnItemClickListener(ViewsClickListener listener){
@@ -81,14 +73,16 @@ public class NotificationAdaptor extends RecyclerView.Adapter<NotificationAdapto
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
-        ImageView itemGalleryIv;
-        ProgressBar loadingPb;
+        TextView titreTv;
+        TextView notifTv;
+        TextView timeTv;
 
         MyHolder(@NonNull View itemView) {
             super(itemView);
 
-            itemGalleryIv = itemView.findViewById(R.id.itemGalleryIv);
-            loadingPb = itemView.findViewById(R.id.loadingPb);
+            titreTv = itemView.findViewById(R.id.titreTv);
+            notifTv = itemView.findViewById(R.id.notifTv);
+            timeTv = itemView.findViewById(R.id.timeTv);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -111,4 +105,5 @@ public class NotificationAdaptor extends RecyclerView.Adapter<NotificationAdapto
             return true;
         }
     }
+
 }

@@ -182,11 +182,11 @@ public class PostActivity extends AppCompatActivity {
                 Post post = ds.getValue(Post.class);
                 if (userVue){
                     if (!pCreator.equals(myUID)){
-                        ref.child("Posts").child(pId).child("pNVues").setValue(""+ (Integer.parseInt(post.getpNVues()) + 1));
+                        ref.child(pId).child("pNVues").setValue(""+ (Integer.parseInt(post.getpNVues()) + 1));
                         if (TextUtils.isEmpty(myVUES))
-                            ref.child("Posts").child(pId).child("Vues").child(myUID).setValue("1");
+                            ref.child(pId).child("Vues").child(myUID).setValue("1");
                         else
-                            ref.child("Posts").child(pId).child("Vues").child(myUID).setValue(""+ (Integer.parseInt(myVUES) + 1));
+                            ref.child(pId).child("Vues").child(myUID).setValue(""+ (Integer.parseInt(myVUES) + 1));
                     }
                     userVue = false;
                 }
