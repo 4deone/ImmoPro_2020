@@ -3,14 +3,12 @@ package cm.deone.corp.imopro;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -85,6 +83,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     private TextView emailTv;
     private TextView phoneTv;
 
+    private TextView userInfoTv;
     private TextView languageTv;
 
     private ProgressDialog progressDialog;
@@ -93,9 +92,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     private String myLanguage;
 
     private FirebaseAuth firebaseAuth;
-
-    boolean isShow = true;
-    int scrollRange = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,6 +242,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         emailTv = findViewById(R.id.emailTv);
         phoneTv = findViewById(R.id.phoneTv);
 
+        userInfoTv = findViewById(R.id.userInfoTv);
         languageTv = findViewById(R.id.languageTv);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -714,15 +711,22 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             config.setLocale(locale);
+            createConfigurationContext(config);
         } else {
             config.locale = locale;
+            resource.updateConfiguration(config, resource.getDisplayMetrics());
         }
 
-        resource.updateConfiguration(config, resource.getDisplayMetrics());
-
-        SharedPreferences.Editor spEditor = getSharedPreferences("Language_SP", MODE_PRIVATE).edit();
+        /*SharedPreferences.Editor spEditor = getSharedPreferences("Language_SP", MODE_PRIVATE).edit();
         spEditor.putString("My_Lang", language);
-        spEditor.apply();
+        spEditor.apply();*/
+
+        /*String currentLanguage = Locale.getDefault().getDisplayLanguage();
+        if (currentLanguage.toLowerCase().contains("en")) {
+            Toast.makeText(this, "Current language is English", Toast.LENGTH_SHORT).show();
+        }else if (currentLanguage.toLowerCase().contains("fr")) {
+            Toast.makeText(this, "La langue courante est le Français", Toast.LENGTH_SHORT).show();
+        }*/
 
     }
 

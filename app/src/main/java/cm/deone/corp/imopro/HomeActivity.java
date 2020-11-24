@@ -10,9 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +33,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import cm.deone.corp.imopro.adapter.PostsAdaptor;
 import cm.deone.corp.imopro.models.Post;
@@ -106,8 +110,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initVues(){
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(this.getResources().getString(R.string.app_name));
-        toolbar.setSubtitle(this.getResources().getString(R.string.app_subtitle));
+        toolbar.setTitle(getResources().getString(R.string.app_name));
+        toolbar.setSubtitle(getResources().getString(R.string.app_subtitle));
         setSupportActionBar(toolbar);
         searchFab = findViewById(R.id.searchFab);
         postsRv = findViewById(R.id.postsRv);
