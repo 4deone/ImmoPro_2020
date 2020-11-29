@@ -51,13 +51,8 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
 
         String image = galleryList.get(position).getgImage();
         String description = galleryList.get(position).getgDescription();
-        String timestamp = galleryList.get(position).getgDate();
 
-        Calendar cal = Calendar.getInstance(Locale.FRANCE);
-        cal.setTimeInMillis(Long.parseLong(timestamp));
-        String dateTime = DateFormat.format("EEEE dd MMMM yyyy", cal).toString();
-
-        holder.descriptionTv.setText(description+"\n"+dateTime);
+        holder.descriptionTv.setText(description);
 
         try {
             Picasso.get().load(image).placeholder(R.drawable.ic_post).into(holder.itemGalleryIv, new Callback() {

@@ -54,6 +54,7 @@ import static cm.deone.corp.imopro.outils.Constant.CAMERA_REQUEST_CODE;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_CAMERA_CODE;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_GALLERY_CODE;
 import static cm.deone.corp.imopro.outils.Constant.STORAGE_REQUEST_CODE;
+import static cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION;
 
 public class CreateGalleryActivity extends AppCompatActivity {
 
@@ -67,10 +68,10 @@ public class CreateGalleryActivity extends AppCompatActivity {
     private String myUID;
     private String myNAME;
     private String pId;
+    private String topicGallery;
 
     private ImageView iTemCoverIv;
     private EditText itemDescriptionEdtv;
-    private FloatingActionButton createPostFab;
 
     private ProgressDialog progressDialog;
 
@@ -110,10 +111,11 @@ public class CreateGalleryActivity extends AppCompatActivity {
 
     private void initVues() {
         pId = getIntent().getStringExtra("pId");
+        topicGallery = getIntent().getStringExtra("pTopicGallery");
         reference = FirebaseDatabase.getInstance().getReference();
         iTemCoverIv = findViewById(R.id.iTemCoverIv);
         itemDescriptionEdtv = findViewById(R.id.itemDescriptionEdtv);
-        createPostFab = findViewById(R.id.createPostFab);
+        FloatingActionButton createPostFab = findViewById(R.id.createPostFab);
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         progressDialog = new ProgressDialog(this);
@@ -248,15 +250,15 @@ public class CreateGalleryActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        /*String description = itemDescriptionEdtv.getText().toString().trim();
+                        String description = itemDescriptionEdtv.getText().toString().trim();
                         prepareNotification(
                                 ""+timestamp,
-                                ""+myNAME+" a ajouté une nouvelle image",
+                                ""+myNAME+getResources().getString(R.string.notif_add_image),
                                 ""+description,
-                                "GalleryNotification",
-                                "GALLERY");*/
+                                ""+TYPE_GALLERY_NOTIFICATION,
+                                ""+topicGallery);
                         progressDialog.dismiss();
-                        Toast.makeText(CreateGalleryActivity.this, "Opération réussie!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateGalleryActivity.this, ""+getResources().getString(R.string.operation_reussie), Toast.LENGTH_SHORT).show();
                         resetViews();
                         finish();
                     }

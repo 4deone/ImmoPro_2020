@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,21 +7,276 @@
     android:background="@color/fond_ecran"
     tools:context=".PostActivity">
 
-    <FrameLayout
-        android:id="@+id/content_fragment"
-        android:layout_above="@+id/bottom_navigation"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"/>
+        android:layout_height="400dp"
+        android:fitsSystemWindows="true"
+        android:background="?colorPrimary">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_alignParentBottom="true"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
+            app:collapsedTitleGravity="start"
+            app:expandedTitleGravity="bottom"
+            app:title="@string/app_name"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="exitUntilCollapsed|scroll">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/postImagesRv"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_gallery"/>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:contentInsetStart="72dp"
+                app:layout_collapseMode="pin"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:itemBackground="@color/purple_200"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/nav_post" />
+        android:layout_height="match_parent"
+        android:layout_gravity="fill_vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:elevation="20dp"
+                android:background="@drawable/bg_curve">
+
+                <RelativeLayout
+                    android:id="@+id/rubanRl"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="10dp"
+                    android:layout_height="85dp"
+                    android:background="#FF3D00"/>
+
+                <TextView
+                    android:id="@+id/userInfoTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/rubanRl"
+                    android:text="Description de la publication"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/postDescriptionTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/userInfoTv"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/rubanRl"
+                    android:text="@string/post_description"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/warningTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/postDescriptionTv"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/rubanRl"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Total signalement"
+                    android:textAlignment="center"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/vueTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/warningTv"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/rubanRl"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Total vue"
+                    android:textAlignment="center"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/likeTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/vueTv"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/rubanRl"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Total like"
+                    android:textAlignment="center"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/commentTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/likeTv"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/rubanRl"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Total commentaire"
+                    android:textAlignment="center"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/noteTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/commentTv"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/rubanRl"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Note de la publication"
+                    android:textAlignment="center"
+                    android:textColor="@color/black" />
+
+                <LinearLayout
+                    android:id="@+id/footerPost"
+                    android:layout_below="@+id/noteTv"
+                    android:layout_toEndOf="@+id/rubanRl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/likeIb"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:src="@drawable/ic_no_like"
+                        android:background="@null"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/todo_like" />
+
+                    <ImageButton
+                        android:id="@+id/favoriteIb"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:src="@drawable/ic_no_favorite"
+                        android:background="@null"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/todo_favorite" />
+
+                    <ImageButton
+                        android:id="@+id/noteIb"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:src="@drawable/ic_no_note"
+                        android:background="@null"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/todo_note" />
+
+                    <ImageButton
+                        android:id="@+id/shareIb"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:src="@drawable/ic_no_share"
+                        android:background="@null"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/todo_share" />
+
+                    <ImageButton
+                        android:id="@+id/signalerIb"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:src="@drawable/ic_no_signaler"
+                        android:background="@null"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/todo_share" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:elevation="20dp"
+                android:background="@drawable/bg_curve">
+
+                <RelativeLayout
+                    android:id="@+id/rubanNotificationRl"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="10dp"
+                    android:layout_height="165dp"
+                    android:background="#FF3D00"/>
+
+                <RelativeLayout
+                    android:id="@+id/commentHeadRl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/rubanNotificationRl"
+                    android:background="#2FFFFFFF"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_toStartOf="@+id/addCommentIb"
+                        android:layout_marginStart="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:text="Commentaires"/>
+
+                    <ImageButton
+                        android:id="@+id/addCommentIb"
+                        android:layout_width="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/ic_comment"
+                        android:layout_height="30dp"
+                        android:background="@null"
+                        android:contentDescription="TODO ADD IN COMMENT" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commentsRv"
+                    android:layout_toEndOf="@+id/rubanNotificationRl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_comment"
+                    android:layout_below="@+id/commentHeadRl"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

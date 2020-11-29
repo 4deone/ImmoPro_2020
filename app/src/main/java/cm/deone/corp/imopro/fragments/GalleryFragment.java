@@ -44,6 +44,7 @@ public class GalleryFragment extends Fragment {
     private String pId;
     private String pCreator;
     private String myUID;
+    private String topicGallery;
     private View view;
 
     private final float mScaleFactor = 1.0f;
@@ -71,6 +72,7 @@ public class GalleryFragment extends Fragment {
         if (getArguments() != null) {
             pId = getArguments().getString(TAG_POST_ID);
             pCreator = getArguments().getString(TAG_POST_CREATOR);
+            topicGallery = getArguments().getString("pTopicGallery");
         }
     }
 
@@ -159,6 +161,7 @@ public class GalleryFragment extends Fragment {
         if (id == R.id.menu_add_gallery) {
             Intent intent = new Intent(getActivity(), CreateGalleryActivity.class);
             intent.putExtra("pId", pId);
+            intent.putExtra("pTopicGallery", topicGallery);
             startActivity(intent);
             return true;
         }

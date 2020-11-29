@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -79,7 +80,6 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     private ImageView postCoverRv;
     private TextView postTitreTv;
     private TextView postDescriptionETv;
-    private Toolbar toolbar;
 
     private View view;
 
@@ -196,7 +196,7 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     }
 
     private void initVues() {
-        toolbar = view.findViewById(R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("Infos du post");
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
@@ -266,6 +266,10 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
             reference.child("Posts").child(post.getpId()).child("Likes").child(myUID).removeValue();
             mProcessLikes = false;
             likeIb.setImageResource(R.drawable.ic_no_like);
+
+            // unsuscribe gallery & comment notification
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(post.getpTopicGallery());
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(post.getpTopicComment());
         }else {
             reference.child("Posts").child(post.getpId()).child("pNLikes")
                     .setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
@@ -280,7 +284,9 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
             mProcessLikes = true;
             likeIb.setImageResource(R.drawable.ic_like);
 
-            //addToHisNotifications(""+post.getpCreator(), ""+post.getpId(), "Aime votre post");
+            // suscribe gallery & comment notification
+            FirebaseMessaging.getInstance().subscribeToTopic(post.getpTopicGallery());
+            FirebaseMessaging.getInstance().subscribeToTopic(post.getpTopicComment());
         }
     }
 

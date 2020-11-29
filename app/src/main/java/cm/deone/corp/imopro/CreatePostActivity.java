@@ -53,6 +53,8 @@ import static cm.deone.corp.imopro.outils.Constant.CAMERA_REQUEST_CODE;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_CAMERA_CODE;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_GALLERY_CODE;
 import static cm.deone.corp.imopro.outils.Constant.STORAGE_REQUEST_CODE;
+import static cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TYPE_POST_NOTIFICATION;
 
 public class CreatePostActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -330,6 +332,9 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
         hashMapPost.put("pId", timestamp);
         hashMapPost.put("pDate", timestamp);
 
+        hashMapPost.put("pTopicComment", "COMMENT"+timestamp);
+        hashMapPost.put("pTopicGallery", "GALLERY"+timestamp);
+
         if (imageUri != null){
             saveCoverDatabase(hashMapPost, timestamp);
         }else{
@@ -377,8 +382,8 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
                                 ""+timestamp,
                                 ""+myNAME+" a ajouté un post",
                                 ""+ titre + "\n" + description,
-                                "PostNotification",
-                                "POST");
+                                ""+TYPE_POST_NOTIFICATION,
+                                ""+TOPIC_POST_NOTIFICATION);
                         progressDialog.dismiss();
                         Toast.makeText(CreatePostActivity.this, "Opération réussie!", Toast.LENGTH_SHORT).show();
                         resetViews();

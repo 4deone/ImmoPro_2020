@@ -32,6 +32,14 @@ import cm.deone.corp.imopro.PostActivity;
 import cm.deone.corp.imopro.R;
 
 import static cm.deone.corp.imopro.outils.Constant.ADMIN_CHANNEL_ID;
+import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
+import static cm.deone.corp.imopro.outils.Constant.DB_GALLERY;
+import static cm.deone.corp.imopro.outils.Constant.DB_POST;
+import static cm.deone.corp.imopro.outils.Constant.TYPE_CHAT_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TYPE_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TYPE_POST_NOTIFICATION;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
 
@@ -45,9 +53,9 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
         String savedCurrentUser = sp.getString("Current_USERID", "None");
 
-        notificationType = remoteMessage.getData().get("notificationType");
+        notificationType = remoteMessage.getData().get(""+TYPE_NOTIFICATION);
 
-        if (notificationType.equals("CommentNotification") || notificationType.equals("GalleryNotification")){
+        if (notificationType.equals(TYPE_CHAT_NOTIFICATION)){
             String sent = remoteMessage.getData().get("sent");
             String user = remoteMessage.getData().get("user");
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -61,21 +69,25 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                 }
             }
 
-        }else if (notificationType.equals("PostNotification")){
+        }else if (notificationType.equals(TYPE_POST_NOTIFICATION) ||
+                notificationType.equals(TYPE_COMMENT_NOTIFICATION) ||
+                notificationType.equals(TYPE_GALLERY_NOTIFICATION)){
             String sender = remoteMessage.getData().get("sender");
             String pId = remoteMessage.getData().get("pId");
+            String pCreator = remoteMessage.getData().get("pCreator");
             String pTitre = remoteMessage.getData().get("pTitre");
             String pDescription = remoteMessage.getData().get("pDescription");
             if (!sender.equals(savedCurrentUser)){
                 showPostNotification(
                         ""+pId,
+                        ""+pCreator,
                         ""+pTitre,
                         ""+pDescription);
             }
         }
     }
 
-    private void showPostNotification(String pId, String pTitre, String pDescription) {
+    private void showPostNotification(String pId, String pCreator, String pTitre, String pDescription) {
 
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -87,9 +99,17 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         Intent intent = new Intent(this, PostActivity.class);
         intent.putExtra("pId", pId);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("pCreator", pCreator);
+        if (notificationType.equals(TYPE_COMMENT_NOTIFICATION)){
+            intent.putExtra("nType", DB_COMMENT);
+        }else if (notificationType.equals(TYPE_GALLERY_NOTIFICATION)){
+            intent.putExtra("nType", DB_GALLERY);
+        }else if (notificationType.equals(TYPE_POST_NOTIFICATION)){
+            intent.putExtra("nType", DB_POST);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
 
@@ -134,7 +154,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int i = Integer.parseInt(user.replaceAll("[\\D]", ""));
 
-        if (notificationType.equals("CommentNotification")){
+        if (notificationType.equals(""+TYPE_COMMENT_NOTIFICATION)){
             intent = new Intent(this, PostActivity.class);
         }/*else if (notificationType.equals("GalleryNotification")){
             intent = new Intent(this, ChatActivity.class);

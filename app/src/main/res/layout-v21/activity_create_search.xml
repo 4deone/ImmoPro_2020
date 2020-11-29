@@ -96,4 +96,5 @@
         android:layout_margin="30dp"
         android:src="@drawable/ic_done"
         android:contentDescription="@string/todo_email_fab" />
+
 </RelativeLayout>

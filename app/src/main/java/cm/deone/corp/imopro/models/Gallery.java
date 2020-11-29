@@ -9,6 +9,11 @@ public class Gallery {
     public Gallery() {
     }
 
+    public Gallery(String gImage, String gDescription) {
+        this.gImage = gImage;
+        this.gDescription = gDescription;
+    }
+
     public Gallery(String gId, String gImage, String gDescription, String gDate) {
         this.gId = gId;
         this.gImage = gImage;

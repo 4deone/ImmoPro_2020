@@ -58,6 +58,9 @@ import java.util.Locale;
 import cm.deone.corp.imopro.models.User;
 
 import static cm.deone.corp.imopro.outils.Constant.CAMERA_REQUEST_CODE;
+import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
+import static cm.deone.corp.imopro.outils.Constant.DB_POST;
+import static cm.deone.corp.imopro.outils.Constant.DB_USER;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_CAMERA_CODE;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_GALLERY_CODE;
 import static cm.deone.corp.imopro.outils.Constant.STORAGE_REQUEST_CODE;
@@ -161,7 +164,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                     if (cameraAccepted && writeStorageAccepted){
                         pickFromCamera();
                     }else {
-                        Toast.makeText(SettingsActivity.this, "Please enable camera & storage permissions.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.camera_permission), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -172,7 +175,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                     if (writeStorageAccepted){
                         pickFromGallery();
                     }else {
-                        Toast.makeText(SettingsActivity.this, "Please enable storage permissions.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.storage_permission), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -230,7 +233,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
         progressDialog = new ProgressDialog(SettingsActivity.this);
         progressDialog.setCancelable(false);
-        progressDialog.setTitle("Update User informations");
+        progressDialog.setTitle(getResources().getString(R.string.update_user_information));
 
         SwitchCompat postNotificationSw = findViewById(R.id.postNotificationSw);
         SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
@@ -296,7 +299,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     }
 
     private void getUserInfos() {
-        DatabaseReference refUsers = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference refUsers = FirebaseDatabase.getInstance().getReference(""+DB_USER);
         refUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -313,7 +316,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                         emailTv.setText(user.getuEmail());
                         phoneTv.setText(user.getuPhone());
 
-                        languageTv.setText(myLanguage.equals("fr") ? "Français" : "Anglais");
+                        languageTv.setText(myLanguage.equals("fr") ? getResources().getString(R.string.francais) : getResources().getString(R.string.anglais));
 
                         try {
                             Picasso.get().load(user.getuAvatar()).placeholder(R.drawable.ic_user).into(avatarIv);
@@ -334,8 +337,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     private void deleteAccount() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Suppression de compte");
-        builder.setMessage("Etes-vous sur de vouloir supprimer votre compte ?\nNB : Cette action supprimera de manière définitive toutes vos informations personnelles.")
+        builder.setTitle(""+getResources().getString(R.string.clear_your_account));
+        builder.setMessage(""+getResources().getString(R.string.supprimer_compte))
                 .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -349,7 +352,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                                 if (task.isSuccessful()){
                                     checkUsers();
                                 }else{
-                                    Toast.makeText(SettingsActivity.this, "Impossible de supprimer ce compte", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.not_delete_account), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -365,8 +368,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     private void exitAccount() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Déconnexion");
-        builder.setMessage("Etes-vous sur de vouloir déconnecter votre compte ?")
+        builder.setTitle(""+getResources().getString(R.string.deconnexion));
+        builder.setMessage(""+getResources().getString(R.string.verification_deconnexion))
                 .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -387,9 +390,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Vous n'allez plus recevoir de notifications";
+                        String msg = ""+getResources().getString(R.string.not_receive_notification);
                         if(!task.isSuccessful()){
-                            msg = "Subscription failed";
+                            msg = ""+getResources().getString(R.string.subscription_failed);
                         }
                         Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
@@ -401,9 +404,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Vous allez recevoir de notifications";
+                        String msg = ""+getResources().getString(R.string.receive_notification);
                         if(!task.isSuccessful()){
-                            msg = "Unsubscription failed";
+                            msg = ""+getResources().getString(R.string.unsubscription_failed);
                         }
                         Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
@@ -411,23 +414,26 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     }
 
     private void showEditProfileDialog() {
-        String[] options = {"Edit avatar", "Edit username", "Edit user phone", "Edit user dévise" };
+        String[] options = {""+getResources().getString(R.string.edit_avatar),
+                ""+getResources().getString(R.string.edit_username),
+                ""+getResources().getString(R.string.edit_user_phone),
+                ""+getResources().getString(R.string.edit_slogan) };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose Action");
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0){
-                    progressDialog.setMessage("Uploading user avatar ...");
+                    progressDialog.setMessage(""+getResources().getString(R.string.updating_avatar));
                     showImagePicDialog();
                 }else if (which == 1){
-                    progressDialog.setMessage("Uploading username");
+                    progressDialog.setMessage(""+getResources().getString(R.string.updating_username));
                     showNameDeviseUpdateDialog("uName");
                 }else if (which == 2){
-                    progressDialog.setMessage("Uploading user phone");
+                    progressDialog.setMessage(""+getResources().getString(R.string.updating_userphone));
                     showPhoneUpdateDialog();
                 }else if (which == 3){
-                    progressDialog.setMessage("Uploading user dévise");
+                    progressDialog.setMessage(""+getResources().getString(R.string.updating_userslogan));
                     showNameDeviseUpdateDialog("uDevise");
                 }
             }
@@ -447,7 +453,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 EditText updatePhoneEt = customLayout.findViewById(R.id.updatePhoneEt);
                 String phone = updatePhoneEt.getText().toString().trim();
                 if (TextUtils.isEmpty(phone)){
-                    Toast.makeText(SettingsActivity.this, "Ce champ ne doit pas etre vide!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.champ_vide), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 sendDialogDataPhoneToActivity(""+phone);
@@ -461,7 +467,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         builder.setTitle("Update "+type);
         final View customLayout = getLayoutInflater().inflate(R.layout.item_name, null);
         EditText editText = customLayout.findViewById(R.id.updateEt);
-        editText.setHint(type.equals("uName") ? "Votre nom complet" : "Votre dévise");
+        editText.setHint(type.equals("uName") ? ""+getResources().getString(R.string.votre_nom_complet) : ""+getResources().getString(R.string.votre_devise));
         builder.setView(customLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -470,7 +476,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 EditText updateEt = customLayout.findViewById(R.id.updateEt);
                 String update = updateEt.getText().toString().trim();
                 if (TextUtils.isEmpty(update)){
-                    Toast.makeText(SettingsActivity.this, "Ce champ ne doit pas etre vide!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.champ_vide), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 sendDialogDataToActivity(""+type, ""+update);
@@ -483,12 +489,12 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         progressDialog.show();
         HashMap<String, Object> results = new HashMap<>();
         results.put("uPhone", phone);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(""+DB_USER);
         ref.child(myUID).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 progressDialog.dismiss();
-                Toast.makeText(SettingsActivity.this, "Updated phone...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.toast_updated_phone), Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -508,7 +514,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             @Override
             public void onSuccess(Void aVoid) {
                 progressDialog.dismiss();
-                Toast.makeText(SettingsActivity.this, "Updated " + (type.equals("uName") ? "Votre nom complet" : "Votre dévise") + "...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, "Updated "
+                        + (type.equals("uName") ? ""+getResources().getString(R.string.votre_nom_complet)
+                        : ""+getResources().getString(R.string.votre_devise)) + "...", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -600,24 +608,24 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                     HashMap<String, Object> results = new HashMap<>();
                     results.put("uAvatar", downloadUri.toString());
 
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference(""+DB_USER);
                     reference.child(myUID).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             progressDialog.dismiss();
-                            Toast.makeText(SettingsActivity.this, "Images Updated...", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.toast_images_updated), Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(SettingsActivity.this, "Error Updating Images...", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.toast_error_updating_images), Toast.LENGTH_SHORT).show();
                         }
                     });
                     //updateAvatarInPostAndComment(downloadUri);
                 }else {
                     progressDialog.dismiss();
-                    Toast.makeText(SettingsActivity.this, "Some error occured", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.toast_some_error_occured), Toast.LENGTH_SHORT).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -630,7 +638,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     }
 
     private void updateAvatarInPostAndComment(Uri downloadUri) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(""+DB_POST);
         Query query = ref.orderByChild("pCreator").equalTo(myUID);
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -653,9 +661,10 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     String child = ds.getKey();
-                    if (dataSnapshot.child(child).hasChild("Comments")){
+                    if (dataSnapshot.child(child).hasChild(""+DB_COMMENT)){
                         String child1 = ""+dataSnapshot.child(child).getKey();
-                        Query child2 = FirebaseDatabase.getInstance().getReference("Posts").child(child1).child("Comments").orderByChild("cCreator").equalTo(myUID);
+                        Query child2 = FirebaseDatabase.getInstance().getReference(""+DB_POST).child(child1)
+                                .child(""+DB_COMMENT).orderByChild("cCreator").equalTo(myUID);
                         child2.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

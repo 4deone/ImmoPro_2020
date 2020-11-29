@@ -57,6 +57,7 @@ public class CommentFragment extends Fragment {
     private DatabaseReference reference;
 
     private String pId;
+    private String topicComment;
     private String pCreator;
     private String myUID;
 
@@ -84,8 +85,9 @@ public class CommentFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            pId = getArguments().getString(TAG_POST_ID);
-            pCreator = getArguments().getString(TAG_POST_CREATOR);
+            pId = getArguments().getString(""+TAG_POST_ID);
+            pCreator = getArguments().getString(""+TAG_POST_CREATOR);
+            topicComment = getArguments().getString("pTopicComment");
         }
     }
 
@@ -205,31 +207,6 @@ public class CommentFragment extends Fragment {
             }
         });
     }
-
-    /*private void addToHisNotifications(String hisUid, String pId, String notification){
-        String timestamp = String.valueOf(System.currentTimeMillis());
-
-        HashMap<Object, String> hashMap = new HashMap<>();
-        hashMap.put("pId", pId);
-        hashMap.put("timestamp", timestamp);
-        hashMap.put("pUid", hisUid);
-        hashMap.put("notification", notification);
-        hashMap.put("sUid", myUID);
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-        ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
 
     private void resetVues() {
         commentEdtv.setText(null);

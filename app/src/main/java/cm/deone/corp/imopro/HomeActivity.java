@@ -40,6 +40,9 @@ import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 import cm.deone.corp.imopro.notification.Token;
 
+import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
+import static cm.deone.corp.imopro.outils.Constant.DB_POST;
+
 public class HomeActivity extends AppCompatActivity {
 
     private String myUID;
@@ -55,6 +58,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         checkUsers();
         initVues();
+        initGroupTopic();
         allPosts();
         updateToken();
     }
@@ -62,6 +66,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         checkUsers();
+        initGroupTopic();
         allPosts();
         updateToken();
         super.onStart();
@@ -70,6 +75,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         checkUsers();
+        initGroupTopic();
         allPosts();
         updateToken();
         super.onResume();
@@ -177,6 +183,7 @@ public class HomeActivity extends AppCompatActivity {
                             Intent intent = new Intent(HomeActivity.this, PostActivity.class);
                             intent.putExtra("pId", postList.get(position).getpId());
                             intent.putExtra("pCreator", postList.get(position).getpCreator());
+                            intent.putExtra("nType", DB_POST);
                             startActivity(intent);
                         }
 
@@ -227,6 +234,9 @@ public class HomeActivity extends AppCompatActivity {
                             Intent intent = new Intent(HomeActivity.this, PostActivity.class);
                             intent.putExtra("pId", postList.get(position).getpId());
                             intent.putExtra("pCreator", postList.get(position).getpCreator());
+                            intent.putExtra("nType", DB_POST);
+                            intent.putExtra("pTopicGallery", post.getpTopicGallery());
+                            intent.putExtra("pTopicComment", post.getpTopicComment());
                             startActivity(intent);
                         }
 
@@ -259,4 +269,7 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("Tokens").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(token);
     }
 
+    private void initGroupTopic() {
+
+    }
 }

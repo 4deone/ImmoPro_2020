@@ -31,7 +31,7 @@
         android:layout_marginTop="10dp"
         android:background="@color/white"
         android:drawableEnd="@drawable/ic_titre"
-        android:hint="Titre du post"
+        android:hint="@string/titre_du_post"
         android:inputType="textCapWords"
         android:padding="20dp" />
 
@@ -48,13 +48,13 @@
         android:drawableEnd="@drawable/ic_description"
         android:gravity="top"
         android:minHeight="250dp"
-        android:hint="Description: 1S+2C+1D+1C\nQuartier: Bastos\nPrix: 25000 XFA\netc..."
+        android:hint="@string/post_description"
         android:inputType="textMultiLine|textCapSentences"
         android:padding="20dp" />
 
     <CheckBox
         android:id="@+id/publicOrPrivateCb"
-        android:text="Rendre ce post public ?"
+        android:text="@string/rendre_ce_post_public"
         android:layout_below="@+id/postDescriptionEdtv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

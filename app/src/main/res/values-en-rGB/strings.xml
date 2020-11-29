@@ -67,4 +67,54 @@
     <string name="gallery">Gallery</string>
     <string name="notifications">Notifications</string>
 
+    <string name="search_head">Welcome to the publication search interface. In order for you to have relevant answers, the following input fields should be well filled.</string>
+    <string name="ex_terrain_vendre">Ex : Lot for sale</string>
+    <string name="ex_bastos">Ex : Bastos</string>
+
+    <string name="post_description">Description: 1S+2C+1D+1C\nDistrict: Bastos\nPrice: 25000 XFA\netc...</string>
+    <string name="titre_du_post">Title of post</string>
+    <string name="rendre_ce_post_public">Make this post public ?</string>
+    <string name="votre_budget">What is your budget ?</string>
+    <string name="dans_quelle_localit">In which locality ?</string>
+    <string name="que_cherchez_vous">Que cherchez-vous ?</string>
+    <string name="recherche_de_publication">Search post</string>
+    <string name="toast_que_cherchez_vous">You must indicate what you are looking for0</string>
+    <string name="toast_ou_cherchez_vous">You must indicate the location of your search</string>
+    <string name="toast_votre_budget">You must indicate your budget</string>
+    <string name="y_a_t_il_une_cheance_cette_recherche">Is there a deadline for this research ?</string>
+    <string name="echeance_search">Due on : %s/%s/%s</string>
+
+    <string name="toast_images_updated">Images Updated...</string>
+    <string name="toast_error_updating_images">Error Updating Images...</string>
+    <string name="toast_some_error_occured">Some error occured</string>
+    <string name="toast_updated_phone">Updated phone...</string>
+
+    <string name="votre_nom_complet">Your full name</string>
+    <string name="votre_devise">Your slogan</string>
+
+    <string name="champ_vide">Ce champ ne doit pas etre vide!</string>
+    <string name="edit_avatar">Edit avatar</string>
+    <string name="edit_username">Edit username</string>
+    <string name="edit_user_phone">Edit user phone</string>
+    <string name="edit_slogan">Edit user slogan</string>
+    <string name="updating_avatar">Uploading user avatar</string>
+    <string name="updating_username">Uploading username</string>
+    <string name="updating_userphone">Uploading user phone</string>
+    <string name="updating_userslogan">Uploading user slogan</string>
+
+    <string name="receive_notification">Vous allez recevoir de notifications</string>
+    <string name="unsubscription_failed">Unsubscription failed</string>
+    <string name="subscription_failed">Subscription failed</string>
+    <string name="not_receive_notification">Vous n\'allez plus recevoir de notifications</string>
+    <string name="verification_deconnexion">Etes-vous sur de vouloir déconnecter votre compte ?</string>
+    <string name="deconnexion">Déconnexion</string>
+    <string name="not_delete_account">Impossible de supprimer ce compte</string>
+    <string name="supprimer_compte">Etes-vous sur de vouloir supprimer votre compte ?\nNB : Cette action supprimera de manière définitive toutes vos informations personnelles.</string>
+    <string name="clear_your_account">Suppression de compte</string>
+    <string name="update_user_information">Update User informations</string>
+    <string name="storage_permission">Please enable storage permissions.</string>
+    <string name="camera_permission">Please enable camera and storage permissions.</string>
+    <string name="notif_add_image">" added new image"</string>
+    <string name="operation_reussie">"Success..."</string>
+
 </resources>

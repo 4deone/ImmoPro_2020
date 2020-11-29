@@ -13,15 +13,21 @@ public class Post {
     private String pNSignals;
     private String pNShares;
     private String pCreator;
+    private String pTopicComment;
+    private String pTopicGallery;
     private String pPublicOrPrivate;
 
     public Post() {
     }
 
-    public Post(String pId, String pCover, String pDate, String pTitre,
-                String pDescription, String pNote, String pNLikes,
-                String pNVues, String pNComments, String pNSignals,
-                String pNShares, String pCreator, String pPublicOrPrivate) {
+    public Post(String pId, String pCover,
+                String pDate, String pTitre,
+                String pDescription, String pNote,
+                String pNLikes, String pNVues,
+                String pNComments, String pNSignals,
+                String pNShares, String pCreator,
+                String pTopicComment, String pTopicGallery,
+                String pPublicOrPrivate) {
         this.pId = pId;
         this.pCover = pCover;
         this.pDate = pDate;
@@ -34,6 +40,8 @@ public class Post {
         this.pNSignals = pNSignals;
         this.pNShares = pNShares;
         this.pCreator = pCreator;
+        this.pTopicComment = pTopicComment;
+        this.pTopicGallery = pTopicGallery;
         this.pPublicOrPrivate = pPublicOrPrivate;
     }
 
@@ -127,6 +135,22 @@ public class Post {
 
     public String getpCreator() {
         return pCreator;
+    }
+
+    public String getpTopicComment() {
+        return pTopicComment;
+    }
+
+    public void setpTopicComment(String pTopicComment) {
+        this.pTopicComment = pTopicComment;
+    }
+
+    public String getpTopicGallery() {
+        return pTopicGallery;
+    }
+
+    public void setpTopicGallery(String pTopicGallery) {
+        this.pTopicGallery = pTopicGallery;
     }
 
     public void setpCreator(String pCreator) {

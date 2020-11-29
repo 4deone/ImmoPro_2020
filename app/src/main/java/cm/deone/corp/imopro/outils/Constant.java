@@ -6,6 +6,17 @@ public class Constant {
     public static final String TOPIC_COMMENT_NOTIFICATION = "COMMENT";
     public static final String TOPIC_GALLERY_NOTIFICATION = "GALLERY";
 
+    public static final String TYPE_NOTIFICATION = "notificationType";
+    public static final String TYPE_POST_NOTIFICATION = "PostNotification";
+    public static final String TYPE_COMMENT_NOTIFICATION = "CommentNotification";
+    public static final String TYPE_GALLERY_NOTIFICATION = "GalleryNotification";
+    public static final String TYPE_CHAT_NOTIFICATION = "ChatNotification";
+
+    public static final String DB_USER = "Users";
+    public static final String DB_POST = "Posts";
+    public static final String DB_COMMENT = "Comments";
+    public static final String DB_GALLERY = "Gallery";
+
     public static final int CAMERA_REQUEST_CODE = 100;
     public static final int STORAGE_REQUEST_CODE = 200;
     public static final int IMAGE_PICK_GALLERY_CODE = 300;
