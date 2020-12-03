@@ -16,6 +16,8 @@ public class Post {
     private String pTopicComment;
     private String pTopicGallery;
     private String pPublicOrPrivate;
+    private String uName;
+    private String uAvatar;
 
     public Post() {
     }
@@ -27,7 +29,7 @@ public class Post {
                 String pNComments, String pNSignals,
                 String pNShares, String pCreator,
                 String pTopicComment, String pTopicGallery,
-                String pPublicOrPrivate) {
+                String pPublicOrPrivate, String uName, String uAvatar) {
         this.pId = pId;
         this.pCover = pCover;
         this.pDate = pDate;
@@ -43,6 +45,8 @@ public class Post {
         this.pTopicComment = pTopicComment;
         this.pTopicGallery = pTopicGallery;
         this.pPublicOrPrivate = pPublicOrPrivate;
+        this.uName = uName;
+        this.uAvatar = uAvatar;
     }
 
     public String getpId() {
@@ -163,5 +167,21 @@ public class Post {
 
     public void setpPublicOrPrivate(String pPublicOrPrivate) {
         this.pPublicOrPrivate = pPublicOrPrivate;
+    }
+
+    public String getuName() {
+        return uName;
+    }
+
+    public void setuName(String uName) {
+        this.uName = uName;
+    }
+
+    public String getuAvatar() {
+        return uAvatar;
+    }
+
+    public void setuAvatar(String uAvatar) {
+        this.uAvatar = uAvatar;
     }
 }

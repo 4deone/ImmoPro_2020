@@ -16,7 +16,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -39,6 +41,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -73,6 +76,7 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
 
     private String myUID;
     private String myNAME;
+    private String myAVATAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,12 +151,17 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         if (fUser != null){
             myUID = fUser.getUid();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-            ref.child(myUID).addValueEventListener(new ValueEventListener() {
+            Query query = FirebaseDatabase.getInstance().getReference("Users")
+                    .orderByKey().equalTo(myUID);
+            query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot ds : snapshot.getChildren()){
                         myNAME = ds.child("uName").getValue(String.class);
+                        myAVATAR = ds.child("uAvatar").getValue(String.class);
+                        /*Toast.makeText(CreatePostActivity.this, "Name -> "
+                                +myNAME+"\nAvatar -> "+myAVATAR
+                                +"\nuID -> "+myUID, Toast.LENGTH_SHORT).show();*/
                     }
                 }
 
@@ -181,7 +190,25 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
         progressDialog = new ProgressDialog(this);
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        postDescriptionEdtv.addTextChangedListener(twVerifSaisie);
     }
+
+    private final TextWatcher twVerifSaisie = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     private void getDataFromAnotherApplication(Intent intent) {
         String action = intent.getAction();
@@ -318,6 +345,9 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
             hashMapPost.put("pPublicOrPrivate", "private");
         }
 
+        hashMapPost.put("uName", myNAME);
+        hashMapPost.put("uAvatar", myAVATAR);
+
         savePostData(hashMapPost);
     }
 
@@ -331,9 +361,6 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
 
         hashMapPost.put("pId", timestamp);
         hashMapPost.put("pDate", timestamp);
-
-        hashMapPost.put("pTopicComment", "COMMENT"+timestamp);
-        hashMapPost.put("pTopicGallery", "GALLERY"+timestamp);
 
         if (imageUri != null){
             saveCoverDatabase(hashMapPost, timestamp);

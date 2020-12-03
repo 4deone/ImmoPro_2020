@@ -6,14 +6,20 @@ public class Comment {
     private String cMessage;
     private String cDate;
 
+
+    private String uAvatar;
+    private String uName;
+
     public Comment() {
     }
 
-    public Comment(String cId, String cCreator, String cMessage, String cDate) {
+    public Comment(String cId, String cCreator, String cMessage, String cDate, String uAvatar, String uName) {
         this.cId = cId;
         this.cCreator = cCreator;
         this.cMessage = cMessage;
         this.cDate = cDate;
+        this.uAvatar = uAvatar;
+        this.uName = uName;
     }
 
     public String getcId() {
@@ -46,5 +52,21 @@ public class Comment {
 
     public void setcDate(String cDate) {
         this.cDate = cDate;
+    }
+
+    public String getuAvatar() {
+        return uAvatar;
+    }
+
+    public void setuAvatar(String uAvatar) {
+        this.uAvatar = uAvatar;
+    }
+
+    public String getuName() {
+        return uName;
+    }
+
+    public void setuName(String uName) {
+        this.uName = uName;
     }
 }

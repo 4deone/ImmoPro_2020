@@ -69,9 +69,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                 }
             }
 
-        }else if (notificationType.equals(TYPE_POST_NOTIFICATION) ||
-                notificationType.equals(TYPE_COMMENT_NOTIFICATION) ||
-                notificationType.equals(TYPE_GALLERY_NOTIFICATION)){
+        }else if (notificationType.equals(TYPE_POST_NOTIFICATION)){
             String sender = remoteMessage.getData().get("sender");
             String pId = remoteMessage.getData().get("pId");
             String pCreator = remoteMessage.getData().get("pCreator");

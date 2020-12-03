@@ -10,6 +10,7 @@ public class User {
     private String uNcomment;
     private String uPhone;
     private String uDevise;
+    private String uAppRole;
     private boolean isLocked = false;
 
     public User() {
@@ -19,7 +20,8 @@ public class User {
                 String uEmail, String uDate,
                 String uName, String uRole,
                 String uNcomment, String uPhone,
-                String uDevise, boolean isLocked) {
+                String uDevise, String uAppRole,
+                boolean isLocked) {
         this.uId = uId;
         this.uAvatar = uAvatar;
         this.uEmail = uEmail;
@@ -29,6 +31,7 @@ public class User {
         this.uNcomment = uNcomment;
         this.uPhone = uPhone;
         this.uDevise = uDevise;
+        this.uAppRole = uAppRole;
         this.isLocked = isLocked;
     }
 
@@ -110,5 +113,13 @@ public class User {
 
     public void setLocked(boolean locked) {
         isLocked = locked;
+    }
+
+    public String getuAppRole() {
+        return uAppRole;
+    }
+
+    public void setuAppRole(String uAppRole) {
+        this.uAppRole = uAppRole;
     }
 }

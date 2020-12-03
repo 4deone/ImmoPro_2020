@@ -53,6 +53,7 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
         String description = galleryList.get(position).getgDescription();
 
         holder.descriptionTv.setText(description);
+        holder.itemNumberTv.setText(""+(position+1)+"/"+galleryList.size());
 
         try {
             Picasso.get().load(image).placeholder(R.drawable.ic_post).into(holder.itemGalleryIv, new Callback() {
@@ -95,6 +96,7 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
         ImageView itemGalleryIv;
         ProgressBar loadingPb;
         TextView descriptionTv;
+        TextView itemNumberTv;
 
         MyHolder(@NonNull View itemView) {
             super(itemView);
@@ -102,6 +104,7 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.MyHolder
             itemGalleryIv = itemView.findViewById(R.id.itemGalleryIv);
             loadingPb = itemView.findViewById(R.id.loadingPb);
             descriptionTv = itemView.findViewById(R.id.descriptionTv);
+            itemNumberTv = itemView.findViewById(R.id.itemNumberTv);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);

@@ -53,41 +53,23 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
     public void onBindViewHolder(@NonNull final MyHolder holder, final int position) {
 
         String creator = commentList.get(position).getcCreator();
-        getHisInformation(holder, ""+creator);
-
+        String avatar = commentList.get(position).getuAvatar();
+        String name = commentList.get(position).getuName();
         String message = commentList.get(position).getcMessage();
-        holder.commentTv.setText(message);
-
         String timestamp = commentList.get(position).getcDate();
         Calendar cal = Calendar.getInstance(Locale.FRANCE);
         cal.setTimeInMillis(Long.parseLong(timestamp));
         String dateTime = DateFormat.format("EEEE, dd MMMM yyyy hh:mm a", cal).toString();
+
+        holder.commentTv.setText(message);
         holder.timeTv.setText(dateTime);
+        holder.hisNameTv.setText(name);
+        try {
+            Picasso.get().load(avatar).placeholder(R.drawable.ic_user).into(holder.avatarIv);
+        } catch (Exception e) {
+            Picasso.get().load(R.drawable.ic_user).into(holder.avatarIv);
+        }
 
-    }
-
-    private void getHisInformation(MyHolder holder, String creator) {
-        FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    User user = ds.getValue(User.class);
-                    if (user.getuId().equals(creator)){
-                        holder.hisNameTv.setText(user.getuName());
-                        try {
-                            Picasso.get().load(user.getuAvatar()).placeholder(R.drawable.ic_user).into(holder.avatarIv);
-                        } catch (Exception e) {
-                            Picasso.get().load(R.drawable.ic_user).into(holder.avatarIv);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(context, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override

@@ -171,10 +171,11 @@ public class HomeActivity extends AppCompatActivity {
                 postList.clear();
                 for(DataSnapshot ds : snapshot.getChildren()){
                     Post post = ds.getValue(Post.class);
-                    assert post != null;
+                    /*assert post != null;
                     if (!ds.child("BlockedUsers").hasChild(myUID) && (post.getpPublicOrPrivate().equals("public") || post.getpCreator().equals(myUID))){
                         postList.add(post);
-                    }
+                    }*/
+                    postList.add(post);
                     postsAdaptor = new PostsAdaptor(HomeActivity.this, postList, myUID);
                     postsRv.setAdapter(postsAdaptor);
                     postsAdaptor.setOnItemClickListener(new ViewsClickListener() {

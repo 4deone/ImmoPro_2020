@@ -29,10 +29,19 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/postImagesRv"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:layout_height="match_parent"
                 tools:listitem="@layout/item_gallery"/>
+
+            <ImageView
+                android:id="@+id/coverIv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_post"
+                android:scaleType="centerCrop"
+                android:contentDescription="TODO COVER POST" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -67,9 +76,11 @@
 
                 <RelativeLayout
                     android:id="@+id/rubanRl"
+                    android:layout_above="@+id/footerPost"
+                    android:layout_alignParentTop="true"
                     android:layout_marginStart="5dp"
                     android:layout_width="10dp"
-                    android:layout_height="85dp"
+                    android:layout_height="wrap_content"
                     android:background="#FF3D00"/>
 
                 <TextView
@@ -90,6 +101,7 @@
                     android:layout_below="@+id/userInfoTv"
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/rubanRl"
+                    android:textStyle="italic"
                     android:text="@string/post_description"
                     android:textColor="@color/black" />
 
@@ -101,6 +113,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/rubanRl"
                     android:ellipsize="end"
+                    android:textStyle="bold"
                     android:maxLines="1"
                     android:text="Total signalement"
                     android:textAlignment="center"
@@ -114,6 +127,8 @@
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/rubanRl"
                     android:ellipsize="end"
+
+                    android:textStyle="bold"
                     android:maxLines="1"
                     android:text="Total vue"
                     android:textAlignment="center"
@@ -128,6 +143,7 @@
                     android:layout_toEndOf="@+id/rubanRl"
                     android:background="@null"
                     android:ellipsize="end"
+                    android:textStyle="bold"
                     android:maxLines="1"
                     android:text="Total like"
                     android:textAlignment="center"
@@ -140,6 +156,7 @@
                     android:layout_below="@+id/likeTv"
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/rubanRl"
+                    android:textStyle="bold"
                     android:background="@null"
                     android:ellipsize="end"
                     android:maxLines="1"
@@ -156,6 +173,7 @@
                     android:layout_toEndOf="@+id/rubanRl"
                     android:background="@null"
                     android:ellipsize="end"
+                    android:textStyle="bold"
                     android:maxLines="1"
                     android:text="Note de la publication"
                     android:textAlignment="center"
@@ -164,7 +182,6 @@
                 <LinearLayout
                     android:id="@+id/footerPost"
                     android:layout_below="@+id/noteTv"
-                    android:layout_toEndOf="@+id/rubanRl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
@@ -221,6 +238,123 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rlComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:elevation="20dp"
+                android:background="@drawable/bg_curve">
+
+                <RelativeLayout
+                    android:id="@+id/rubanCommentairenRl"
+                    android:layout_above="@+id/commentsRv"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:background="#FF3D00"/>
+
+                <RelativeLayout
+                    android:id="@+id/commentHeadRl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/rubanCommentairenRl"
+                    android:background="#2FFFFFFF">
+
+                    <TextView
+                        android:id="@+id/commentairesTv"
+                        android:layout_width="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_height="30dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:text="Commentaires"/>
+
+                    <RelativeLayout
+                        android:id="@+id/commentFooterRl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/commentairesTv"
+                        android:padding="5dp"
+                        android:background="@drawable/bg_home_fragment"
+                        android:layout_alignParentBottom="true">
+
+                        <EditText
+                            android:id="@+id/commentEdtv"
+                            android:hint="Votre commentaire"
+                            android:background="@color/white"
+                            android:layout_toEndOf="@+id/userIv"
+                            android:layout_toStartOf="@+id/sendIb"
+                            android:padding="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <ImageButton
+                            android:id="@+id/sendIb"
+                            android:text="0 Commentaires"
+                            android:background="@null"
+                            android:src="@drawable/ic_send"
+                            android:layout_alignParentEnd="true"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commentsRv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_comment"
+                    android:layout_below="@+id/commentHeadRl"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlLike"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:elevation="20dp"
+                android:background="@drawable/bg_curve">
+
+                <RelativeLayout
+                    android:id="@+id/rubanLikeRl"
+                    android:layout_above="@+id/likesRv"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:background="#FF3D00"/>
+
+                <TextView
+                    android:id="@+id/likesTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/rubanLikeRl"
+                    android:text="Likes"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/likesRv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_notification_parent"
+                    android:layout_below="@+id/likesTv"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlNotification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -232,46 +366,42 @@
                     android:id="@+id/rubanNotificationRl"
                     android:layout_marginStart="5dp"
                     android:layout_width="10dp"
-                    android:layout_height="165dp"
+                    android:layout_height="100dp"
                     android:background="#FF3D00"/>
 
-                <RelativeLayout
-                    android:id="@+id/commentHeadRl"
+                <TextView
+                    android:id="@+id/notificationInfoTv"
+                    android:layout_toEndOf="@+id/rubanNotificationRl"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="@string/notifications"/>
+
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/commentNotificationSw"
+                    android:layout_below="@+id/notificationInfoTv"
+                    android:layout_toEndOf="@+id/rubanNotificationRl"
+                    android:layout_marginStart="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/comment_notifications"
+                    android:textStyle="bold"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/galleryNotificationSw"
+                    android:layout_below="@+id/commentNotificationSw"
                     android:layout_toEndOf="@+id/rubanNotificationRl"
-                    android:background="#2FFFFFFF"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_toStartOf="@+id/addCommentIb"
-                        android:layout_marginStart="5dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:text="Commentaires"/>
-
-                    <ImageButton
-                        android:id="@+id/addCommentIb"
-                        android:layout_width="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:src="@drawable/ic_comment"
-                        android:layout_height="30dp"
-                        android:background="@null"
-                        android:contentDescription="TODO ADD IN COMMENT" />
-
-                </RelativeLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/commentsRv"
-                    android:layout_toEndOf="@+id/rubanNotificationRl"
+                    android:layout_marginStart="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_comment"
-                    android:layout_below="@+id/commentHeadRl"/>
+                    android:text="@string/gallery_notifications"
+                    android:textStyle="bold"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             </RelativeLayout>
 

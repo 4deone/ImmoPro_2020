@@ -236,8 +236,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         progressDialog.setTitle(getResources().getString(R.string.update_user_information));
 
         SwitchCompat postNotificationSw = findViewById(R.id.postNotificationSw);
-        SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
-        SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
 
         avatarIv = findViewById(R.id.avatarIv);
 
@@ -254,8 +252,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         boolean isPostEnable = sharedPreferences.getBoolean(""+TOPIC_POST_NOTIFICATION, false);
-        boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION, false);
-        boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION, false);
 
         if (isPostEnable) {
             postNotificationSw.setChecked(true);
@@ -263,21 +259,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             postNotificationSw.setChecked(false);
         }
 
-        if (isCommentEnable) {
-            commentNotificationSw.setChecked(true);
-        }else{
-            commentNotificationSw.setChecked(false);
-        }
-
-        if (isGalleryEnable) {
-            galleryNotificationSw.setChecked(true);
-        }else{
-            galleryNotificationSw.setChecked(false);
-        }
-
         postNotificationSw.setOnCheckedChangeListener(this);
-        commentNotificationSw.setOnCheckedChangeListener(this);
-        galleryNotificationSw.setOnCheckedChangeListener(this);
 
         languageTv.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,6 +3,7 @@ package cm.deone.corp.imopro;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -19,14 +21,23 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,17 +51,22 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import cm.deone.corp.imopro.adapter.CommentAdaptor;
 import cm.deone.corp.imopro.adapter.GalleryAdaptor;
 import cm.deone.corp.imopro.fragments.CommentFragment;
 import cm.deone.corp.imopro.fragments.GalleryFragment;
 import cm.deone.corp.imopro.fragments.HomeFragment;
 import cm.deone.corp.imopro.fragments.NotificationsFragment;
+import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.Gallery;
 import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
@@ -58,47 +74,51 @@ import cm.deone.corp.imopro.outils.ViewsClickListener;
 import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
 import static cm.deone.corp.imopro.outils.Constant.DB_GALLERY;
 import static cm.deone.corp.imopro.outils.Constant.DB_POST;
+import static cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.TYPE_POST_NOTIFICATION;
 
-public class PostActivity extends AppCompatActivity implements View.OnClickListener{
+public class PostActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
 
-    private DatabaseReference ref;
     private boolean userVue = true;
-    private String pId;
-    private String pCreator;
-    private String myUID;
-    private String myVUES;
-    private String numShared;
-
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-
     private boolean mProcessLikes = false;
     private boolean mProcessFavorites = false;
     private boolean mProcessSignal = false;
-
     private Post post;
-
-    private ImageView postCoverRv;
-
+    private String pId;
+    private String pCreator;
+    private String myUID;
+    private String myNAME;
+    private String myAVATAR;
+    private String numShared;
+    private DatabaseReference ref;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private ImageView coverIv;
     private ImageButton likeIb;
     private ImageButton favoriteIb;
     private ImageButton noteIb;
     private ImageButton shareIb;
     private ImageButton signalerIb;
-
+    private RelativeLayout rlLike;
+    private RelativeLayout rlComment;
+    private EditText commentEdtv;
     private TextView warningTv;
     private TextView vueTv;
     private TextView likeTv;
     private TextView commentTv;
     private TextView noteTv;
-
     private TextView postDescriptionTv;
     private RecyclerView postImagesRv;
     private RecyclerView commentsRv;
-
     private List<Gallery> galleryList;
     private GalleryAdaptor galleryAdaptor;
+    private List<Comment> commentList;
+    private CommentAdaptor commentAdaptor;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,42 +126,73 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_post);
         checkUser();
         initVues();
-        getMyVue();
         getPost();
-        getGallery();
-        setNumShared();
-        setLiked();
-        setNote();
-        setSignaled();
-        setFavorite();
     }
 
     @Override
     protected void onStart() {
         checkUser();
-        getMyVue();
         getPost();
-        getGallery();
-        setNumShared();
-        setLiked();
-        setNote();
-        setSignaled();
-        setFavorite();
         super.onStart();
     }
 
     @Override
     protected void onResume() {
         checkUser();
-        getMyVue();
         getPost();
-        getGallery();
-        setNumShared();
-        setLiked();
-        setNote();
-        setSignaled();
-        setFavorite();
         super.onResume();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.likeIb && !pCreator.equals(myUID)){
+            likePost();
+        }else if (v.getId() == R.id.favoriteIb && !pCreator.equals(myUID)){
+            favoritePost();
+        }else if (v.getId() == R.id.shareIb){
+            sharePost(post.getpTitre(), post.getpDescription());
+        }else if (v.getId() == R.id.noteIb && !pCreator.equals(myUID)){
+            showGiveNoteDialog();
+        }else if (v.getId() == R.id.signalerIb && !pCreator.equals(myUID)){
+            showGiveWarningDialog();
+        }else if (v.getId() == R.id.sendIb && !pCreator.equals(myUID)){
+            verificationDeSaisie();
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (v.getId() == R.id.coverIv && pCreator.equals(myUID)){
+            showCoverDialog();
+        }
+        return true;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()){
+            case R.id.commentNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
+                }else{
+                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
+                }
+                break;
+            case R.id.galleryNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+                }else{
+                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+                }
+                break;
+            default:
+        }
     }
 
     private void checkUser() {
@@ -151,6 +202,22 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         }else{
             myUID = fUser.getUid();
+            Query query = FirebaseDatabase.getInstance().getReference("Users")
+                    .orderByKey().equalTo(myUID);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot ds : snapshot.getChildren()){
+                        myNAME = ds.child("uName").getValue(String.class);
+                        myAVATAR = ds.child("uAvatar").getValue(String.class);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -158,361 +225,96 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         pId = getIntent().getStringExtra("pId");
         pCreator = getIntent().getStringExtra("pCreator");
         ref = FirebaseDatabase.getInstance().getReference("Posts");
+        sharedPreferences = getSharedPreferences("POST_NOTIF_SP", MODE_PRIVATE);
 
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
-
+        coverIv = findViewById(R.id.coverIv);
         warningTv = findViewById(R.id.warningTv);
         vueTv = findViewById(R.id.vueTv);
         likeTv = findViewById(R.id.likeTv);
         commentTv = findViewById(R.id.commentTv);
         noteTv = findViewById(R.id.noteTv);
-
         likeIb = findViewById(R.id.likeIb);
         favoriteIb = findViewById(R.id.favoriteIb);
         noteIb = findViewById(R.id.noteIb);
         shareIb = findViewById(R.id.shareIb);
         signalerIb = findViewById(R.id.signalerIb);
-
         postDescriptionTv = findViewById(R.id.postDescriptionTv);
         postImagesRv = findViewById(R.id.postImagesRv);
         commentsRv = findViewById(R.id.commentsRv);
+        RelativeLayout commentFooterRl = findViewById(R.id.commentFooterRl);
+        RelativeLayout rlNotification = findViewById(R.id.rlNotification);
 
-        findViewById(R.id.addCommentIb).setOnClickListener(this);
+        rlLike = findViewById(R.id.rlLike);
+        rlComment = findViewById(R.id.rlComment);
 
+        rlNotification.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+        likeIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+        favoriteIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+        noteIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+        signalerIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+        commentFooterRl.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+        warningTv.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+
+        SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
+        SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
+
+        boolean isCommentEnable = sharedPreferences.getBoolean(
+                ""+TOPIC_COMMENT_NOTIFICATION+""+pId,
+                false);
+        boolean isGalleryEnable = sharedPreferences.getBoolean(
+                ""+TOPIC_GALLERY_NOTIFICATION+""+pId,
+                false);
+
+        commentNotificationSw.setChecked(isCommentEnable);
+        galleryNotificationSw.setChecked(isGalleryEnable);
+
+        commentNotificationSw.setOnCheckedChangeListener(this);
+        galleryNotificationSw.setOnCheckedChangeListener(this);
+        coverIv.setOnLongClickListener(this);
+        findViewById(R.id.sendIb).setOnClickListener(this);
         likeIb.setOnClickListener(this);
         favoriteIb.setOnClickListener(this);
         noteIb.setOnClickListener(this);
         shareIb.setOnClickListener(this);
         signalerIb.setOnClickListener(this);
-
     }
 
     private void getPost() {
         galleryList = new ArrayList<>();
+        commentList = new ArrayList<>();
         Query query = ref.orderByKey().equalTo(pId);
         query.addValueEventListener(postInfosVal);
     }
 
     private void sharedPost() {
-        ref.child(post.getpId()).child("pNShares").setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
-        if (TextUtils.isEmpty(numShared)){
-            ref.child(post.getpId()).child("Shares").child(myUID).setValue("1");
-        }else{
-            ref.child(post.getpId()).child("Shares").child(myUID).setValue(""+ (Integer.parseInt(numShared) + 1));
-        }
+        ref.child(post.getpId()).child("pNShares").setValue(""+(Integer.parseInt(post.getpNLikes())+1));
+        ref.child(post.getpId()).child("Shares").child(myUID).setValue(TextUtils.isEmpty(numShared)?"1":""+(Integer.parseInt(numShared)+1));
     }
 
-    private void getMyVue() {
-        if (!pCreator.equals(myUID)){
-            Query query = ref.child(pId).child("Vues").orderByKey().equalTo(myUID);
-            query.addValueEventListener(valMyVues);
-        }
-    }
-
-    private void getGallery() {
-        ref.child(pId).child("Gallery").addValueEventListener(valPostGallery);
-    }
-
-    private void setNote() {
-        ref.child(pId).child("Notes").addValueEventListener(valPostNotes);
-    }
-
-    private void setLiked() {
-        ref.child(pId).child("Likes").addValueEventListener(valeSetLiked);
-    }
-
-    private void setFavorite() {
-        Query query = ref.child(pId).child("Favorites");
-        query.addValueEventListener(valPostFavorite);
-    }
-
-    private void setSignaled() {
-        ref.child(pId).child("Signalements").orderByChild("sId")
-                .equalTo(myUID).addValueEventListener(valSetSignaled);
-    }
-
-    private void setNumShared() {
-        ref.child(pId).child("Shares").child(myUID)
-                .addValueEventListener(valSharedPost);
-    }
-
-    private final ValueEventListener valSharedPost = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            for (DataSnapshot ds : snapshot.getChildren()){
-                numShared = ds.getValue().toString();
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener valeSetLiked = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            if (dataSnapshot.hasChild(myUID)){
-                likeIb.setImageResource(R.drawable.ic_like);
-                mProcessLikes = true;
-            }else {
-                likeIb.setImageResource(R.drawable.ic_no_like);
-                mProcessLikes = false;
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-            Toast.makeText(PostActivity.this, ""+databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener valPostFavorite = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            if (snapshot.hasChild(myUID)){
-                favoriteIb.setImageResource(R.drawable.ic_favorite);
-                mProcessFavorites = true;
-            }else {
-                favoriteIb.setImageResource(R.drawable.ic_no_favorite);
-                mProcessFavorites = false;
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener valSetSignaled = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            if (dataSnapshot.exists()){
-                signalerIb.setImageResource(R.drawable.ic_signaler);
-                mProcessSignal = true;
-            }else {
-                signalerIb.setImageResource(R.drawable.ic_no_signaler);
-                mProcessSignal = false;
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-            Toast.makeText(PostActivity.this, ""+databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener valPostNotes = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            float note = 0;
-            for (DataSnapshot ds : snapshot.getChildren()){
-                String item = ds.child("nNote").getValue(String.class);
-                note = note + Float.parseFloat(item);
-            }
-            note = note/snapshot.getChildrenCount();
-            noteTv.setText(""+note+"/20");
-
-            HashMap<String, Object> hashMap = new HashMap<>();
-            hashMap.put("pNote", ""+note);
-
-            ref.child(pId).updateChildren(hashMap);
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener valMyVues = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            for (DataSnapshot ds : snapshot.getChildren()){
-                myVUES = ds.getValue().toString();
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener postInfosVal =  new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            galleryList.clear();
-            for (DataSnapshot ds : snapshot.getChildren()){
-                post = ds.getValue(Post.class);
-                collapsingToolbarLayout.setTitle(post.getpTitre());
-                postDescriptionTv.setText(post.getpDescription());
-                galleryList.add(new Gallery(post.getpCover(), "Post cover"));
-                if (post.getpCreator().equals(myUID)){
-                    likeIb.setVisibility(View.GONE);
-                    favoriteIb.setVisibility(View.GONE);
-                    noteIb.setVisibility(View.GONE);
-                    signalerIb.setVisibility(View.GONE);
-
-                    warningTv.setVisibility(View.VISIBLE);
-
-                    vueTv.setText(Integer.parseInt(post.getpNVues()) <= 1 ? getResources()
-                            .getString(R.string.nombre_vue, post.getpNVues()) : getResources()
-                            .getString(R.string.nombre_vues, post.getpNVues()));
-                    likeTv.setText(Integer.parseInt(post.getpNLikes()) <= 1 ? getResources()
-                            .getString(R.string.nombre_like, post.getpNLikes()) : getResources()
-                            .getString(R.string.nombre_likes, post.getpNLikes()));
-                    commentTv.setText(Integer.parseInt(post.getpNComments()) <= 1 ? getResources()
-                            .getString(R.string.nombre_comment, post.getpNComments()) : getResources()
-                            .getString(R.string.nombre_comments, post.getpNComments()));
-
-                    if (ds.child("pNote").exists())
-                        noteTv.setText(getResources().getString(R.string.note_post, post.getpNote()));
-                    else
-                        noteTv.setText("Note de la publication");
-
-                    if (ds.child("pNSignals").exists())
-                        warningTv.setText(getResources().getString(R.string.signalement_post, post.getpNSignals()));
-                    else
-                        warningTv.setText("Total signalement");
-
-                }else{
-                    likeIb.setVisibility(View.VISIBLE);
-                    favoriteIb.setVisibility(View.VISIBLE);
-                    noteIb.setVisibility(View.VISIBLE);
-                    signalerIb.setVisibility(View.VISIBLE);
-                    if (userVue){
-                        ref.child(pId).child("pNVues").setValue(""+ (Integer.parseInt(post.getpNVues()) + 1));
-                        if (TextUtils.isEmpty(myVUES))
-                            ref.child(pId).child("Vues").child(myUID).setValue("1");
-                        else
-                            ref.child(pId).child("Vues").child(myUID).setValue(""+ (Integer.parseInt(myVUES) + 1));
-                        userVue = false;
-                    }
-                    ref.child(post.getpId()).child("Vues").child(myUID)
-                            .addValueEventListener(myNumbVuesVal);
-                    ref.child(post.getpId()).child("Comments")
-                            .orderByChild("cCreator").equalTo(myUID)
-                            .addValueEventListener(myNumbCommentsVal);
-                    ref.child(post.getpId()).child("Shares")
-                            .addValueEventListener(myNumbSharesVal);
-                    ref.child(post.getpId()).child("Notes").orderByChild("nId").equalTo(myUID)
-                            .addValueEventListener(myNoteVal);
-
-                    warningTv.setVisibility(View.GONE);
+    private void showCoverDialog() {
+        String[] options = {"Créer une galerie", "Modifier l'image"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Sélectionner une action :");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which){
+                    case 0 :
+                        // Créer une galerie
+                        Intent intent = new Intent(PostActivity.this, CreateGalleryActivity.class);
+                        intent.putExtra("pId", pId);
+                        startActivity(intent);
+                        break;
+                    case 1 :
+                        // Modifier l'image
+                        break;
+                    default:
                 }
             }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener myNumbCommentsVal = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            long count = snapshot.getChildrenCount();
-            commentTv.setText(count <= 1 ? getResources()
-                    .getString(R.string.nombre_comment, ""+count) : getResources()
-                    .getString(R.string.nombre_comments, ""+count));
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener myNumbSharesVal = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            if (!snapshot.hasChild(myUID)){
-                likeTv.setText(getResources().getString(R.string.nombre_share, "0"));
-                shareIb.setImageResource(R.drawable.ic_no_share);
-            }else{
-                likeTv.setText(Integer.parseInt(snapshot.child(myUID).getValue().toString()) <= 1 ? getResources()
-                        .getString(R.string.nombre_share, snapshot.child(myUID).getValue().toString()) : getResources()
-                        .getString(R.string.nombre_shares, snapshot.child(myUID).getValue().toString()));
-                shareIb.setImageResource(R.drawable.ic_share);
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener myNoteVal = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            if (!snapshot.exists()){
-                noteIb.setImageResource(R.drawable.ic_no_note);
-                noteTv.setText(getResources().getString(R.string.note_post, "0"));
-            } else{
-                String item = snapshot.child(myUID).child("nNote").getValue(String.class);
-                noteIb.setImageResource(R.drawable.ic_note);
-                noteTv.setText(getResources().getString(R.string.note_post, item));
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener myNumbVuesVal = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            if (TextUtils.isEmpty(snapshot.getValue().toString()))
-                vueTv.setText(getResources().getString(R.string.nombre_vue, "0"));
-            else
-                vueTv.setText(Integer.parseInt(snapshot.getValue().toString()) <= 1 ? getResources()
-                        .getString(R.string.nombre_vue, snapshot.getValue().toString()) : getResources()
-                        .getString(R.string.nombre_vues, snapshot.getValue().toString()));
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener valPostGallery = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            for (DataSnapshot ds : snapshot.getChildren()){
-                Gallery gallery = ds.getValue(Gallery.class);
-                galleryList.add(gallery);
-                galleryAdaptor = new GalleryAdaptor(PostActivity.this, galleryList);
-                postImagesRv.setAdapter(galleryAdaptor);
-                galleryAdaptor.setOnItemClickListener(new ViewsClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        postCoverRv = view.findViewById(R.id.itemGalleryIv);
-                        if (pCreator.equals(myUID)){
-                            showGalleryMenu();
-                        }
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
+        });
+        builder.create().show();
+    }
 
     private void showGalleryMenu() {
         String[] options = {"Ajouter une image", "Modifier l'image", "Supprimer l'image"};
@@ -548,10 +350,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             ref.child(post.getpId()).child("Likes").child(myUID).removeValue();
             mProcessLikes = false;
             likeIb.setImageResource(R.drawable.ic_no_like);
-
-            // unsuscribe gallery & comment notification
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(post.getpTopicGallery());
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(post.getpTopicComment());
         }else {
             ref.child(post.getpId()).child("pNLikes")
                     .setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
@@ -562,13 +360,12 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             hashMap.put("lId", myUID);
             hashMap.put("lDate", timestamp);
 
+            hashMap.put("uName", myNAME);
+            hashMap.put("uAvatar", myAVATAR);
+
             ref.child(post.getpId()).child("Likes").child(myUID).setValue(hashMap);
             mProcessLikes = true;
             likeIb.setImageResource(R.drawable.ic_like);
-
-            // suscribe gallery & comment notification
-            FirebaseMessaging.getInstance().subscribeToTopic(post.getpTopicGallery());
-            FirebaseMessaging.getInstance().subscribeToTopic(post.getpTopicComment());
         }
     }
 
@@ -583,6 +380,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             hashMap.put("fId", myUID);
             hashMap.put("fDate", timestamp);
 
+            hashMap.put("uName", myNAME);
+            hashMap.put("uAvatar", myAVATAR);
+
             ref.child(post.getpId()).child("Favorites").child(myUID).setValue(hashMap);
             mProcessFavorites = true;
             favoriteIb.setImageResource(R.drawable.ic_favorite);
@@ -590,7 +390,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sharePost(String pTitle, String pDescription) {
-        BitmapDrawable bitmapDrawable = (BitmapDrawable)postCoverRv.getDrawable();
+        BitmapDrawable bitmapDrawable = (BitmapDrawable)coverIv.getDrawable();
         if (bitmapDrawable == null){
             shareTextOnly(pTitle, pDescription);
         }else {
@@ -676,6 +476,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         hashMap.put("nNote", note);
         hashMap.put("nDate", timestamp);
 
+        hashMap.put("uName", myNAME);
+        hashMap.put("uAvatar", myAVATAR);
+
         ref.child(pId).child("Notes").child(myUID).setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -757,6 +560,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             hashMap.put("sId", myUID);
             hashMap.put("sMessage", signaler);
             hashMap.put("sDate", timestamp);
+            hashMap.put("uName", myNAME);
+            hashMap.put("uAvatar", myAVATAR);
 
             ref.child(post.getpId()).child("Signalements").child(myUID).setValue(hashMap);
             mProcessSignal = true;
@@ -764,22 +569,318 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onClick(View v) {
-
-        if (v.getId() == R.id.likeIb && !pCreator.equals(myUID)){
-            likePost();
-        }else if (v.getId() == R.id.favoriteIb && !pCreator.equals(myUID)){
-            favoritePost();
-        }else if (v.getId() == R.id.shareIb){
-            sharePost(post.getpTitre(), post.getpDescription());
-        }else if (v.getId() == R.id.noteIb && !pCreator.equals(myUID)){
-            showGiveNoteDialog();
-        }else if (v.getId() == R.id.signalerIb && !pCreator.equals(myUID)){
-            showGiveWarningDialog();
-        }else if (v.getId() == R.id.addCommentIb && !pCreator.equals(myUID)){
-
+    private void verificationDeSaisie() {
+        String message = commentEdtv.getText().toString().trim();
+        if (TextUtils.isEmpty(message)){
+            Toast.makeText(PostActivity.this, "Votre commentaire est vide!", Toast.LENGTH_SHORT).show();
+            return;
         }
+        prepareCommentData(""+message);
+    }
+
+    private void prepareCommentData(String message) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        HashMap<String, String> hashMapComment = new HashMap<>();
+        hashMapComment.put("cCreator", myUID);
+        hashMapComment.put("cMessage", message);
+        hashMapComment.put("cId", timestamp);
+        hashMapComment.put("cDate", timestamp);
+
+        hashMapComment.put("uName", myNAME);
+        hashMapComment.put("uAvatar", myAVATAR);
+
+        uploadCommentData(
+                hashMapComment,
+                ""+timestamp);
 
     }
+
+    private void uploadCommentData(HashMap<String, String> hashMapComment, String timestamp) {
+        DatabaseReference refUpload = ref.child(pId).child("Comments");
+        refUpload.child(timestamp).setValue(hashMapComment).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                resetVues();
+                ref.child(pId).child("pNComments").setValue(""+ (Integer.parseInt(post.getpNComments()) + 1));
+                String description = commentEdtv.getText().toString().trim();
+                prepareNotification(
+                        ""+timestamp,
+                        ""+myNAME+" a ajouté un commentaire",
+                        ""+  description,
+                        ""+TYPE_POST_NOTIFICATION,
+                        ""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void prepareNotification(String pId, String titre, String description, String notificationType, String notificationTopic){
+        String NOTIFICATION_TOPIC = "/topics/" + notificationTopic;
+        String NOTIFICATION_TITLE = titre;
+        String NOTIFICATION_DESCRIPTION = description;
+        String NOTIFICATION_TYPE = notificationType;
+
+        JSONObject notificationJo = new JSONObject();
+        JSONObject notificationBodyJo = new JSONObject();
+
+        try {
+            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
+            notificationBodyJo.put("sender", myUID);
+            notificationBodyJo.put("pId", pId);
+            notificationBodyJo.put("pTitre", NOTIFICATION_TITLE);
+            notificationBodyJo.put("pDescription", NOTIFICATION_DESCRIPTION);
+
+            notificationJo.put("to", NOTIFICATION_TOPIC);
+            notificationJo.put("data", notificationBodyJo);
+        }catch (Exception e){
+            Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        sendPostNotification(notificationJo);
+    }
+
+    private void sendPostNotification(JSONObject notificationJo) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("FCM_RESPONSE", "onResponse: "+ response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(PostActivity.this, ""+error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=AAAAZCzfbyE:APA91bFgMvLCJrB-y0h_8jzGXYePXl5gicO0KcfMwXWRK8rHNv81UGdhvxzD9_SGADkKFxbvXFXut6ZX7bFx6RleoFbawR7igk-t1BALJGyFrSuhSZYu9hQkAimLNOya0REEAfRe2rYl");
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
+    }
+
+    private void resetVues() {
+        commentEdtv.setText(null);
+        commentEdtv.setHint("Votre commentaire");
+    }
+
+    private void unsuscribeNotification(String topic) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = ""+getResources().getString(R.string.not_receive_notification);
+                        if(!task.isSuccessful()){
+                            msg = ""+getResources().getString(R.string.subscription_failed);
+                        }
+                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void suscribeNotification(String topic) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = ""+getResources().getString(R.string.receive_notification);
+                        if(!task.isSuccessful()){
+                            msg = ""+getResources().getString(R.string.unsubscription_failed);
+                        }
+                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private final ValueEventListener postInfosVal =  new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            for (DataSnapshot ds : snapshot.getChildren()){
+                post = ds.getValue(Post.class);
+                collapsingToolbarLayout.setTitle(post.getpTitre());
+                postDescriptionTv.setText(post.getpDescription());
+
+                if (post.getpCreator().equals(myUID)){
+                    vueTv.setText(Integer.parseInt(post.getpNVues()) <= 1 ? getResources()
+                            .getString(R.string.nombre_vue, post.getpNVues()) : getResources()
+                            .getString(R.string.nombre_vues, post.getpNVues()));
+                    likeTv.setText(Integer.parseInt(post.getpNLikes()) <= 1 ? getResources()
+                            .getString(R.string.nombre_like, post.getpNLikes()) : getResources()
+                            .getString(R.string.nombre_likes, post.getpNLikes()));
+                    commentTv.setText(Integer.parseInt(post.getpNComments()) <= 1 ? getResources()
+                            .getString(R.string.nombre_comment, post.getpNComments()) : getResources()
+                            .getString(R.string.nombre_comments, post.getpNComments()));
+                    noteTv.setText(ds.child("pNote").exists()?getResources().getString(R.string.note_post, post.getpNote()):"Note de la publication");
+                    warningTv.setText(ds.child("pNSignals").exists()?getResources().getString(R.string.signalement_post, post.getpNSignals()): "Total signalement");
+                }else{
+                    if (userVue){
+                        ref.child(pId).child("pNVues").setValue(""+ (Integer.parseInt(post.getpNVues()) + 1));
+                        ref.child(pId).child("Vues").child(myUID).setValue(ds.child("Vues").hasChild(myUID)?
+                                ""+ (Integer.parseInt(ds.child("Vues").child(myUID).getValue(String.class)) + 1):"1");
+                        userVue = false;
+                    }
+                    vueTv.setText(!ds.child("Vues").hasChild(myUID)?getResources().getString(R.string.nombre_vue, "0"):
+                            Integer.parseInt(ds.child("Vues").child(myUID).getValue(String.class)) <= 1 ?
+                                    getResources().getString(R.string.nombre_vue, ds.child("Vues").child(myUID).getValue(String.class)):
+                                    getResources().getString(R.string.nombre_vues, ds.child("Vues").child(myUID).getValue(String.class)));
+
+                    likeTv.setText(!ds.child("Shares").hasChild(myUID)?
+                            getResources().getString(R.string.nombre_share, "0"):
+                            Integer.parseInt(ds.child("Shares").child(myUID).getValue().toString())
+                                    <= 1 ? getResources()
+                                    .getString(R.string.nombre_share, ds.child("Shares").child(myUID).getValue().toString()) :
+                                    getResources().getString(R.string.nombre_shares, ds.child("Shares").child(myUID).getValue().toString()));
+
+                    shareIb.setImageResource(!ds.child("Shares").hasChild(myUID)?R.drawable.ic_no_share:R.drawable.ic_share);
+                    ref.child(post.getpId()).child("Comments")
+                            .orderByChild("cCreator").equalTo(myUID)
+                            .addValueEventListener(myNumbCommentsVal);
+                    noteIb.setImageResource(!ds.child("Notes").hasChild(myUID)?R.drawable.ic_no_note:R.drawable.ic_note);
+                    noteTv.setText(!ds.child("Notes").hasChild(myUID)?getResources().getString(R.string.note_post, "0"):
+                            getResources().getString(R.string.note_post, ds.child(myUID).child("nNote").getValue(String.class)));
+                    signalerIb.setImageResource(ds.child("Signalements").hasChild(myUID)?R.drawable.ic_signaler:R.drawable.ic_no_signaler);
+                    mProcessSignal = ds.child("Signalements").hasChild(myUID);
+                    favoriteIb.setImageResource(ds.child("Favorites").hasChild(myUID)?R.drawable.ic_favorite:R.drawable.ic_no_favorite);
+                    mProcessFavorites = ds.child("Favorites").hasChild(myUID);
+                    likeIb.setImageResource(ds.child("Likes").hasChild(myUID)?R.drawable.ic_like:R.drawable.ic_no_like);
+                    mProcessLikes = ds.child("Likes").hasChild(myUID);
+                }
+                try {
+                    Picasso.get().load(post.getpCover()).placeholder(R.drawable.ic_post).into(coverIv);
+                } catch (Exception e) {
+                    Picasso.get().load(R.drawable.ic_post).into(coverIv);
+                }
+
+                if (ds.child("Shares").hasChild(myUID))
+                    numShared = ds.child("Shares").child(myUID).getValue(String.class);
+                else
+                    Log.e("TAG_SHARE", "Not shares found");
+
+                ref.child(pId).child("Gallery").addValueEventListener(valPostGallery);
+                ref.child(pId).child("Comments").addValueEventListener(valAllComments);
+                ref.child(pId).child("Notes").addValueEventListener(valPostNotes);
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final ValueEventListener valAllComments = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            commentList.clear();
+            for (DataSnapshot ds : snapshot.getChildren()){
+                Comment comment = ds.getValue(Comment.class);
+                commentList.add(comment);
+                commentAdaptor = new CommentAdaptor(PostActivity.this, commentList);
+                commentsRv.setAdapter(commentAdaptor);
+                commentAdaptor.setOnItemClickListener(new ViewsClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        Comment comment = commentList.get(position);
+                        /*if (comment.getcCreator().equals(myUID) || pCreator.equals(myUID))
+                            showCommentDialog(comment, blockedList.contains(comment.getcCreator()));*/
+                    }
+                });
+            }
+            rlComment.setVisibility(pCreator.equals(myUID)&&commentList.size()==0?View.GONE:View.VISIBLE);
+            rlLike.setVisibility(pCreator.equals(myUID)&&commentList.size()==0?View.GONE:View.VISIBLE);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+
+    private final ValueEventListener valPostGallery = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            galleryList.clear();
+            galleryList.add(new Gallery(post.getpCover(), "Post cover"));
+            for (DataSnapshot ds : snapshot.getChildren()){
+                Gallery gallery = ds.getValue(Gallery.class);
+                galleryList.add(gallery);
+                galleryAdaptor = new GalleryAdaptor(PostActivity.this, galleryList);
+                postImagesRv.setAdapter(galleryAdaptor);
+                galleryAdaptor.setOnItemClickListener(new ViewsClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        if (pCreator.equals(myUID)){
+                            showGalleryMenu();
+                        }
+                    }
+                });
+            }
+            coverIv.setVisibility(galleryList.size()>1?View.GONE:View.VISIBLE);
+            postImagesRv.setVisibility(galleryList.size()<=1?View.GONE:View.VISIBLE);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final ValueEventListener valPostNotes = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            float note = 0;
+            for (DataSnapshot ds : snapshot.getChildren()){
+                String item = ds.child("nNote").getValue(String.class);
+                note = note + Float.parseFloat(item);
+            }
+            note = note/snapshot.getChildrenCount();
+            noteTv.setText(""+note+"/20");
+
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("pNote", ""+note);
+
+            ref.child(pId).updateChildren(hashMap);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final ValueEventListener myNumbCommentsVal = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            long count = snapshot.getChildrenCount();
+            commentTv.setText(count <= 1 ? getResources()
+                    .getString(R.string.nombre_comment, ""+count) : getResources()
+                    .getString(R.string.nombre_comments, ""+count));
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
 }
