@@ -18,7 +18,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notificationsRv"
-        tools:listitem="@layout/item_notification_parent"
+        tools:listitem="@layout/item_not_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

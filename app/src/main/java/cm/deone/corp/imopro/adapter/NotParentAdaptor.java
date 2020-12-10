@@ -19,14 +19,14 @@ import cm.deone.corp.imopro.R;
 import cm.deone.corp.imopro.models.NotParentItem;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
-public class NotificationParentAdaptor extends RecyclerView.Adapter<NotificationParentAdaptor.MyHolder> {
+public class NotParentAdaptor extends RecyclerView.Adapter<NotParentAdaptor.MyHolder> {
 
     private Context context;
     private ViewsClickListener listener;
     private List<NotParentItem> notParentItemList;
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
-    public NotificationParentAdaptor(Context context, List<NotParentItem> notParentItemList) {
+    public NotParentAdaptor(Context context, List<NotParentItem> notParentItemList) {
         this.context = context;
         this.notParentItemList = notParentItemList;
     }
@@ -34,7 +34,7 @@ public class NotificationParentAdaptor extends RecyclerView.Adapter<Notification
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification_parent, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_not_parent, parent, false);
         return new MyHolder(view);
     }
 
@@ -56,10 +56,10 @@ public class NotificationParentAdaptor extends RecyclerView.Adapter<Notification
         LinearLayoutManager layoutManager = new LinearLayoutManager(holder.childRv.getContext());
         layoutManager.setInitialPrefetchItemCount(notParentItem.getNotChildItemList().size());
 
-        NotificationChildAdapter notificationChildAdapter = new NotificationChildAdapter(context,
+        NotChildAdapter notChildAdapter = new NotChildAdapter(context,
                 notParentItem.getNotChildItemList());
         holder.childRv.setLayoutManager(layoutManager);
-        holder.childRv.setAdapter(notificationChildAdapter);
+        holder.childRv.setAdapter(notChildAdapter);
         holder.childRv.setRecycledViewPool(viewPool);
 
     }

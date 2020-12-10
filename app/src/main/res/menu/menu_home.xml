@@ -24,4 +24,18 @@
         android:visible="false"
         app:showAsAction="withText"/>
 
+    <item
+        android:id="@+id/menu_show_vues"
+        android:title="Vues"
+        android:visible="false"
+        app:actionLayout="@layout/menu_item_vues"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_show_comments"
+        android:title="Commentaires"
+        android:visible="false"
+        app:actionLayout="@layout/menu_item_comments"
+        app:showAsAction="ifRoom" />
+
 </menu>

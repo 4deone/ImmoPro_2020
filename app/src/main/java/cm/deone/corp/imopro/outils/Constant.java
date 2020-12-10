@@ -16,6 +16,12 @@ public class Constant {
     public static final String DB_POST = "Posts";
     public static final String DB_COMMENT = "Comments";
     public static final String DB_GALLERY = "Gallery";
+    public static final String DB_SIGNALEMENT = "Signalements";
+    public static final String DB_NOTES = "Notes";
+    public static final String DB_FAVORIES = "Favorites";
+    public static final String DB_SHARES = "Shares";
+    public static final String DB_LIKES = "Likes";
+    public static final String DB_VUES = "Vues";
 
     public static final int CAMERA_REQUEST_CODE = 100;
     public static final int STORAGE_REQUEST_CODE = 200;

@@ -23,8 +23,8 @@
 
             <com.blogspot.atifsoftwares.circularimageview.CircularImageView
                 android:id="@+id/avatarIv"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_user" />
 
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="User name"
-                android:textSize="20sp"
+                android:textSize="14sp"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -42,7 +42,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/childRv"
             android:layout_below="@+id/headLl"
-            tools:listitem="@layout/item_notification_child"
+            tools:listitem="@layout/item_not_child"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

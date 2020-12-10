@@ -8,13 +8,12 @@ public class Post {
     private String pDescription;
     private String pNote;
     private String pNLikes;
+    private String pNFavories;
     private String pNVues;
     private String pNComments;
     private String pNSignals;
     private String pNShares;
     private String pCreator;
-    private String pTopicComment;
-    private String pTopicGallery;
     private String pPublicOrPrivate;
     private String uName;
     private String uAvatar;
@@ -25,11 +24,11 @@ public class Post {
     public Post(String pId, String pCover,
                 String pDate, String pTitre,
                 String pDescription, String pNote,
-                String pNLikes, String pNVues,
-                String pNComments, String pNSignals,
-                String pNShares, String pCreator,
-                String pTopicComment, String pTopicGallery,
-                String pPublicOrPrivate, String uName, String uAvatar) {
+                String pNLikes, String pNFavories,
+                String pNVues, String pNComments,
+                String pNSignals, String pNShares,
+                String pCreator, String pPublicOrPrivate,
+                String uName, String uAvatar) {
         this.pId = pId;
         this.pCover = pCover;
         this.pDate = pDate;
@@ -37,16 +36,23 @@ public class Post {
         this.pDescription = pDescription;
         this.pNote = pNote;
         this.pNLikes = pNLikes;
+        this.pNFavories = pNFavories;
         this.pNVues = pNVues;
         this.pNComments = pNComments;
         this.pNSignals = pNSignals;
         this.pNShares = pNShares;
         this.pCreator = pCreator;
-        this.pTopicComment = pTopicComment;
-        this.pTopicGallery = pTopicGallery;
         this.pPublicOrPrivate = pPublicOrPrivate;
         this.uName = uName;
         this.uAvatar = uAvatar;
+    }
+
+    public String getpNFavories() {
+        return pNFavories;
+    }
+
+    public void setpNFavories(String pNFavories) {
+        this.pNFavories = pNFavories;
     }
 
     public String getpId() {
@@ -139,22 +145,6 @@ public class Post {
 
     public String getpCreator() {
         return pCreator;
-    }
-
-    public String getpTopicComment() {
-        return pTopicComment;
-    }
-
-    public void setpTopicComment(String pTopicComment) {
-        this.pTopicComment = pTopicComment;
-    }
-
-    public String getpTopicGallery() {
-        return pTopicGallery;
-    }
-
-    public void setpTopicGallery(String pTopicGallery) {
-        this.pTopicGallery = pTopicGallery;
     }
 
     public void setpCreator(String pCreator) {

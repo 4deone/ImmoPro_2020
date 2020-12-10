@@ -19,7 +19,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -28,11 +27,10 @@ import java.util.List;
 
 import cm.deone.corp.imopro.MainActivity;
 import cm.deone.corp.imopro.R;
-import cm.deone.corp.imopro.adapter.NotificationParentAdaptor;
+import cm.deone.corp.imopro.adapter.NotParentAdaptor;
 import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.NotChildItem;
 import cm.deone.corp.imopro.models.NotParentItem;
-import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.models.User;
 
 import static cm.deone.corp.imopro.outils.Constant.TAG_POST_ID;
@@ -47,7 +45,7 @@ public class NotificationsFragment extends Fragment {
     private DatabaseReference refUsers;
 
     private RecyclerView notificationsRv;
-    private NotificationParentAdaptor notificationParentAdaptor;
+    private NotParentAdaptor notParentAdaptor;
 
     private HashMap<String, List<String>> hashMapNotification;
 
@@ -175,8 +173,8 @@ public class NotificationsFragment extends Fragment {
 
                 notParentItemList.add(notParentItem);
 
-                notificationParentAdaptor = new NotificationParentAdaptor(getActivity(), notParentItemList);
-                notificationsRv.setAdapter(notificationParentAdaptor);
+                notParentAdaptor = new NotParentAdaptor(getActivity(), notParentItemList);
+                notificationsRv.setAdapter(notParentAdaptor);
             }
         }
 

@@ -63,17 +63,13 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
 
     private String[] cameraPermissions;
     private String[] storagePermissions;
-
     private Uri imageUri;
-
     private ProgressDialog progressDialog;
-
     private ImageView coverIv;
     private EditText postTitreEdtv;
     private EditText postDescriptionEdtv;
     private FloatingActionButton createPostFab;
     private CheckBox publicOrPrivateCb;
-
     private String myUID;
     private String myNAME;
     private String myAVATAR;
@@ -338,6 +334,7 @@ public class CreatePostActivity extends AppCompatActivity implements View.OnClic
         hashMapPost.put("pNComments", "0");
         hashMapPost.put("pNShares", "0");
         hashMapPost.put("pNSignals", "0");
+        hashMapPost.put("pNFavories", "0");
 
         if (publicOrPrivateCb.isChecked()){
             hashMapPost.put("pPublicOrPrivate", "public");

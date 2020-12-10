@@ -266,10 +266,6 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
             reference.child("Posts").child(post.getpId()).child("Likes").child(myUID).removeValue();
             mProcessLikes = false;
             likeIb.setImageResource(R.drawable.ic_no_like);
-
-            // unsuscribe gallery & comment notification
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(post.getpTopicGallery());
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(post.getpTopicComment());
         }else {
             reference.child("Posts").child(post.getpId()).child("pNLikes")
                     .setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
@@ -283,10 +279,6 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
             reference.child("Posts").child(post.getpId()).child("Likes").child(myUID).setValue(hashMap);
             mProcessLikes = true;
             likeIb.setImageResource(R.drawable.ic_like);
-
-            // suscribe gallery & comment notification
-            FirebaseMessaging.getInstance().subscribeToTopic(post.getpTopicGallery());
-            FirebaseMessaging.getInstance().subscribeToTopic(post.getpTopicComment());
         }
     }
 

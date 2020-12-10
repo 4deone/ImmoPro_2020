@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
+    android:layout_gravity="center"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_menu_comments"/>
+
+    <TextView
+        android:id="@+id/menuItemCommentsTv"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_cercle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="10sp"
+        tools:text="1"/>
+
+</RelativeLayout>

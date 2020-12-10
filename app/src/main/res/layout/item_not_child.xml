@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Titre de l'activité"
-        android:textSize="18sp"
+        android:textSize="13sp"
         android:textColor="@color/black"
         android:textStyle="bold" />
 
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Notification message"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:textColor="@color/black" />
 
     <TextView
@@ -28,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Time"
+        android:textSize="10sp"
         android:textStyle="italic"
         android:textColor="@color/black" />
 

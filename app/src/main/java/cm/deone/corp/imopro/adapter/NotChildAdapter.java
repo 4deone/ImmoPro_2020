@@ -2,36 +2,29 @@ package cm.deone.corp.imopro.adapter;
 
 import android.content.Context;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import cm.deone.corp.imopro.R;
-import cm.deone.corp.imopro.models.Gallery;
 import cm.deone.corp.imopro.models.NotChildItem;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
-public class NotificationChildAdapter extends RecyclerView.Adapter<NotificationChildAdapter.MyHolder> {
+public class NotChildAdapter extends RecyclerView.Adapter<NotChildAdapter.MyHolder> {
 
     private Context context;
     private ViewsClickListener listener;
     private final List<NotChildItem> notChildItemList;
 
-    public NotificationChildAdapter(Context context, List<NotChildItem> notChildItemList) {
+    public NotChildAdapter(Context context, List<NotChildItem> notChildItemList) {
         this.context = context;
         this.notChildItemList = notChildItemList;
     }
@@ -39,7 +32,7 @@ public class NotificationChildAdapter extends RecyclerView.Adapter<NotificationC
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification_child, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_not_child, parent, false);
         return new MyHolder(view);
     }
 
@@ -52,13 +45,13 @@ public class NotificationChildAdapter extends RecyclerView.Adapter<NotificationC
         String description = notChildItem.getnMessage();
         String timestamp = notChildItem.getnTime();
 
-        /*Calendar cal = Calendar.getInstance(Locale.FRANCE);
+        Calendar cal = Calendar.getInstance(Locale.FRANCE);
         cal.setTimeInMillis(Long.parseLong(timestamp));
-        String dateTime = DateFormat.format("EEEE dd MMMM yyyy", cal).toString();*/
+        String dateTime = DateFormat.format("EEEE dd MMMM yyyy", cal).toString();
 
         holder.titreTv.setText(titre);
         holder.notifTv.setText(description);
-        holder.timeTv.setText(timestamp);
+        holder.timeTv.setText(dateTime);
 
     }
 

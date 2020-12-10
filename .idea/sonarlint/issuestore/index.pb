@@ -61,8 +61,6 @@ q
 Aapp/src/main/java/cm/deone/corp/imopro/CreateGalleryActivity.java,c/a/cafba43e1c2bb81cd0ea50955cdd0e78b84b3617
 X
 (app/src/main/res/drawable/bg_arrondi.xml,7/9/79439b397d4f09baf65747b07c4e65f6b3b0d486
-W
-'app/src/main/res/drawable/bg_cercle.xml,6/d/6dce9a77f74981259638f6bf0f889a1e5403872a
 S
 #app/src/main/res/drawable/bg_in.xml,0/3/032c8e33a3350f7b1e5a36f5e403c8b9f439c1bc
 T
@@ -103,10 +101,6 @@ o
 ?app/src/main/java/cm/deone/corp/imopro/models/NotChildItem.java,c/3/c314e7bd7c53cc7d57ac47b2cccecaff3ae1f83b
 p
 @app/src/main/java/cm/deone/corp/imopro/models/NotParentItem.java,0/2/02ab9efad3ced290dedf39b00d3e0f14b85e2000
-|
-Lapp/src/main/java/cm/deone/corp/imopro/adapter/NotificationChildAdapter.java,1/a/1a6434b451949e7806433069235477a914bbe2d1
-}
-Mapp/src/main/java/cm/deone/corp/imopro/adapter/NotificationParentAdaptor.java,f/8/f85584771cc1a334724b8e6e2e18bee91b5bd7ad
 p
 @app/src/main/java/cm/deone/corp/imopro/CreateSearchActivity.java,5/6/5688c036843e598180d0f82ceaf27edda223c6f0
 o
@@ -127,10 +121,6 @@ Y
 )app/src/main/res/layout/item_chat_out.xml,8/1/811586ca39c459bcf01ecbec7156bae9595b5467
 \
 ,app/src/main/res/layout/item_chat_system.xml,5/5/55381adc1387ef7fceda80d191cb65874f15dc12
-c
-3app/src/main/res/layout/item_notification_child.xml,f/d/fd434ead7accd9bf28fb62e033475b81db2c7fa8
-d
-4app/src/main/res/layout/item_notification_parent.xml,9/6/9661e8b2c1a2e674abae32e8fb10559446a1030d
 ^
 .app/src/main/res/drawable-anydpi/ic_budget.xml,6/a/6a7e6c5775bb43f1411e03bb98bfd99f24e0684d
 _
@@ -151,3 +141,9 @@ S
 #app/src/main/res/values/strings.xml,d/2/d2281fbb3027de2722081a53408dd77628bf080e
 Z
 *app/src/main/res/values-en-rGB/strings.xml,b/e/beb5dfcb2b16782797b96ba4f8fb689f06091dd4
+t
+Dapp/src/main/java/cm/deone/corp/imopro/adapter/NotParentAdaptor.java,6/0/603037ec37e53a7b5bf79b983e31f9af0f91d944
+s
+Capp/src/main/java/cm/deone/corp/imopro/adapter/NotChildAdapter.java,0/5/052d6fded6a35ddd07f3cac3dabeed309d33d2b2
+p
+@app/src/main/java/cm/deone/corp/imopro/PostSettingsActivity.java,4/9/49f5d9dd50a6d7be309b4253775468643544bc83

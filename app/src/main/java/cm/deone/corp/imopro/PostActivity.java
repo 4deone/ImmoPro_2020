@@ -3,9 +3,11 @@ package cm.deone.corp.imopro;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,12 +21,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,18 +67,27 @@ import java.util.Map;
 
 import cm.deone.corp.imopro.adapter.CommentAdaptor;
 import cm.deone.corp.imopro.adapter.GalleryAdaptor;
+import cm.deone.corp.imopro.adapter.NotParentAdaptor;
 import cm.deone.corp.imopro.fragments.CommentFragment;
 import cm.deone.corp.imopro.fragments.GalleryFragment;
 import cm.deone.corp.imopro.fragments.HomeFragment;
 import cm.deone.corp.imopro.fragments.NotificationsFragment;
 import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.Gallery;
+import cm.deone.corp.imopro.models.NotChildItem;
+import cm.deone.corp.imopro.models.NotParentItem;
 import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
+import static cm.deone.corp.imopro.outils.Constant.DB_FAVORIES;
 import static cm.deone.corp.imopro.outils.Constant.DB_GALLERY;
+import static cm.deone.corp.imopro.outils.Constant.DB_LIKES;
+import static cm.deone.corp.imopro.outils.Constant.DB_NOTES;
 import static cm.deone.corp.imopro.outils.Constant.DB_POST;
+import static cm.deone.corp.imopro.outils.Constant.DB_SHARES;
+import static cm.deone.corp.imopro.outils.Constant.DB_SIGNALEMENT;
+import static cm.deone.corp.imopro.outils.Constant.DB_VUES;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION;
@@ -81,44 +95,45 @@ import static cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_POST_NOTIFICATION;
 
-public class PostActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
+public class PostActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
 
     private boolean userVue = true;
     private boolean mProcessLikes = false;
     private boolean mProcessFavorites = false;
     private boolean mProcessSignal = false;
+
     private Post post;
+
     private String pId;
     private String pCreator;
     private String myUID;
     private String myNAME;
     private String myAVATAR;
     private String numShared;
+
     private DatabaseReference ref;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
+
     private ImageView coverIv;
-    private ImageButton likeIb;
-    private ImageButton favoriteIb;
-    private ImageButton noteIb;
-    private ImageButton shareIb;
-    private ImageButton signalerIb;
+
     private RelativeLayout rlLike;
     private RelativeLayout rlComment;
     private EditText commentEdtv;
-    private TextView warningTv;
-    private TextView vueTv;
+
     private TextView likeTv;
-    private TextView commentTv;
+    private TextView favoriteTv;
+    private TextView shareTv;
+    private TextView signalerTv;
     private TextView noteTv;
+
     private TextView postDescriptionTv;
+
     private RecyclerView postImagesRv;
-    private RecyclerView commentsRv;
     private List<Gallery> galleryList;
     private GalleryAdaptor galleryAdaptor;
+
+    private RecyclerView commentsRv;
     private List<Comment> commentList;
     private CommentAdaptor commentAdaptor;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,15 +160,15 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.likeIb && !pCreator.equals(myUID)){
+        if (v.getId() == R.id.likeTv && !pCreator.equals(myUID)){
             likePost();
-        }else if (v.getId() == R.id.favoriteIb && !pCreator.equals(myUID)){
+        }else if (v.getId() == R.id.favoriteTv && !pCreator.equals(myUID)){
             favoritePost();
-        }else if (v.getId() == R.id.shareIb){
+        }else if (v.getId() == R.id.shareTv){
             sharePost(post.getpTitre(), post.getpDescription());
-        }else if (v.getId() == R.id.noteIb && !pCreator.equals(myUID)){
+        }else if (v.getId() == R.id.noteTv && !pCreator.equals(myUID)){
             showGiveNoteDialog();
-        }else if (v.getId() == R.id.signalerIb && !pCreator.equals(myUID)){
+        }else if (v.getId() == R.id.signalerTv && !pCreator.equals(myUID)){
             showGiveWarningDialog();
         }else if (v.getId() == R.id.sendIb && !pCreator.equals(myUID)){
             verificationDeSaisie();
@@ -169,30 +184,34 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()){
-            case R.id.commentNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
-                }else{
-                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
-                }
-                break;
-            case R.id.galleryNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
-                }else{
-                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
-                }
-                break;
-            default:
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        menu.findItem(R.id.menu_search).setVisible(false);
+        menu.findItem(R.id.menu_add_operation).setVisible(false);
+        menu.findItem(R.id.menu_add_image).setVisible(false);
+        MenuItem itemVues = menu.findItem(R.id.menu_show_vues);
+        itemVues.setVisible(true);
+        View rootViewVues = MenuItemCompat.getActionView(itemVues);
+        final TextView tvVues = (TextView) rootViewVues.findViewById(R.id.menuItemVuesTv);
+        MenuItem itemComments = menu.findItem(R.id.menu_show_comments);
+        itemComments.setVisible(true);
+        View rootViewComments = MenuItemCompat.getActionView(itemComments);
+        final TextView tvComments = (TextView) rootViewComments.findViewById(R.id.menuItemCommentsTv);
+
+        menuPost(tvComments, tvVues);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_show_settings){
+            Intent intent = new Intent(PostActivity.this, PostSettingsActivity.class);
+            intent.putExtra("pId", pId);
+            intent.putExtra("pCreator", pCreator);
+            startActivity(intent);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void checkUser() {
@@ -225,59 +244,47 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         pId = getIntent().getStringExtra("pId");
         pCreator = getIntent().getStringExtra("pCreator");
         ref = FirebaseDatabase.getInstance().getReference("Posts");
-        sharedPreferences = getSharedPreferences("POST_NOTIF_SP", MODE_PRIVATE);
 
-        collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
+        collapsingToolbarLayout.setTitle("");
+
         coverIv = findViewById(R.id.coverIv);
-        warningTv = findViewById(R.id.warningTv);
-        vueTv = findViewById(R.id.vueTv);
+
+        signalerTv = findViewById(R.id.signalerTv);
+        favoriteTv = findViewById(R.id.favoriteTv);
+        shareTv = findViewById(R.id.shareTv);
         likeTv = findViewById(R.id.likeTv);
-        commentTv = findViewById(R.id.commentTv);
         noteTv = findViewById(R.id.noteTv);
-        likeIb = findViewById(R.id.likeIb);
-        favoriteIb = findViewById(R.id.favoriteIb);
-        noteIb = findViewById(R.id.noteIb);
-        shareIb = findViewById(R.id.shareIb);
-        signalerIb = findViewById(R.id.signalerIb);
+
         postDescriptionTv = findViewById(R.id.postDescriptionTv);
+
+        commentEdtv = findViewById(R.id.commentEdtv);
+
         postImagesRv = findViewById(R.id.postImagesRv);
         commentsRv = findViewById(R.id.commentsRv);
-        RelativeLayout commentFooterRl = findViewById(R.id.commentFooterRl);
-        RelativeLayout rlNotification = findViewById(R.id.rlNotification);
 
-        rlLike = findViewById(R.id.rlLike);
+        RelativeLayout rlCommentFooter = findViewById(R.id.commentFooterRl);
         rlComment = findViewById(R.id.rlComment);
 
-        rlNotification.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
-        likeIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+        /*likeIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
         favoriteIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
         noteIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
-        signalerIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
-        commentFooterRl.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
-        warningTv.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
+        signalerIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);*/
 
-        SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
-        SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
+        rlCommentFooter.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
 
-        boolean isCommentEnable = sharedPreferences.getBoolean(
-                ""+TOPIC_COMMENT_NOTIFICATION+""+pId,
-                false);
-        boolean isGalleryEnable = sharedPreferences.getBoolean(
-                ""+TOPIC_GALLERY_NOTIFICATION+""+pId,
-                false);
+        //warningTv.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
 
-        commentNotificationSw.setChecked(isCommentEnable);
-        galleryNotificationSw.setChecked(isGalleryEnable);
-
-        commentNotificationSw.setOnCheckedChangeListener(this);
-        galleryNotificationSw.setOnCheckedChangeListener(this);
         coverIv.setOnLongClickListener(this);
         findViewById(R.id.sendIb).setOnClickListener(this);
-        likeIb.setOnClickListener(this);
-        favoriteIb.setOnClickListener(this);
-        noteIb.setOnClickListener(this);
-        shareIb.setOnClickListener(this);
-        signalerIb.setOnClickListener(this);
+        likeTv.setOnClickListener(this);
+        favoriteTv.setOnClickListener(this);
+        noteTv.setOnClickListener(this);
+        shareTv.setOnClickListener(this);
+        signalerTv.setOnClickListener(this);
     }
 
     private void getPost() {
@@ -285,11 +292,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         commentList = new ArrayList<>();
         Query query = ref.orderByKey().equalTo(pId);
         query.addValueEventListener(postInfosVal);
-    }
-
-    private void sharedPost() {
-        ref.child(post.getpId()).child("pNShares").setValue(""+(Integer.parseInt(post.getpNLikes())+1));
-        ref.child(post.getpId()).child("Shares").child(myUID).setValue(TextUtils.isEmpty(numShared)?"1":""+(Integer.parseInt(numShared)+1));
     }
 
     private void showCoverDialog() {
@@ -345,47 +347,43 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private void likePost() {
         if (mProcessLikes){
-            ref.child(post.getpId()).child("pNLikes")
-                    .setValue(""+ (Integer.parseInt(post.getpNLikes()) - 1));
-            ref.child(post.getpId()).child("Likes").child(myUID).removeValue();
+            ref.child(post.getpId()).child("pNLikes").setValue(""+ (Integer.parseInt(post.getpNLikes()) - 1));
+            ref.child(post.getpId()).child(DB_LIKES).child(myUID).removeValue();
+            likeTv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_no_like,0,0,0);
             mProcessLikes = false;
-            likeIb.setImageResource(R.drawable.ic_no_like);
         }else {
-            ref.child(post.getpId()).child("pNLikes")
-                    .setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
-
+            ref.child(post.getpId()).child("pNLikes").setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
             String timestamp = String.valueOf(System.currentTimeMillis());
-
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("lId", myUID);
             hashMap.put("lDate", timestamp);
-
             hashMap.put("uName", myNAME);
             hashMap.put("uAvatar", myAVATAR);
 
-            ref.child(post.getpId()).child("Likes").child(myUID).setValue(hashMap);
+            ref.child(post.getpId()).child(DB_LIKES).child(myUID).setValue(hashMap);
+            likeTv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_like,0,0,0);
             mProcessLikes = true;
-            likeIb.setImageResource(R.drawable.ic_like);
         }
     }
 
     private void favoritePost() {
         if (mProcessFavorites){
-            ref.child(post.getpId()).child("Favorites").child(myUID).removeValue();
+            ref.child(post.getpId()).child("pNFavories").setValue(""+ (Integer.parseInt(post.getpNLikes()) - 1));
+            ref.child(post.getpId()).child(DB_FAVORIES).child(myUID).removeValue();
             mProcessFavorites = false;
-            favoriteIb.setImageResource(R.drawable.ic_no_favorite);
+            favoriteTv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_no_favorite,0,0,0);
         }else {
+            ref.child(post.getpId()).child("pNFavories").setValue(""+ (Integer.parseInt(post.getpNLikes()) + 1));
             String timestamp = String.valueOf(System.currentTimeMillis());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("fId", myUID);
             hashMap.put("fDate", timestamp);
-
             hashMap.put("uName", myNAME);
             hashMap.put("uAvatar", myAVATAR);
 
-            ref.child(post.getpId()).child("Favorites").child(myUID).setValue(hashMap);
+            ref.child(post.getpId()).child(DB_FAVORIES).child(myUID).setValue(hashMap);
             mProcessFavorites = true;
-            favoriteIb.setImageResource(R.drawable.ic_favorite);
+            favoriteTv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_favorite,0,0,0);
         }
     }
 
@@ -439,6 +437,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         sharedPost();
     }
 
+    private void sharedPost() {
+        ref.child(pId).child("pNShares").setValue(""+(Integer.parseInt(post.getpNLikes())+1));
+        ref.child(pId).child(DB_SHARES).child(myUID).setValue(TextUtils.isEmpty(numShared)?"1":""+(Integer.parseInt(numShared)+1));
+    }
+
     private void showGiveNoteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
         builder.setTitle("Noter ce post");
@@ -479,7 +482,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         hashMap.put("uName", myNAME);
         hashMap.put("uAvatar", myAVATAR);
 
-        ref.child(pId).child("Notes").child(myUID).setValue(hashMap)
+        ref.child(pId).child(DB_NOTES).child(myUID).setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -548,9 +551,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         if (mProcessSignal){
             ref.child(post.getpId()).child("pNSignals")
                     .setValue(""+ (Integer.parseInt(post.getpNSignals()) - 1));
-            ref.child(post.getpId()).child("Signalements").child(myUID).removeValue();
+            ref.child(post.getpId()).child(DB_SIGNALEMENT).child(myUID).removeValue();
             mProcessSignal = false;
-            likeIb.setImageResource(R.drawable.ic_no_like);
+            signalerTv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_no_signaler,0,0,0);
         }else {
             ref.child(post.getpId()).child("pNSignals")
                     .setValue(""+ (Integer.parseInt(post.getpNSignals()) + 1));
@@ -563,9 +566,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             hashMap.put("uName", myNAME);
             hashMap.put("uAvatar", myAVATAR);
 
-            ref.child(post.getpId()).child("Signalements").child(myUID).setValue(hashMap);
+            ref.child(post.getpId()).child(DB_SIGNALEMENT).child(myUID).setValue(hashMap);
             mProcessSignal = true;
-            likeIb.setImageResource(R.drawable.ic_like);
+            signalerTv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_signaler,0,0,0);
         }
     }
 
@@ -674,32 +677,54 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         commentEdtv.setHint("Votre commentaire");
     }
 
-    private void unsuscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = ""+getResources().getString(R.string.not_receive_notification);
-                        if(!task.isSuccessful()){
-                            msg = ""+getResources().getString(R.string.subscription_failed);
-                        }
-                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+    private void afficherPhotoCouverturePost(String postCover) {
+        try {
+            Picasso.get().load(post.getpCover()).placeholder(R.drawable.ic_post).into(coverIv);
+        } catch (Exception e) {
+            Picasso.get().load(R.drawable.ic_post).into(coverIv);
+        }
     }
 
-    private void suscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = ""+getResources().getString(R.string.receive_notification);
-                        if(!task.isSuccessful()){
-                            msg = ""+getResources().getString(R.string.unsubscription_failed);
-                        }
-                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
+    private void initialiserNombreVuesPost(DataSnapshot ds) {
+        if (userVue){
+            ref.child(pId).child("pNVues").setValue(""+ (Integer.parseInt(post.getpNVues()) + 1));
+            ref.child(pId).child(DB_VUES).child(myUID).setValue(ds.child(DB_VUES).hasChild(myUID)?
+                    ""+ (Integer.parseInt(ds.child(DB_VUES).child(myUID).getValue(String.class)) + 1):"1");
+            userVue = false;
+        }
+    }
+
+    private void setHisNombreSharePost(DataSnapshot ds) {
+        shareTv.setText(!ds.child(DB_SHARES).hasChild(myUID)?"0":ds.child(DB_SHARES).child(myUID).getValue().toString());
+    }
+
+    private void setHisNotePost(DataSnapshot ds) {
+        noteTv.setText(!ds.child(DB_NOTES).hasChild(myUID)?"0":""+ds.child(DB_NOTES).child(myUID).child("nNote").getValue(String.class));
+    }
+
+    private void menuPost(final TextView tvComments, final TextView tvVues) {
+        Query query = ref.orderByKey().equalTo(pId);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()){
+                    tvComments.setText(ds.child("pNComments").getValue(String.class));
+                    tvComments.setVisibility(ds.child("pNComments").getValue(String.class).equals("0")?View.GONE:View.VISIBLE);
+                    if (ds.child("pCreator").getValue(String.class).equals(myUID)){
+                        tvVues.setText(ds.child("pNVues").getValue(String.class));
+                        tvVues.setVisibility(ds.child("pNVues").getValue(String.class).equals("0")?View.GONE:View.VISIBLE);
+                    }else{
+                        tvVues.setText(ds.child("Vues").hasChild(myUID)? ds.child("Vues").child(myUID).getValue(String.class): "0");
+                        tvVues.setVisibility(ds.child("Vues").hasChild(myUID)?View.VISIBLE:View.GONE);
                     }
-                });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private final ValueEventListener postInfosVal =  new ValueEventListener() {
@@ -707,68 +732,60 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             for (DataSnapshot ds : snapshot.getChildren()){
                 post = ds.getValue(Post.class);
-                collapsingToolbarLayout.setTitle(post.getpTitre());
                 postDescriptionTv.setText(post.getpDescription());
-
-                if (post.getpCreator().equals(myUID)){
-                    vueTv.setText(Integer.parseInt(post.getpNVues()) <= 1 ? getResources()
-                            .getString(R.string.nombre_vue, post.getpNVues()) : getResources()
-                            .getString(R.string.nombre_vues, post.getpNVues()));
-                    likeTv.setText(Integer.parseInt(post.getpNLikes()) <= 1 ? getResources()
-                            .getString(R.string.nombre_like, post.getpNLikes()) : getResources()
-                            .getString(R.string.nombre_likes, post.getpNLikes()));
-                    commentTv.setText(Integer.parseInt(post.getpNComments()) <= 1 ? getResources()
-                            .getString(R.string.nombre_comment, post.getpNComments()) : getResources()
-                            .getString(R.string.nombre_comments, post.getpNComments()));
-                    noteTv.setText(ds.child("pNote").exists()?getResources().getString(R.string.note_post, post.getpNote()):"Note de la publication");
-                    warningTv.setText(ds.child("pNSignals").exists()?getResources().getString(R.string.signalement_post, post.getpNSignals()): "Total signalement");
-                }else{
-                    if (userVue){
-                        ref.child(pId).child("pNVues").setValue(""+ (Integer.parseInt(post.getpNVues()) + 1));
-                        ref.child(pId).child("Vues").child(myUID).setValue(ds.child("Vues").hasChild(myUID)?
-                                ""+ (Integer.parseInt(ds.child("Vues").child(myUID).getValue(String.class)) + 1):"1");
-                        userVue = false;
-                    }
-                    vueTv.setText(!ds.child("Vues").hasChild(myUID)?getResources().getString(R.string.nombre_vue, "0"):
-                            Integer.parseInt(ds.child("Vues").child(myUID).getValue(String.class)) <= 1 ?
-                                    getResources().getString(R.string.nombre_vue, ds.child("Vues").child(myUID).getValue(String.class)):
-                                    getResources().getString(R.string.nombre_vues, ds.child("Vues").child(myUID).getValue(String.class)));
-
-                    likeTv.setText(!ds.child("Shares").hasChild(myUID)?
-                            getResources().getString(R.string.nombre_share, "0"):
-                            Integer.parseInt(ds.child("Shares").child(myUID).getValue().toString())
-                                    <= 1 ? getResources()
-                                    .getString(R.string.nombre_share, ds.child("Shares").child(myUID).getValue().toString()) :
-                                    getResources().getString(R.string.nombre_shares, ds.child("Shares").child(myUID).getValue().toString()));
-
-                    shareIb.setImageResource(!ds.child("Shares").hasChild(myUID)?R.drawable.ic_no_share:R.drawable.ic_share);
-                    ref.child(post.getpId()).child("Comments")
-                            .orderByChild("cCreator").equalTo(myUID)
-                            .addValueEventListener(myNumbCommentsVal);
-                    noteIb.setImageResource(!ds.child("Notes").hasChild(myUID)?R.drawable.ic_no_note:R.drawable.ic_note);
-                    noteTv.setText(!ds.child("Notes").hasChild(myUID)?getResources().getString(R.string.note_post, "0"):
-                            getResources().getString(R.string.note_post, ds.child(myUID).child("nNote").getValue(String.class)));
-                    signalerIb.setImageResource(ds.child("Signalements").hasChild(myUID)?R.drawable.ic_signaler:R.drawable.ic_no_signaler);
-                    mProcessSignal = ds.child("Signalements").hasChild(myUID);
-                    favoriteIb.setImageResource(ds.child("Favorites").hasChild(myUID)?R.drawable.ic_favorite:R.drawable.ic_no_favorite);
-                    mProcessFavorites = ds.child("Favorites").hasChild(myUID);
-                    likeIb.setImageResource(ds.child("Likes").hasChild(myUID)?R.drawable.ic_like:R.drawable.ic_no_like);
-                    mProcessLikes = ds.child("Likes").hasChild(myUID);
+                likeTv.setText(""+post.getpNLikes());
+                noteTv.setText(""+post.getpNote());
+                signalerTv.setText(""+post.getpNSignals());
+                shareTv.setText(""+post.getpNShares());
+                favoriteTv.setText(""+post.getpNFavories());
+                if (!post.getpCreator().equals(myUID)){
+                    initialiserNombreVuesPost(ds);
+                    setHisNombreSharePost(ds);
+                    setHisNotePost(ds);
+                    numShared = ds.child(DB_SHARES).hasChild(myUID)?ds.child(DB_SHARES).child(myUID).getValue(String.class):"";
+                    shareTv.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            !ds.child(DB_SHARES).hasChild(myUID)?R.drawable.ic_no_share:R.drawable.ic_share,
+                            0,
+                            0,
+                            0);
+                    noteTv.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            !ds.child(DB_NOTES).hasChild(myUID)?R.drawable.ic_no_note:R.drawable.ic_note,
+                            0,
+                            0,
+                            0);
+                    signalerTv.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            ds.child(DB_SIGNALEMENT).hasChild(myUID)?R.drawable.ic_signaler:R.drawable.ic_no_signaler,
+                            0,
+                            0,
+                            0);
+                    favoriteTv.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            ds.child(DB_FAVORIES).hasChild(myUID)?R.drawable.ic_favorite:R.drawable.ic_no_favorite,
+                            0,
+                            0,
+                            0);
+                    likeTv.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            ds.child(DB_LIKES).hasChild(myUID)?R.drawable.ic_like:R.drawable.ic_no_like,
+                            0,
+                            0,
+                            0);
+                    
+                    if (ds.child(DB_SIGNALEMENT).hasChild(myUID))
+                        mProcessSignal = true;
+                    else
+                        mProcessSignal = false;
+                    if (ds.child(DB_FAVORIES).hasChild(myUID))
+                        mProcessFavorites = true;
+                    else
+                        mProcessFavorites = false;
+                    if (ds.child(DB_LIKES).hasChild(myUID))
+                        mProcessLikes = true;
+                    else
+                        mProcessLikes = false;
                 }
-                try {
-                    Picasso.get().load(post.getpCover()).placeholder(R.drawable.ic_post).into(coverIv);
-                } catch (Exception e) {
-                    Picasso.get().load(R.drawable.ic_post).into(coverIv);
-                }
-
-                if (ds.child("Shares").hasChild(myUID))
-                    numShared = ds.child("Shares").child(myUID).getValue(String.class);
-                else
-                    Log.e("TAG_SHARE", "Not shares found");
-
-                ref.child(pId).child("Gallery").addValueEventListener(valPostGallery);
-                ref.child(pId).child("Comments").addValueEventListener(valAllComments);
-                ref.child(pId).child("Notes").addValueEventListener(valPostNotes);
+                afficherPhotoCouverturePost(""+post.getpCover());
+                ref.child(pId).child(DB_GALLERY).addValueEventListener(valPostGallery);
+                ref.child(pId).child(DB_COMMENT).addValueEventListener(valAllComments);
+                ref.child(pId).child(DB_NOTES).addValueEventListener(valPostNotes);
             }
         }
 
@@ -801,8 +818,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
             }
-            rlComment.setVisibility(pCreator.equals(myUID)&&commentList.size()==0?View.GONE:View.VISIBLE);
-            rlLike.setVisibility(pCreator.equals(myUID)&&commentList.size()==0?View.GONE:View.VISIBLE);
+            rlComment.setVisibility((pCreator.equals(myUID)&&commentList.size()==0)? View.GONE : View.VISIBLE);
+            //rlLike.setVisibility((pCreator.equals(myUID)&&commentList.size()==0)? View.GONE : View.VISIBLE);
         }
 
         @Override
@@ -835,8 +852,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
             }
-            coverIv.setVisibility(galleryList.size()>1?View.GONE:View.VISIBLE);
-            postImagesRv.setVisibility(galleryList.size()<=1?View.GONE:View.VISIBLE);
+            coverIv.setVisibility(galleryList.size()>1? View.GONE: View.VISIBLE);
+            postImagesRv.setVisibility(galleryList.size()<=1? View.GONE: View.VISIBLE);
         }
 
         @Override
@@ -854,27 +871,12 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 note = note + Float.parseFloat(item);
             }
             note = note/snapshot.getChildrenCount();
-            noteTv.setText(""+note+"/20");
+            noteTv.setText(""+note);
 
             HashMap<String, Object> hashMap = new HashMap<>();
             hashMap.put("pNote", ""+note);
 
             ref.child(pId).updateChildren(hashMap);
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener myNumbCommentsVal = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            long count = snapshot.getChildrenCount();
-            commentTv.setText(count <= 1 ? getResources()
-                    .getString(R.string.nombre_comment, ""+count) : getResources()
-                    .getString(R.string.nombre_comments, ""+count));
         }
 
         @Override

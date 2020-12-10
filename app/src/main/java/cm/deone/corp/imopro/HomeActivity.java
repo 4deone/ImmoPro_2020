@@ -236,8 +236,6 @@ public class HomeActivity extends AppCompatActivity {
                             intent.putExtra("pId", postList.get(position).getpId());
                             intent.putExtra("pCreator", postList.get(position).getpCreator());
                             intent.putExtra("nType", DB_POST);
-                            intent.putExtra("pTopicGallery", post.getpTopicGallery());
-                            intent.putExtra("pTopicComment", post.getpTopicComment());
                             startActivity(intent);
                         }
 

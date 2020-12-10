@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ImoPro">
-        <activity android:name=".CreateSearchActivity"/>
+        <activity android:name=".PostSettingsActivity"></activity>
+        <activity android:name=".CreateSearchActivity" />
         <activity android:name=".CreateGalleryActivity" />
         <activity android:name=".PostActivity" />
         <activity android:name=".CreatePostActivity">
