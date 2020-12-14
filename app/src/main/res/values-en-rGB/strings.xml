@@ -116,5 +116,6 @@
     <string name="camera_permission">Please enable camera and storage permissions.</string>
     <string name="notif_add_image">" added new image"</string>
     <string name="operation_reussie">"Success..."</string>
+    <string name="location_permission">Please enable location permissions.</string>
 
 </resources>

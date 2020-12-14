@@ -9,10 +9,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,6 +61,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import cm.deone.corp.imopro.models.User;
+import cm.deone.corp.imopro.outils.AppLocationService;
+import cm.deone.corp.imopro.outils.LocationAddress;
 
 import static cm.deone.corp.imopro.outils.Constant.CAMERA_REQUEST_CODE;
 import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
@@ -63,6 +70,7 @@ import static cm.deone.corp.imopro.outils.Constant.DB_POST;
 import static cm.deone.corp.imopro.outils.Constant.DB_USER;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_CAMERA_CODE;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_GALLERY_CODE;
+import static cm.deone.corp.imopro.outils.Constant.LOCATION_REQUEST_CODE;
 import static cm.deone.corp.imopro.outils.Constant.STORAGE_REQUEST_CODE;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION;
@@ -72,6 +80,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     private String[] cameraPermissions;
     private String[] storagePermissions;
+    private String[] locationPermissions;
 
     private Uri imageUri;
 
@@ -82,7 +91,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     private ImageView avatarIv;
 
-    private TextView deviseTv;
+    private static TextView deviseTv;
     private TextView emailTv;
     private TextView phoneTv;
 
@@ -96,6 +105,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     private FirebaseAuth firebaseAuth;
 
+    AppLocationService appLocationService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,12 +115,14 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         initVues();
         checkUsers();
         getUserInfos();
+        getAddressUser();
     }
 
     @Override
     protected void onStart() {
         checkUsers();
         getUserInfos();
+        getAddressUser();
         super.onStart();
     }
 
@@ -117,7 +130,63 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     protected void onResume() {
         checkUsers();
         getUserInfos();
+        getAddressUser();
         super.onResume();
+    }
+
+    private void getAddressUser() {
+
+        Location location = appLocationService.getLocation(LocationManager.GPS_PROVIDER);
+
+        //you can hard-code the lat & long if you have issues with getting it
+        //remove the below if-condition and use the following couple of lines
+        //double latitude = 37.422005;
+        //double longitude = -122.084095
+
+        if (location != null) {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            LocationAddress locationAddress = new LocationAddress();
+            locationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(), new GeocoderHandler());
+        } else {
+            showSettingsAlert();
+        }
+    }
+
+    public void showSettingsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SettingsActivity.this);
+        alertDialog.setTitle("SETTINGS");
+        alertDialog.setMessage("Enable Location Provider! Go to settings menu?");
+        alertDialog.setPositiveButton("Settings",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        SettingsActivity.this.startActivity(intent);
+                    }
+                });
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private static class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    break;
+                default:
+                    locationAddress = null;
+            }
+            deviseTv.setText(locationAddress);
+        }
     }
 
     @Override
@@ -154,8 +223,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case CAMERA_REQUEST_CODE:{
                 if (grantResults.length>0){
@@ -180,7 +248,17 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 }
             }
             break;
-
+            case LOCATION_REQUEST_CODE:{
+                if (grantResults.length>0){
+                    boolean locationAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+                    if (locationAccepted){
+                        getAddressUser();
+                    }else {
+                        Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.location_permission), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+            break;
         }
     }
 
@@ -229,6 +307,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         toolbar.setTitle(getResources().getString(R.string.settings));
         setSupportActionBar(toolbar);
 
+        appLocationService = new AppLocationService(SettingsActivity.this);
+
         sharedPreferences = getSharedPreferences("Notification_SP", MODE_PRIVATE);
 
         progressDialog = new ProgressDialog(SettingsActivity.this);
@@ -250,6 +330,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        locationPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
 
         boolean isPostEnable = sharedPreferences.getBoolean(""+TOPIC_POST_NOTIFICATION, false);
 
@@ -294,7 +375,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                         /*toolbar.setTitle(""+user.getuName());
                         toolbar.setSubtitle(""+user.getuDevise());*/
 
-                        deviseTv.setText(user.getuDevise());
+                        //deviseTv.setText(user.getuDevise());
                         emailTv.setText(user.getuEmail());
                         phoneTv.setText(user.getuPhone());
 
@@ -538,6 +619,15 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+    }
+
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this, locationPermissions, LOCATION_REQUEST_CODE);
+    }
+
+    private boolean checkLocationPermission() {
+        boolean result = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == (PackageManager.PERMISSION_GRANTED);
+        return result;
     }
 
     private void requestStoragePermission() {

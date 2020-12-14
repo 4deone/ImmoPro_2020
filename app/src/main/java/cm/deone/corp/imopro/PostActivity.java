@@ -115,7 +115,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView coverIv;
 
-    private RelativeLayout rlLike;
     private RelativeLayout rlComment;
     private EditText commentEdtv;
 
@@ -124,7 +123,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private TextView shareTv;
     private TextView signalerTv;
     private TextView noteTv;
-
     private TextView postDescriptionTv;
 
     private RecyclerView postImagesRv;
@@ -134,6 +132,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView commentsRv;
     private List<Comment> commentList;
     private CommentAdaptor commentAdaptor;
+
+    private List<String> blockedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,14 +269,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         RelativeLayout rlCommentFooter = findViewById(R.id.commentFooterRl);
         rlComment = findViewById(R.id.rlComment);
 
-        /*likeIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
-        favoriteIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
-        noteIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
-        signalerIb.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);*/
-
         rlCommentFooter.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
-
-        //warningTv.setVisibility(pCreator.equals(myUID)?View.GONE:View.VISIBLE);
 
         coverIv.setOnLongClickListener(this);
         findViewById(R.id.sendIb).setOnClickListener(this);
@@ -702,6 +695,130 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         noteTv.setText(!ds.child(DB_NOTES).hasChild(myUID)?"0":""+ds.child(DB_NOTES).child(myUID).child("nNote").getValue(String.class));
     }
 
+    private void showCommentDialog(Comment comment, boolean isblocked) {
+        String[] optionsUsers = {"Supprimer le commentaire", "Details du commentaire", "Envoyer un message", "Pofile de l'utilisateur"};
+        String[] optionsCreator = {isblocked ? "Débloquer l'utilisateur" : "Bloquer l'utilisateur",
+                "Details du commentaire", "Envoyer un message"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Sélectionner une action :");
+        builder.setItems(pCreator.equals(myUID) ? optionsCreator : optionsUsers, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which){
+                    case 0 :
+                        if (comment.getcCreator().equals(myUID))
+                            confirmationRequise("Supprimer", ""+comment.getcId());
+                        else if (pCreator.equals(myUID))
+                            confirmationRequise(isblocked ? "Débloquer" : "Bloquer", ""+comment.getcCreator());
+                        break;
+                    case 1 :
+                        // Details du commentaire
+                        break;
+                    case 2 :
+                        // Envoyer un message
+                        break;
+                    case 3 :
+                        // Pofile de l'utilisateur
+                        break;
+                    default:
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    private void confirmationRequise(String action, String identifiant) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("Etes-vous sur de vouloir effectuer cette opération ?")
+                .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (action.equals("Bloquer")){
+                            bloquerLutilisateur(""+identifiant);
+                        }else if (action.equals("Débloquer")){
+                            debloquerLutilisateur(""+identifiant);
+                        }else if (action.equals("Supprimer")){
+                            // Delete comment
+                            // Reduidre la valeur du nombre de commenataire du post
+                            supprimerLeCommentaire(""+identifiant);
+                        }
+                    }
+                }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void bloquerLutilisateur(String cCreator) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("bId", cCreator);
+        hashMap.put("bDate", timestamp);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+        ref.child(pId).child("BlockedUsers").child(cCreator).setValue(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(PostActivity.this, "Utilisateur bloqué", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void debloquerLutilisateur(String cCreator) {
+        ref.child(pId).child("BlockedUsers").orderByChild("bId").equalTo(cCreator)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds : snapshot.getChildren()){
+                            if (ds.exists()){
+                                ds.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(PostActivity.this, "Utilisateur débloqué", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void supprimerLeCommentaire(String cId) {
+        ref.child(pId).child("Comments").child(cId).removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(PostActivity.this, "Commentaire supprimé", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        ref.child(pId).addListenerForSingleValueEvent(valUpdateCommentNumber);
+    }
+
     private void menuPost(final TextView tvComments, final TextView tvVues) {
         Query query = ref.orderByKey().equalTo(pId);
         query.addValueEventListener(new ValueEventListener() {
@@ -726,6 +843,20 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+    private final ValueEventListener valUpdateCommentNumber = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            String comments = "" + snapshot.child("pNComments").getValue();
+            int newCommentVal = Integer.parseInt(comments) - 1;
+            ref.child(pId).child("pNComments").setValue(""+newCommentVal);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private final ValueEventListener postInfosVal =  new ValueEventListener() {
         @Override
@@ -813,13 +944,12 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Comment comment = commentList.get(position);
-                        /*if (comment.getcCreator().equals(myUID) || pCreator.equals(myUID))
-                            showCommentDialog(comment, blockedList.contains(comment.getcCreator()));*/
+                        if (comment.getcCreator().equals(myUID) || pCreator.equals(myUID))
+                            showCommentDialog(comment, blockedList.contains(comment.getcCreator()));
                     }
                 });
             }
             rlComment.setVisibility((pCreator.equals(myUID)&&commentList.size()==0)? View.GONE : View.VISIBLE);
-            //rlLike.setVisibility((pCreator.equals(myUID)&&commentList.size()==0)? View.GONE : View.VISIBLE);
         }
 
         @Override

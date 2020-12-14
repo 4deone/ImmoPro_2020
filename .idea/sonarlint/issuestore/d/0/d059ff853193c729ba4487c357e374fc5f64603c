@@ -1,27 +1,27 @@
 
-T
-java:S1481™"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ8µ¸Ñˆâ.
+R
+java:S1874É"/Remove this use of "Builder"; it is deprecated.(î«ıÿÿÿÿ8µ¸Ñˆâ.
+^	java:S125À"<This block of commented-out lines of code should be removed.(èÍ“œúÿÿÿÿ8øÇÚƒá.
 c
-java:S1854º"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ8µ¸Ñˆâ.
+java:S1854™"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ8µ¸Ñˆâ.
+e
+java:S1854¬"GRemove this useless assignment to local variable "notificationManager".(øÔª8µ¸Ñˆâ.
 V
 java:S1481¬"8Remove this unused "notificationManager" local variable.(øÔª8µ¸Ñˆâ.
 h
 java:S1192f"FDefine a constant instead of duplicating this literal "nType" 3 times.(Áº»øÿÿÿÿ8µ¸Ñˆâ.
+X	java:S110,"<This class has 6 parents which is greater than 5 authorized.(µò¾×8øÇÚƒá.
 T
-java:S1481º"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ8µ¸Ñˆâ.
+java:S1481™"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ8µ¸Ñˆâ.
 c
-java:S1854™"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ8µ¸Ñˆâ.
+java:S1854º"@Remove this useless assignment to local variable "notification".(·ä‰Äûÿÿÿÿ8µ¸Ñˆâ.
 Y	java:S125"<This block of commented-out lines of code should be removed.(€¶„î8µ¸Ñˆâ.
 p
 java:S1871¿"MThis branch's code block is the same as the block for the branch on line 189.(íå©Èûÿÿÿÿ8µ¸Ñˆâ.
-e
-java:S1854¬"GRemove this useless assignment to local variable "notificationManager".(øÔª8µ¸Ñˆâ.
-^	java:S125À"<This block of commented-out lines of code should be removed.(èÍ“œúÿÿÿÿ8øÇÚƒá.
-R
-java:S1874É"/Remove this use of "Builder"; it is deprecated.(î«ıÿÿÿÿ8µ¸Ñˆâ.
 Q
 java:S1066?"/Merge this if statement with the enclosing one.(Äî¶¡øÿÿÿÿ8øÇÚƒá.
 V
 java:S1117b":Rename "intent" which hides the field declared at line 47.(‰şŒD8µ¸Ñˆâ.
+T
+java:S1481º"1Remove this unused "notification" local variable.(·ä‰Äûÿÿÿÿ8µ¸Ñˆâ.
 ^	java:S125¾"<This block of commented-out lines of code should be removed.(èÍ“œúÿÿÿÿ8µ¸Ñˆâ.
-X	java:S110,"<This class has 6 parents which is greater than 5 authorized.(µò¾×8øÇÚƒá.

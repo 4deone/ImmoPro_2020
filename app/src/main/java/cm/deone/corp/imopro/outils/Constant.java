@@ -28,6 +28,8 @@ public class Constant {
     public static final int IMAGE_PICK_GALLERY_CODE = 300;
     public static final int IMAGE_PICK_CAMERA_CODE = 400;
 
+    public static final int LOCATION_REQUEST_CODE = 500;
+
     public static final String ID = "some_id";
     public static final String NAME = "FirebaseAPP";
 
@@ -38,5 +40,7 @@ public class Constant {
 
     public static final int MSG_TYPE_IN = 0;
     public static final int MSG_TYPE_OUT = 1;
+
+    private static final String TAG = "LocationAddress";
 
 }

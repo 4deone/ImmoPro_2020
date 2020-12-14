@@ -11,18 +11,13 @@
     <item  android:id="@+id/menu_add_operation"
         android:title= "@string/ajouter_un_post"
         android:icon="@drawable/ic_menu_add_post"
-        app:showAsAction="withText"/>
-
-    <item  android:id="@+id/menu_show_settings"
-        android:title= "@string/settings"
-        android:icon="@drawable/ic_menu_settings"
-        app:showAsAction="withText"/>
+        app:showAsAction="ifRoom"/>
 
     <item  android:id="@+id/menu_add_image"
         android:title= "Ajouter une image"
         android:icon="@drawable/ic_menu_settings"
         android:visible="false"
-        app:showAsAction="withText"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/menu_show_vues"
@@ -37,5 +32,10 @@
         android:visible="false"
         app:actionLayout="@layout/menu_item_comments"
         app:showAsAction="ifRoom" />
+
+    <item  android:id="@+id/menu_show_settings"
+        android:title= "@string/settings"
+        android:icon="@drawable/ic_menu_settings"
+        app:showAsAction="ifRoom"/>
 
 </menu>

@@ -3,6 +3,7 @@ package cm.deone.corp.imopro;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -42,6 +43,7 @@ public class PostSettingsActivity extends AppCompatActivity implements CompoundB
 
     private DatabaseReference ref;
 
+    private  Toolbar toolbar;
     private Post post;
     private String pId;
     private String pCreator;
@@ -138,17 +140,17 @@ public class PostSettingsActivity extends AppCompatActivity implements CompoundB
         ref = FirebaseDatabase.getInstance().getReference("Posts");
         sharedPreferences = getSharedPreferences("POST_NOTIF_SP", MODE_PRIVATE);
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("Post settings");
+
         activitesRv = findViewById(R.id.activitesRv);
 
         SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
         SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
 
-        boolean isCommentEnable = sharedPreferences.getBoolean(
-                ""+TOPIC_COMMENT_NOTIFICATION+""+pId,
-                false);
-        boolean isGalleryEnable = sharedPreferences.getBoolean(
-                ""+TOPIC_GALLERY_NOTIFICATION+""+pId,
-                false);
+        boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, false);
+        boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, false);
 
         commentNotificationSw.setChecked(isCommentEnable);
         galleryNotificationSw.setChecked(isGalleryEnable);
@@ -219,6 +221,7 @@ public class PostSettingsActivity extends AppCompatActivity implements CompoundB
             parentList.clear();
             for (DataSnapshot ds : snapshot.getChildren()){
                 post = ds.getValue(Post.class);
+                toolbar.setSubtitle(""+post.getpTitre());
                 if (post.getpCreator().equals(myUID)){
 
 
