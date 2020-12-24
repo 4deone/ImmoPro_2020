@@ -20,12 +20,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ImoPro">
+
         <service
             android:name=".outils.AppLocationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
-        <activity android:name=".PostSettingsActivity" />
         <activity android:name=".CreateSearchActivity" />
         <activity android:name=".CreateGalleryActivity" />
         <activity android:name=".PostActivity" />

@@ -21,9 +21,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -95,7 +97,10 @@ import static cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_POST_NOTIFICATION;
 
-public class PostActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
+public class PostActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor ;
 
     private boolean userVue = true;
     private boolean mProcessLikes = false;
@@ -115,8 +120,10 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView coverIv;
 
-    private RelativeLayout rlComment;
-    private EditText commentEdtv;
+    private EditText edtvComment;
+
+    private RelativeLayout rlCommentaires;
+    private RelativeLayout rlNewComment;
 
     private TextView likeTv;
     private TextView favoriteTv;
@@ -124,12 +131,13 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private TextView signalerTv;
     private TextView noteTv;
     private TextView postDescriptionTv;
+    private TextView tvPostTitle;
 
     private RecyclerView postImagesRv;
     private List<Gallery> galleryList;
     private GalleryAdaptor galleryAdaptor;
 
-    private RecyclerView commentsRv;
+    private RecyclerView rvComments;
     private List<Comment> commentList;
     private CommentAdaptor commentAdaptor;
 
@@ -170,7 +178,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             showGiveNoteDialog();
         }else if (v.getId() == R.id.signalerTv && !pCreator.equals(myUID)){
             showGiveWarningDialog();
-        }else if (v.getId() == R.id.sendIb && !pCreator.equals(myUID)){
+        }else if (v.getId() == R.id.ibSend && !pCreator.equals(myUID)){
             verificationDeSaisie();
         }
     }
@@ -189,6 +197,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         menu.findItem(R.id.menu_search).setVisible(false);
         menu.findItem(R.id.menu_add_operation).setVisible(false);
         menu.findItem(R.id.menu_add_image).setVisible(false);
+        menu.findItem(R.id.menu_show_settings).setVisible(false);
         MenuItem itemVues = menu.findItem(R.id.menu_show_vues);
         itemVues.setVisible(true);
         View rootViewVues = MenuItemCompat.getActionView(itemVues);
@@ -205,13 +214,39 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_show_settings){
-            Intent intent = new Intent(PostActivity.this, PostSettingsActivity.class);
-            intent.putExtra("pId", pId);
-            intent.putExtra("pCreator", pCreator);
-            startActivity(intent);
+        if (item.getItemId() == R.id.menu_show_comments){
+
+        }else if (item.getItemId() == R.id.menu_show_vues){
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()){
+            case R.id.commentNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
+                }else{
+                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
+                }
+                break;
+            case R.id.galleryNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+                }else{
+                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+                }
+                break;
+            default:
+        }
     }
 
     private void checkUser() {
@@ -244,6 +279,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         pId = getIntent().getStringExtra("pId");
         pCreator = getIntent().getStringExtra("pCreator");
         ref = FirebaseDatabase.getInstance().getReference("Posts");
+        sharedPreferences = getSharedPreferences("POST_NOTIF_SP", MODE_PRIVATE);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -253,31 +289,71 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
         coverIv = findViewById(R.id.coverIv);
 
+        edtvComment = findViewById(R.id.edtvComment);
+
+        rlCommentaires = findViewById(R.id.rlCommentaires);
+        rlNewComment = findViewById(R.id.rlNewComment);
+
+        rlNewComment.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
+
         signalerTv = findViewById(R.id.signalerTv);
         favoriteTv = findViewById(R.id.favoriteTv);
         shareTv = findViewById(R.id.shareTv);
         likeTv = findViewById(R.id.likeTv);
         noteTv = findViewById(R.id.noteTv);
 
+        tvPostTitle = findViewById(R.id.tvPostTitle);
         postDescriptionTv = findViewById(R.id.postDescriptionTv);
 
-        commentEdtv = findViewById(R.id.commentEdtv);
+        SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
+        SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
+
+        boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, false);
+        boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, false);
+
+        commentNotificationSw.setChecked(isCommentEnable);
+        galleryNotificationSw.setChecked(isGalleryEnable);
 
         postImagesRv = findViewById(R.id.postImagesRv);
-        commentsRv = findViewById(R.id.commentsRv);
-
-        RelativeLayout rlCommentFooter = findViewById(R.id.commentFooterRl);
-        rlComment = findViewById(R.id.rlComment);
-
-        rlCommentFooter.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
+        rvComments = findViewById(R.id.rvComments);
 
         coverIv.setOnLongClickListener(this);
-        findViewById(R.id.sendIb).setOnClickListener(this);
+        findViewById(R.id.ibSend).setOnClickListener(this);
         likeTv.setOnClickListener(this);
         favoriteTv.setOnClickListener(this);
         noteTv.setOnClickListener(this);
         shareTv.setOnClickListener(this);
         signalerTv.setOnClickListener(this);
+        commentNotificationSw.setOnCheckedChangeListener(this);
+        galleryNotificationSw.setOnCheckedChangeListener(this);
+    }
+
+    private void unsuscribeNotification(String topic) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = ""+getResources().getString(R.string.not_receive_notification);
+                        if(!task.isSuccessful()){
+                            msg = ""+getResources().getString(R.string.subscription_failed);
+                        }
+                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void suscribeNotification(String topic) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = ""+getResources().getString(R.string.receive_notification);
+                        if(!task.isSuccessful()){
+                            msg = ""+getResources().getString(R.string.unsubscription_failed);
+                        }
+                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void getPost() {
@@ -565,111 +641,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void verificationDeSaisie() {
-        String message = commentEdtv.getText().toString().trim();
-        if (TextUtils.isEmpty(message)){
-            Toast.makeText(PostActivity.this, "Votre commentaire est vide!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        prepareCommentData(""+message);
-    }
-
-    private void prepareCommentData(String message) {
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        HashMap<String, String> hashMapComment = new HashMap<>();
-        hashMapComment.put("cCreator", myUID);
-        hashMapComment.put("cMessage", message);
-        hashMapComment.put("cId", timestamp);
-        hashMapComment.put("cDate", timestamp);
-
-        hashMapComment.put("uName", myNAME);
-        hashMapComment.put("uAvatar", myAVATAR);
-
-        uploadCommentData(
-                hashMapComment,
-                ""+timestamp);
-
-    }
-
-    private void uploadCommentData(HashMap<String, String> hashMapComment, String timestamp) {
-        DatabaseReference refUpload = ref.child(pId).child("Comments");
-        refUpload.child(timestamp).setValue(hashMapComment).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                resetVues();
-                ref.child(pId).child("pNComments").setValue(""+ (Integer.parseInt(post.getpNComments()) + 1));
-                String description = commentEdtv.getText().toString().trim();
-                prepareNotification(
-                        ""+timestamp,
-                        ""+myNAME+" a ajouté un commentaire",
-                        ""+  description,
-                        ""+TYPE_POST_NOTIFICATION,
-                        ""+TOPIC_GALLERY_NOTIFICATION+""+pId);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void prepareNotification(String pId, String titre, String description, String notificationType, String notificationTopic){
-        String NOTIFICATION_TOPIC = "/topics/" + notificationTopic;
-        String NOTIFICATION_TITLE = titre;
-        String NOTIFICATION_DESCRIPTION = description;
-        String NOTIFICATION_TYPE = notificationType;
-
-        JSONObject notificationJo = new JSONObject();
-        JSONObject notificationBodyJo = new JSONObject();
-
-        try {
-            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
-            notificationBodyJo.put("sender", myUID);
-            notificationBodyJo.put("pId", pId);
-            notificationBodyJo.put("pTitre", NOTIFICATION_TITLE);
-            notificationBodyJo.put("pDescription", NOTIFICATION_DESCRIPTION);
-
-            notificationJo.put("to", NOTIFICATION_TOPIC);
-            notificationJo.put("data", notificationBodyJo);
-        }catch (Exception e){
-            Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-        sendPostNotification(notificationJo);
-    }
-
-    private void sendPostNotification(JSONObject notificationJo) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("FCM_RESPONSE", "onResponse: "+ response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PostActivity.this, ""+error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "key=AAAAZCzfbyE:APA91bFgMvLCJrB-y0h_8jzGXYePXl5gicO0KcfMwXWRK8rHNv81UGdhvxzD9_SGADkKFxbvXFXut6ZX7bFx6RleoFbawR7igk-t1BALJGyFrSuhSZYu9hQkAimLNOya0REEAfRe2rYl");
-                return headers;
-            }
-        };
-
-        Volley.newRequestQueue(this).add(jsonObjectRequest);
-    }
-
-    private void resetVues() {
-        commentEdtv.setText(null);
-        commentEdtv.setHint("Votre commentaire");
-    }
-
     private void afficherPhotoCouverturePost(String postCover) {
         try {
             Picasso.get().load(post.getpCover()).placeholder(R.drawable.ic_post).into(coverIv);
@@ -844,6 +815,111 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void verificationDeSaisie() {
+        String message = edtvComment.getText().toString().trim();
+        if (TextUtils.isEmpty(message)){
+            Toast.makeText(PostActivity.this, "Votre commentaire est vide!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        prepareCommentData(""+message);
+    }
+
+    private void prepareCommentData(String message) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        HashMap<String, String> hashMapComment = new HashMap<>();
+        hashMapComment.put("cCreator", myUID);
+        hashMapComment.put("cMessage", message);
+        hashMapComment.put("cId", timestamp);
+        hashMapComment.put("cDate", timestamp);
+
+        hashMapComment.put("uName", myNAME);
+        hashMapComment.put("uAvatar", myAVATAR);
+
+        uploadCommentData(
+                hashMapComment,
+                ""+timestamp);
+
+    }
+
+    private void uploadCommentData(HashMap<String, String> hashMapComment, String timestamp) {
+        DatabaseReference refUpload = ref.child(pId).child("Comments");
+        refUpload.child(timestamp).setValue(hashMapComment).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                resetVues();
+                ref.child(pId).child("pNComments").setValue(""+ (Integer.parseInt(post.getpNComments()) + 1));
+                String description = edtvComment.getText().toString().trim();
+                prepareNotification(
+                        ""+timestamp,
+                        ""+myNAME+" a ajouté un commentaire",
+                        ""+  description,
+                        ""+TYPE_POST_NOTIFICATION,
+                        ""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void prepareNotification(String pId, String titre, String description, String notificationType, String notificationTopic){
+        String NOTIFICATION_TOPIC = "/topics/" + notificationTopic;
+        String NOTIFICATION_TITLE = titre;
+        String NOTIFICATION_DESCRIPTION = description;
+        String NOTIFICATION_TYPE = notificationType;
+
+        JSONObject notificationJo = new JSONObject();
+        JSONObject notificationBodyJo = new JSONObject();
+
+        try {
+            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
+            notificationBodyJo.put("sender", myUID);
+            notificationBodyJo.put("pId", pId);
+            notificationBodyJo.put("pTitre", NOTIFICATION_TITLE);
+            notificationBodyJo.put("pDescription", NOTIFICATION_DESCRIPTION);
+
+            notificationJo.put("to", NOTIFICATION_TOPIC);
+            notificationJo.put("data", notificationBodyJo);
+        }catch (Exception e){
+            Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        sendPostNotification(notificationJo);
+    }
+
+    private void sendPostNotification(JSONObject notificationJo) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("FCM_RESPONSE", "onResponse: "+ response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(PostActivity.this, ""+error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=AAAAZCzfbyE:APA91bFgMvLCJrB-y0h_8jzGXYePXl5gicO0KcfMwXWRK8rHNv81UGdhvxzD9_SGADkKFxbvXFXut6ZX7bFx6RleoFbawR7igk-t1BALJGyFrSuhSZYu9hQkAimLNOya0REEAfRe2rYl");
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
+    }
+
+    private void resetVues() {
+        edtvComment.setText(null);
+        edtvComment.setHint("Votre commentaire");
+    }
+
     private final ValueEventListener valUpdateCommentNumber = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -863,6 +939,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             for (DataSnapshot ds : snapshot.getChildren()){
                 post = ds.getValue(Post.class);
+                tvPostTitle.setText(post.getpTitre());
                 postDescriptionTv.setText(post.getpDescription());
                 likeTv.setText(""+post.getpNLikes());
                 noteTv.setText(""+post.getpNote());
@@ -934,7 +1011,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 Comment comment = ds.getValue(Comment.class);
                 commentList.add(comment);
                 commentAdaptor = new CommentAdaptor(PostActivity.this, commentList);
-                commentsRv.setAdapter(commentAdaptor);
+                rvComments.setNestedScrollingEnabled(false);
+                rvComments.setAdapter(commentAdaptor);
                 commentAdaptor.setOnItemClickListener(new ViewsClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
@@ -949,7 +1027,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
             }
-            rlComment.setVisibility((pCreator.equals(myUID)&&commentList.size()==0)? View.GONE : View.VISIBLE);
+            rlCommentaires.setVisibility((pCreator.equals(myUID)&&commentList.size()==0)? View.GONE : View.VISIBLE);
         }
 
         @Override

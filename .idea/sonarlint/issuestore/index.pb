@@ -141,8 +141,6 @@ t
 Dapp/src/main/java/cm/deone/corp/imopro/adapter/NotParentAdaptor.java,6/0/603037ec37e53a7b5bf79b983e31f9af0f91d944
 s
 Capp/src/main/java/cm/deone/corp/imopro/adapter/NotChildAdapter.java,0/5/052d6fded6a35ddd07f3cac3dabeed309d33d2b2
-p
-@app/src/main/java/cm/deone/corp/imopro/PostSettingsActivity.java,4/9/49f5d9dd50a6d7be309b4253775468643544bc83
 W
 'app/src/main/res/drawable/bg_cercle.xml,6/d/6dce9a77f74981259638f6bf0f889a1e5403872a
 e
@@ -151,8 +149,6 @@ a
 1app/src/main/res/drawable-anydpi/ic_menu_vues.xml,4/d/4dbe254a2c6ea8838f53f96f454ba28bee0f8c27
 a
 1app/src/main/res/drawable-anydpi/ic_post_vues.xml,8/6/86672bac586d24106d7acd3a3628778f2d508fb0
-X
-(app/src/main/res/layout/item_gallery.xml,6/d/6d016c54e98660c7b8248392d9e4d743df24bf8c
 Z
 *app/src/main/res/layout/item_not_child.xml,8/b/8b35de69bc266023f09f346de49de642bdf27559
 [
@@ -161,3 +157,17 @@ Z
 .app/src/main/res/layout/menu_item_comments.xml,f/0/f00a7f59b9bbdc0da04c44a2c0d5e138bc7dd5d8
 Z
 *app/src/main/res/layout/menu_item_vues.xml,e/c/eceb330854141628ee0027d333b4e4b0a4740081
+j
+:app/src/main/java/cm/deone/corp/imopro/models/Address.java,4/6/467d9bcf5ad0c753b8e108c2fd1b86e48a93ac82
+\
+,app/src/main/res/layout-v21/item_comment.xml,7/5/75ccb035200573bdd09e87d5a8c51d3126ebc13b
+S
+#app/src/main/res/menu/menu_home.xml,b/2/b29cc600ce5bef1fd6ffb97a1d9fd5219ab12a8e
+S
+#app/src/main/res/values/strings.xml,d/2/d2281fbb3027de2722081a53408dd77628bf080e
+Z
+*app/src/main/res/values-en-rGB/strings.xml,b/e/beb5dfcb2b16782797b96ba4f8fb689f06091dd4
+u
+Eapp/src/main/java/cm/deone/corp/imopro/outils/AppLocationService.java,d/a/dab779b5a41b69f9e11f92a344e15c67ebf7b4a3
+r
+Bapp/src/main/java/cm/deone/corp/imopro/outils/LocationAddress.java,7/9/7915453220cda3a8b492a1e029cb65b519c4c35b
