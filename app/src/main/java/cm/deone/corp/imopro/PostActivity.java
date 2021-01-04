@@ -124,6 +124,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private RelativeLayout rlCommentaires;
     private RelativeLayout rlNewComment;
+    private RelativeLayout rlDelete;
 
     private TextView likeTv;
     private TextView favoriteTv;
@@ -132,6 +133,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private TextView noteTv;
     private TextView postDescriptionTv;
     private TextView tvPostTitle;
+    private TextView tvDeletePost;
 
     private RecyclerView postImagesRv;
     private List<Gallery> galleryList;
@@ -180,6 +182,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             showGiveWarningDialog();
         }else if (v.getId() == R.id.ibSend && !pCreator.equals(myUID)){
             verificationDeSaisie();
+        }else if (v.getId() == R.id.tvDeletePost){
+            deleteConfirmation();
         }
     }
 
@@ -293,8 +297,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
         rlCommentaires = findViewById(R.id.rlCommentaires);
         rlNewComment = findViewById(R.id.rlNewComment);
+        rlDelete = findViewById(R.id.rlDelete);
+        tvDeletePost = findViewById(R.id.tvDeletePost);
 
         rlNewComment.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
+        rlDelete.setVisibility(pCreator.equals(myUID)? View.VISIBLE: View.GONE);
 
         signalerTv = findViewById(R.id.signalerTv);
         favoriteTv = findViewById(R.id.favoriteTv);
@@ -324,6 +331,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         noteTv.setOnClickListener(this);
         shareTv.setOnClickListener(this);
         signalerTv.setOnClickListener(this);
+        tvDeletePost.setOnClickListener(this);
         commentNotificationSw.setOnCheckedChangeListener(this);
         galleryNotificationSw.setOnCheckedChangeListener(this);
     }
@@ -361,6 +369,28 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         commentList = new ArrayList<>();
         Query query = ref.orderByKey().equalTo(pId);
         query.addValueEventListener(postInfosVal);
+    }
+
+    private void deleteConfirmation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Sélectionner une action :");
+        builder.setMessage("Etes vous sure de vouloir supprime cette publication ?");
+        builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deletePost();
+            }
+        }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void deletePost() {
+        //
     }
 
     private void showCoverDialog() {

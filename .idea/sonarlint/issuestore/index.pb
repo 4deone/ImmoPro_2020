@@ -159,8 +159,6 @@ Z
 *app/src/main/res/layout/menu_item_vues.xml,e/c/eceb330854141628ee0027d333b4e4b0a4740081
 j
 :app/src/main/java/cm/deone/corp/imopro/models/Address.java,4/6/467d9bcf5ad0c753b8e108c2fd1b86e48a93ac82
-\
-,app/src/main/res/layout-v21/item_comment.xml,7/5/75ccb035200573bdd09e87d5a8c51d3126ebc13b
 S
 #app/src/main/res/menu/menu_home.xml,b/2/b29cc600ce5bef1fd6ffb97a1d9fd5219ab12a8e
 S

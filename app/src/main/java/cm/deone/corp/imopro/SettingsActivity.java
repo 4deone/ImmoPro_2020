@@ -195,7 +195,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             break;
             case LOCATION_REQUEST_CODE:{
                 if (grantResults.length>0){
-                    boolean locationAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+                    boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (locationAccepted){
                         getAddressUser();
                     }else {
@@ -218,26 +218,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                     suscribeNotification(""+TOPIC_POST_NOTIFICATION);
                 }else{
                     unsuscribeNotification(""+TOPIC_POST_NOTIFICATION);
-                }
-                break;
-            case R.id.commentNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
-                }else{
-                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION);
-                }
-                break;
-            case R.id.galleryNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
-                }else{
-                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION);
                 }
                 break;
             default:
@@ -763,21 +743,24 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     }
 
     private void getAddressUser() {
+        if (!checkLocationPermission()){
+            requestLocationPermission();
+        }else {
+            Location location = appLocationService.getLocation(LocationManager.GPS_PROVIDER);
 
-        Location location = appLocationService.getLocation(LocationManager.GPS_PROVIDER);
+            //you can hard-code the lat & long if you have issues with getting it
+            //remove the below if-condition and use the following couple of lines
+            //double latitude = 37.422005;
+            //double longitude = -122.084095
 
-        //you can hard-code the lat & long if you have issues with getting it
-        //remove the below if-condition and use the following couple of lines
-        //double latitude = 37.422005;
-        //double longitude = -122.084095
-
-        if (location != null) {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            LocationAddress locationAddress = new LocationAddress();
-            locationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(), new GeocoderHandler());
-        } else {
-            showSettingsAlert();
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                LocationAddress locationAddress = new LocationAddress();
+                LocationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(), new GeocoderHandler());
+            } else {
+                //showSettingsAlert();
+            }
         }
     }
 
@@ -795,7 +778,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         alertDialog.setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                        dialog.dismiss();
                     }
                 });
         alertDialog.show();

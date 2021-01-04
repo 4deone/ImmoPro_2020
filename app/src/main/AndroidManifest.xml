@@ -24,7 +24,8 @@
         <service
             android:name=".outils.AppLocationService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            tools:ignore="Instantiatable" />
 
         <activity android:name=".CreateSearchActivity" />
         <activity android:name=".CreateGalleryActivity" />

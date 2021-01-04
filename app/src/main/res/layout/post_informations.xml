@@ -241,6 +241,28 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/rlDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:background="@color/white"
+            android:layout_below="@+id/rlCommentaires"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tvDeletePost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Supprimer la publication"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:drawablePadding="10dp"
+                app:drawableStartCompat="@drawable/ic_delete" />
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </androidx.core.widget.NestedScrollView>
