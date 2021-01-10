@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
@@ -29,6 +30,8 @@ import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.User;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
+import static cm.deone.corp.imopro.outils.Constant.DB_BLOCKED_USERS;
+
 public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder> {
 
     private FirebaseUser firebaseUser;
@@ -36,10 +39,12 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
     private final Context context;
     private ViewsClickListener listener;
     private final List<Comment> commentList;
+    private final String pId;
 
-    public CommentAdaptor(Context context, List<Comment> commentList) {
+    public CommentAdaptor(Context context, List<Comment> commentList, String pId) {
         this.context = context;
         this.commentList = commentList;
+        this.pId = pId;
     }
 
     @NonNull
@@ -64,12 +69,33 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
         holder.commentTv.setText(message);
         holder.timeTv.setText(dateTime);
         holder.hisNameTv.setText(name);
+
         try {
             Picasso.get().load(avatar).placeholder(R.drawable.ic_user).into(holder.avatarIv);
         } catch (Exception e) {
             Picasso.get().load(R.drawable.ic_user).into(holder.avatarIv);
         }
 
+        blockedUser(""+pId, ""+creator, holder.ivBlocked);
+
+    }
+
+    private void blockedUser(String pId, String creator, ImageView ivBlocked) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+        ref.child(pId).child(DB_BLOCKED_USERS).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()){
+                    String item = ds.child("bId").getValue(String.class);
+                    ivBlocked.setVisibility(item.equals(creator)?View.VISIBLE:View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -82,8 +108,8 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
     }
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
-
         ImageView avatarIv;
+        ImageView ivBlocked;
         TextView hisNameTv;
         TextView commentTv;
         TextView timeTv;
@@ -92,6 +118,7 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
             super(itemView);
 
             avatarIv = itemView.findViewById(R.id.avatarIv);
+            ivBlocked = itemView.findViewById(R.id.ivBlocked);
             hisNameTv = itemView.findViewById(R.id.hisNameTv);
             commentTv = itemView.findViewById(R.id.commentTv);
             timeTv = itemView.findViewById(R.id.timeTv);
@@ -117,4 +144,5 @@ public class CommentAdaptor extends RecyclerView.Adapter<CommentAdaptor.MyHolder
             return true;
         }
     }
+
 }

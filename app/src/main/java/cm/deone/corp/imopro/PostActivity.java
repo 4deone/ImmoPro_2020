@@ -10,6 +10,7 @@ import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
@@ -81,6 +82,7 @@ import cm.deone.corp.imopro.models.NotParentItem;
 import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
+import static cm.deone.corp.imopro.outils.Constant.DB_BLOCKED_USERS;
 import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
 import static cm.deone.corp.imopro.outils.Constant.DB_FAVORIES;
 import static cm.deone.corp.imopro.outils.Constant.DB_GALLERY;
@@ -97,15 +99,11 @@ import static cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_POST_NOTIFICATION;
 
-public class PostActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
-
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor ;
+public class PostActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
 
     private boolean userVue = true;
     private boolean mProcessLikes = false;
     private boolean mProcessFavorites = false;
-    private boolean mProcessSignal = false;
 
     private Post post;
 
@@ -122,14 +120,12 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private EditText edtvComment;
 
-    private RelativeLayout rlCommentaires;
     private RelativeLayout rlNewComment;
-    private RelativeLayout rlDelete;
+    private RelativeLayout rlCommentaires;
 
     private TextView likeTv;
     private TextView favoriteTv;
     private TextView shareTv;
-    private TextView signalerTv;
     private TextView noteTv;
     private TextView postDescriptionTv;
     private TextView tvPostTitle;
@@ -178,12 +174,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             sharePost(post.getpTitre(), post.getpDescription());
         }else if (v.getId() == R.id.noteTv && !pCreator.equals(myUID)){
             showGiveNoteDialog();
-        }else if (v.getId() == R.id.signalerTv && !pCreator.equals(myUID)){
-            showGiveWarningDialog();
         }else if (v.getId() == R.id.ibSend && !pCreator.equals(myUID)){
             verificationDeSaisie();
-        }else if (v.getId() == R.id.tvDeletePost){
-            deleteConfirmation();
         }
     }
 
@@ -201,7 +193,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         menu.findItem(R.id.menu_search).setVisible(false);
         menu.findItem(R.id.menu_add_operation).setVisible(false);
         menu.findItem(R.id.menu_add_image).setVisible(false);
-        menu.findItem(R.id.menu_show_settings).setVisible(false);
         MenuItem itemVues = menu.findItem(R.id.menu_show_vues);
         itemVues.setVisible(true);
         View rootViewVues = MenuItemCompat.getActionView(itemVues);
@@ -222,35 +213,13 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
         }else if (item.getItemId() == R.id.menu_show_vues){
 
+        }else if (item.getItemId() == R.id.menu_show_settings){
+            Intent intent = new Intent(PostActivity.this, SettingsPost.class);
+            intent.putExtra("pId", pId);
+            intent.putExtra("pCreator", pCreator);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()){
-            case R.id.commentNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
-                }else{
-                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
-                }
-                break;
-            case R.id.galleryNotificationSw :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, isChecked);
-                editor.apply();
-                if (isChecked){
-                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
-                }else{
-                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
-                }
-                break;
-            default:
-        }
     }
 
     private void checkUser() {
@@ -283,7 +252,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         pId = getIntent().getStringExtra("pId");
         pCreator = getIntent().getStringExtra("pCreator");
         ref = FirebaseDatabase.getInstance().getReference("Posts");
-        sharedPreferences = getSharedPreferences("POST_NOTIF_SP", MODE_PRIVATE);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -297,13 +265,10 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
         rlCommentaires = findViewById(R.id.rlCommentaires);
         rlNewComment = findViewById(R.id.rlNewComment);
-        rlDelete = findViewById(R.id.rlDelete);
         tvDeletePost = findViewById(R.id.tvDeletePost);
 
         rlNewComment.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
-        rlDelete.setVisibility(pCreator.equals(myUID)? View.VISIBLE: View.GONE);
 
-        signalerTv = findViewById(R.id.signalerTv);
         favoriteTv = findViewById(R.id.favoriteTv);
         shareTv = findViewById(R.id.shareTv);
         likeTv = findViewById(R.id.likeTv);
@@ -312,16 +277,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         tvPostTitle = findViewById(R.id.tvPostTitle);
         postDescriptionTv = findViewById(R.id.postDescriptionTv);
 
-        SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
-        SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
-
-        boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, false);
-        boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, false);
-
-        commentNotificationSw.setChecked(isCommentEnable);
-        galleryNotificationSw.setChecked(isGalleryEnable);
-
         postImagesRv = findViewById(R.id.postImagesRv);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(PostActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        postImagesRv.setLayoutManager(layoutManager);
         rvComments = findViewById(R.id.rvComments);
 
         coverIv.setOnLongClickListener(this);
@@ -330,67 +288,14 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         favoriteTv.setOnClickListener(this);
         noteTv.setOnClickListener(this);
         shareTv.setOnClickListener(this);
-        signalerTv.setOnClickListener(this);
-        tvDeletePost.setOnClickListener(this);
-        commentNotificationSw.setOnCheckedChangeListener(this);
-        galleryNotificationSw.setOnCheckedChangeListener(this);
-    }
-
-    private void unsuscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = ""+getResources().getString(R.string.not_receive_notification);
-                        if(!task.isSuccessful()){
-                            msg = ""+getResources().getString(R.string.subscription_failed);
-                        }
-                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void suscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = ""+getResources().getString(R.string.receive_notification);
-                        if(!task.isSuccessful()){
-                            msg = ""+getResources().getString(R.string.unsubscription_failed);
-                        }
-                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     private void getPost() {
         galleryList = new ArrayList<>();
         commentList = new ArrayList<>();
+        blockedList = new ArrayList<>();
         Query query = ref.orderByKey().equalTo(pId);
         query.addValueEventListener(postInfosVal);
-    }
-
-    private void deleteConfirmation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Sélectionner une action :");
-        builder.setMessage("Etes vous sure de vouloir supprime cette publication ?");
-        builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                deletePost();
-            }
-        }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void deletePost() {
-        //
     }
 
     private void showCoverDialog() {
@@ -593,82 +498,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void showGiveWarningDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Signaler ce post");
-        builder.setMessage(mProcessSignal ? "Etes-vous sur de vouloir supprimer le signalement ce post ?" : "Etes-vous sur de vouloir signaler ce post ?")
-                .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (mProcessSignal){
-                            setPostSignalement("");
-                        }
-                        else{
-                            procederAuSignalement();
-                        }
-                    }
-                }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void procederAuSignalement() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Signaler ce post");
-        final View customLayout = getLayoutInflater().inflate(R.layout.item_signaler, null);
-        builder.setView(customLayout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // send data from the AlertDialog to the Activity
-                EditText signalerEdtv = customLayout.findViewById(R.id.signalerEdtv);
-                String signaler = signalerEdtv.getText().toString().trim();
-
-                if (TextUtils.isEmpty(signaler)){
-                    Toast.makeText(PostActivity.this, "Vous n'avez donné aucune raison!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                setPostSignalement(""+signaler);
-            }
-        }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void setPostSignalement(String signaler) {
-        if (mProcessSignal){
-            ref.child(post.getpId()).child("pNSignals")
-                    .setValue(""+ (Integer.parseInt(post.getpNSignals()) - 1));
-            ref.child(post.getpId()).child(DB_SIGNALEMENT).child(myUID).removeValue();
-            mProcessSignal = false;
-            signalerTv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_no_signaler,0,0,0);
-        }else {
-            ref.child(post.getpId()).child("pNSignals")
-                    .setValue(""+ (Integer.parseInt(post.getpNSignals()) + 1));
-
-            String timestamp = String.valueOf(System.currentTimeMillis());
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("sId", myUID);
-            hashMap.put("sMessage", signaler);
-            hashMap.put("sDate", timestamp);
-            hashMap.put("uName", myNAME);
-            hashMap.put("uAvatar", myAVATAR);
-
-            ref.child(post.getpId()).child(DB_SIGNALEMENT).child(myUID).setValue(hashMap);
-            mProcessSignal = true;
-            signalerTv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_signaler,0,0,0);
-        }
     }
 
     private void afficherPhotoCouverturePost(String postCover) {
@@ -972,8 +801,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 tvPostTitle.setText(post.getpTitre());
                 postDescriptionTv.setText(post.getpDescription());
                 likeTv.setText(""+post.getpNLikes());
-                noteTv.setText(""+post.getpNote());
-                signalerTv.setText(""+post.getpNSignals());
+                noteTv.setText(""+post.getpNote()+"/20");
                 shareTv.setText(""+post.getpNShares());
                 favoriteTv.setText(""+post.getpNFavories());
                 if (!post.getpCreator().equals(myUID)){
@@ -991,11 +819,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                             0,
                             0,
                             0);
-                    signalerTv.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    /*signalerTv.setCompoundDrawablesRelativeWithIntrinsicBounds(
                             ds.child(DB_SIGNALEMENT).hasChild(myUID)?R.drawable.ic_signaler:R.drawable.ic_no_signaler,
                             0,
                             0,
-                            0);
+                            0);*/
                     favoriteTv.setCompoundDrawablesRelativeWithIntrinsicBounds(
                             ds.child(DB_FAVORIES).hasChild(myUID)?R.drawable.ic_favorite:R.drawable.ic_no_favorite,
                             0,
@@ -1006,24 +834,24 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                             0,
                             0,
                             0);
-                    
-                    if (ds.child(DB_SIGNALEMENT).hasChild(myUID))
-                        mProcessSignal = true;
-                    else
-                        mProcessSignal = false;
-                    if (ds.child(DB_FAVORIES).hasChild(myUID))
+
+                    mProcessFavorites = ds.child(DB_FAVORIES).hasChild(myUID);
+                    mProcessLikes = ds.child(DB_LIKES).hasChild(myUID);
+
+                    /*if (ds.child(DB_FAVORIES).hasChild(myUID))
                         mProcessFavorites = true;
                     else
                         mProcessFavorites = false;
                     if (ds.child(DB_LIKES).hasChild(myUID))
                         mProcessLikes = true;
                     else
-                        mProcessLikes = false;
+                        mProcessLikes = false;*/
                 }
                 afficherPhotoCouverturePost(""+post.getpCover());
                 ref.child(pId).child(DB_GALLERY).addValueEventListener(valPostGallery);
                 ref.child(pId).child(DB_COMMENT).addValueEventListener(valAllComments);
                 ref.child(pId).child(DB_NOTES).addValueEventListener(valPostNotes);
+                ref.child(pId).child(DB_BLOCKED_USERS).addValueEventListener(valPostBlokedUsers);
             }
         }
 
@@ -1040,7 +868,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             for (DataSnapshot ds : snapshot.getChildren()){
                 Comment comment = ds.getValue(Comment.class);
                 commentList.add(comment);
-                commentAdaptor = new CommentAdaptor(PostActivity.this, commentList);
+                commentAdaptor = new CommentAdaptor(PostActivity.this, commentList, pId);
                 rvComments.setNestedScrollingEnabled(false);
                 rvComments.setAdapter(commentAdaptor);
                 commentAdaptor.setOnItemClickListener(new ViewsClickListener() {
@@ -1115,6 +943,24 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             hashMap.put("pNote", ""+note);
 
             ref.child(pId).updateChildren(hashMap);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final ValueEventListener valPostBlokedUsers = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            blockedList.clear();
+            for (DataSnapshot ds : snapshot.getChildren()){
+                String item = ds.child("bId").getValue(String.class);
+                blockedList.add(item);
+            }
+            if (blockedList.contains(myUID))
+                rlNewComment.setVisibility(View.GONE);
         }
 
         @Override

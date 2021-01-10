@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/avatarIv"
+        android:layout_toStartOf="@+id/ivBlocked"
         android:text="his name"
         android:paddingStart="5dp"
         android:textStyle="bold"
@@ -33,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/avatarIv"
         android:layout_below="@+id/hisNameTv"
+        android:layout_toStartOf="@+id/ivBlocked"
         android:text="Commentaire"
         android:paddingStart="5dp"
         android:textColor="@color/black"
@@ -43,12 +45,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/commentTv"
-        android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/avatarIv"
+        android:layout_toStartOf="@+id/ivBlocked"
         android:text="11/10/2020 09:59PM"
         android:textAlignment="textEnd"
         android:textStyle="italic"
         android:textSize="10sp"
         android:textColor="@color/black"/>
+
+    <ImageView
+        android:id="@+id/ivBlocked"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_blocked"
+        android:visibility="gone" />
 
 </RelativeLayout>

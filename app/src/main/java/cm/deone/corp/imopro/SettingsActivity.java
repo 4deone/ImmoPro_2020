@@ -105,7 +105,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     private FirebaseAuth firebaseAuth;
 
-    AppLocationService appLocationService;
+    private AppLocationService appLocationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

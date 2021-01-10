@@ -15,17 +15,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="5dp"
-            android:elevation="20dp"
-            android:background="@drawable/bg_curve">
-
-            <RelativeLayout
-                android:id="@+id/rubanRl"
-                android:layout_marginStart="5dp"
-                android:layout_width="10dp"
-                android:layout_height="85dp"
-                android:background="#FF3D00"/>
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/white"
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/userInfoTv"
@@ -73,17 +66,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:padding="5dp"
-            android:elevation="20dp"
-            android:background="@drawable/bg_curve">
-
-            <RelativeLayout
-                android:id="@+id/rubanNotificationRl"
-                android:layout_marginStart="5dp"
-                android:layout_width="10dp"
-                android:layout_height="70dp"
-                android:background="#FF3D00"/>
+            android:layout_marginBottom="2dp"
+            android:background="@color/white">
 
             <TextView
                 android:id="@+id/notificationInfoTv"
@@ -113,21 +98,12 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="5dp"
-            android:elevation="20dp"
-            android:background="@drawable/bg_curve">
-
-            <RelativeLayout
-                android:id="@+id/rubanLanguageRl"
-                android:layout_marginStart="5dp"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                android:background="#FF3D00"/>
+            android:layout_marginBottom="2dp"
+            android:background="@color/white"
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/languageInfoTv"
-                android:layout_toEndOf="@+id/rubanLanguageRl"
                 android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -139,7 +115,6 @@
             <TextView
                 android:id="@+id/languageTv"
                 android:layout_below="@+id/languageInfoTv"
-                android:layout_toEndOf="@+id/rubanLanguageRl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

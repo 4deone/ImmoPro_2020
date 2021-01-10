@@ -5,6 +5,7 @@ public class Constant {
     public static final String TOPIC_POST_NOTIFICATION = "POST";
     public static final String TOPIC_COMMENT_NOTIFICATION = "COMMENT";
     public static final String TOPIC_GALLERY_NOTIFICATION = "GALLERY";
+    public static final String TOPIC_GEOLOCALISTION_NOTIFICATION = "GEOLOCALISTION";
 
     public static final String TYPE_NOTIFICATION = "notificationType";
     public static final String TYPE_POST_NOTIFICATION = "PostNotification";
@@ -22,6 +23,7 @@ public class Constant {
     public static final String DB_SHARES = "Shares";
     public static final String DB_LIKES = "Likes";
     public static final String DB_VUES = "Vues";
+    public static final String DB_BLOCKED_USERS = "BlockedUsers";
 
     public static final int CAMERA_REQUEST_CODE = 100;
     public static final int STORAGE_REQUEST_CODE = 200;

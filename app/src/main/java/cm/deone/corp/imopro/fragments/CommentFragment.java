@@ -344,7 +344,7 @@ public class CommentFragment extends Fragment {
             for (DataSnapshot ds : snapshot.getChildren()){
                 Comment comment = ds.getValue(Comment.class);
                 commentList.add(comment);
-                commentAdaptor = new CommentAdaptor(getActivity(), commentList);
+                commentAdaptor = new CommentAdaptor(getActivity(), commentList, pId);
                 commentsRv.setAdapter(commentAdaptor);
                 commentAdaptor.setOnItemClickListener(new ViewsClickListener() {
                     @Override

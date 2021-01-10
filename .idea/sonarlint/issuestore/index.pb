@@ -169,3 +169,7 @@ u
 Eapp/src/main/java/cm/deone/corp/imopro/outils/AppLocationService.java,d/a/dab779b5a41b69f9e11f92a344e15c67ebf7b4a3
 r
 Bapp/src/main/java/cm/deone/corp/imopro/outils/LocationAddress.java,7/9/7915453220cda3a8b492a1e029cb65b519c4c35b
+^
+.app/src/main/res/drawable-anydpi/ic_delete.xml,1/9/193a1ab8249aa9c706aa7440b9702b1cdbf9b93d
+h
+8app/src/main/java/cm/deone/corp/imopro/SettingsPost.java,8/c/8c87e4260533c379d9fd744a01f901713ba47e40
