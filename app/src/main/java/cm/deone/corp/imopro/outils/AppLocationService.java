@@ -11,18 +11,43 @@ import android.os.IBinder;
 
 public class AppLocationService extends Service implements LocationListener {
 
-
     private static final long MIN_DISTANCE_FOR_UPDATE = 10;
     private static final long MIN_TIME_FOR_UPDATE = 1000 * 60 * 2;
 
+    // flag for GPS status
+    boolean isGPSEnabled = false;
+
+    // flag for network status
+    boolean isNetworkEnabled = false;
+
     protected LocationManager locationManager;
     Location location;
+    String provider = "";
 
     public AppLocationService(Context context) {
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
     }
 
-    public Location getLocation(String provider) {
+    public Location getLocation() {
+        // getting GPS status
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!isGPSEnabled && !isNetworkEnabled) {
+            // no network provider is enabled
+        } else {
+            if (isGPSEnabled) {
+                // Get location from GPS Services
+                provider = LocationManager.GPS_PROVIDER;
+            }else if (isNetworkEnabled) {
+                // Get location from Network Provider
+                provider = LocationManager.NETWORK_PROVIDER;
+            }
+        }
+
         if (locationManager.isProviderEnabled(provider)) {
             locationManager.requestLocationUpdates(provider, MIN_TIME_FOR_UPDATE, MIN_DISTANCE_FOR_UPDATE, this);
             if (locationManager != null) {

@@ -205,22 +205,10 @@
             android:layout_marginStart="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Publication"
+            android:text="Pas de localisation"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/ic_no_localisation"
             android:textStyle="bold"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <TextView
-            android:id="@+id/tvLocalisation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/swtvGeolocalisation"
-            android:layout_marginStart="20dp"
-            android:text="Pas de localisation"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textStyle="italic"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     </RelativeLayout>

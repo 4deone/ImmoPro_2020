@@ -43,13 +43,14 @@ public class LocationAddress {
                     if (result != null) {
                         message.what = 1;
                         Bundle bundle = new Bundle();
-                        result = "Latitude: " + latitude + "\nLongitude: " + longitude + "\nAddress: " + result;
+                        //result = "Latitude: " + latitude + "\nLongitude: " + longitude + "\nAddress: " + result;
                         bundle.putString("address", result);
                         message.setData(bundle);
                     } else {
                         message.what = 1;
                         Bundle bundle = new Bundle();
-                        result = "Latitude: " + latitude + " Longitude: " + longitude + "\n Unable to get address for this lat-long.";
+                        //result = "Latitude: " + latitude + " Longitude: " + longitude + "\n Unable to get address for this lat-long.";
+                        result = "Unable to get address for this lat-long.";
                         bundle.putString("address", result);
                         message.setData(bundle);
                     }

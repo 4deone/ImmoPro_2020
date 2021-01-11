@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -56,6 +55,9 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
     private final String mPermission = Manifest.permission.ACCESS_FINE_LOCATION;
 
     private AppLocationService appLocationService;
+    private static double latitude;
+    private static double longitude;
+    private boolean isGeolocalisationEnable = false;
 
     private DatabaseReference ref;
 
@@ -66,7 +68,7 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
 
     private Post post;
 
-    private static TextView tvLocalisation;
+    private SwitchCompat swtvGeolocalisation;
     private TextView tvSignalerPost;
     private RelativeLayout rlDelete;
     private RelativeLayout rlSignaler;
@@ -74,7 +76,7 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
     private String myUID;
     private String myNAME;
     private String myAVATAR;
-    private String pId;
+    private static String pId;
     private String pCreator;
 
     @Override
@@ -123,22 +125,8 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(SettingsPost.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-            //checkPermission(""+mPermission, REQUEST_CODE_PERMISSION);
         }
     }
-
-    /*private void checkPermission(String permission, int requestCode) {
-        try {
-            if (ActivityCompat.checkSelfPermission(SettingsPost.this, permission) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(SettingsPost.this, new String[]{permission}, requestCode);
-            }else{
-                //Toast.makeText(SettingsPost.this, "LOCATION permission granted!", Toast.LENGTH_SHORT).show();
-                getPostAddress();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     private void initVues() {
         pId = getIntent().getStringExtra("pId");
@@ -150,25 +138,23 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        tvLocalisation = findViewById(R.id.tvLocalisation);
         tvSignalerPost = findViewById(R.id.tvSignalerPost);
         rlDelete = findViewById(R.id.rlDelete);
         rlDelete.setVisibility(pCreator.equals(myUID)? View.VISIBLE: View.GONE);
         rlSignaler = findViewById(R.id.rlSignaler);
         rlSignaler.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
 
-        SwitchCompat swtvGeolocalisation = findViewById(R.id.swtvGeolocalisation);
+        swtvGeolocalisation = findViewById(R.id.swtvGeolocalisation);
+        swtvGeolocalisation.setEnabled(pCreator.equals(myUID));
         SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
         galleryNotificationSw.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
         SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
 
         boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, false);
         boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, false);
-        boolean isGeolocalisationEnable = sharedPreferences.getBoolean(""+TOPIC_GEOLOCALISTION_NOTIFICATION+""+pId, false);
 
         commentNotificationSw.setChecked(isCommentEnable);
         galleryNotificationSw.setChecked(isGalleryEnable);
-        swtvGeolocalisation.setChecked(isGeolocalisationEnable);
 
         commentNotificationSw.setOnCheckedChangeListener(this);
         galleryNotificationSw.setOnCheckedChangeListener(this);
@@ -337,14 +323,15 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
         if (!checkLocationPermission()){
             requestLocationPermission();
         }else {
-            Location location = appLocationService.getLocation(LocationManager.GPS_PROVIDER);
+            Location location = appLocationService.getLocation();
 
             if (location != null) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                LocationAddress locationAddress = new LocationAddress();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                //LocationAddress locationAddress = new LocationAddress();
                 LocationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(), new GeocoderHandler());
             } else {
+                swtvGeolocalisation.setText("Recherche de localisation...");
                 showSettingsAlert();
             }
         }
@@ -393,17 +380,56 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.swtvGeolocalisation :
-                editor = sharedPreferences.edit();
-                editor.putBoolean(""+TOPIC_GEOLOCALISTION_NOTIFICATION+""+pId, isChecked);
-                editor.apply();
                 if (isChecked){
-                    getPostAddress();
-                }else{
-                    tvLocalisation.setText("Pas de localisation");
+                    if (!isGeolocalisationEnable)
+                        showLocaliserDialog();
+                }
+                else{
+                    if (isGeolocalisationEnable)
+                        showUnLocaliserDialog();
                 }
                 break;
             default:
         }
+    }
+
+    private void showLocaliserDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingsPost.this);
+        builder.setTitle("Localiser ce post");
+        builder.setMessage("Etes-vous sur de vouloir localiser ce post ?")
+                .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getPostAddress();
+                    }
+                }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                swtvGeolocalisation.setChecked(false);
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showUnLocaliserDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingsPost.this);
+        builder.setTitle("Localiser ce post");
+        builder.setMessage("Etes-vous sur de vouloir supprimer la localisation ce post ?")
+                .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        swtvGeolocalisation.setText("Pas de localisation");
+                        ref.child(pId).child("Geolocalisation").removeValue();
+                    }
+                }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                swtvGeolocalisation.setChecked(true);
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     private final ValueEventListener postInfosVal =  new ValueEventListener() {
@@ -411,10 +437,13 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             for (DataSnapshot ds : snapshot.getChildren()){
                 post = ds.getValue(Post.class);
-                if (ds.child(DB_SIGNALEMENT).hasChild(myUID))
-                    mProcessSignal = true;
-                else
-                    mProcessSignal = false;
+
+                mProcessSignal = ds.child(DB_SIGNALEMENT).hasChild(myUID);
+
+                String adresse = ds.child("Geolocalisation").child("adresse").getValue(String.class);
+                isGeolocalisationEnable = ds.child("Geolocalisation").hasChild("adresse");
+                swtvGeolocalisation.setChecked(isGeolocalisationEnable);
+                swtvGeolocalisation.setText(isGeolocalisationEnable && ds.child("Geolocalisation").hasChild("adresse") ? adresse:"Pas de localisation");
             }
         }
 
@@ -437,7 +466,15 @@ public class SettingsPost extends AppCompatActivity implements View.OnClickListe
                 default:
                     locationAddress = null;
             }
-            tvLocalisation.setText(locationAddress);
+            //swtvGeolocalisation.setText(locationAddress);
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("id", timestamp);
+            hashMap.put("latitude", ""+latitude);
+            hashMap.put("longitude", ""+longitude);
+            hashMap.put("adresse", locationAddress);
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+            reference.child(pId).child("Geolocalisation").setValue(hashMap);
         }
     }
 

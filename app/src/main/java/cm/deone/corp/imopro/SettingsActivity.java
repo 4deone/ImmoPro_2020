@@ -115,14 +115,14 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         initVues();
         checkUsers();
         getUserInfos();
-        getAddressUser();
+        //getAddressUser();
     }
 
     @Override
     protected void onStart() {
         checkUsers();
         getUserInfos();
-        getAddressUser();
+        //getAddressUser();
         super.onStart();
     }
 
@@ -130,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     protected void onResume() {
         checkUsers();
         getUserInfos();
-        getAddressUser();
+        //getAddressUser();
         super.onResume();
     }
 
@@ -746,7 +746,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         if (!checkLocationPermission()){
             requestLocationPermission();
         }else {
-            Location location = appLocationService.getLocation(LocationManager.GPS_PROVIDER);
+            Location location = appLocationService.getLocation();
 
             //you can hard-code the lat & long if you have issues with getting it
             //remove the below if-condition and use the following couple of lines

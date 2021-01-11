@@ -1,150 +1,150 @@
 
-K
-java:S1604ê"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8¨¾Àî.
+[
+java:S11280">Remove this unused import 'com.google.android.gms.tasks.Task'.(¦âÏô8Î´ÿ»í.
 S
 java:S1874Æ"5Remove this use of "getActionView"; it is deprecated.(±¿¥Ù8ÙÛµî.
-]
-java:S3398ÿ"?Move this method into the anonymous class declared at line 796.(µÚ®ñ8ÙÛµî.
-K
-java:S1604ƒ"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8¨¾Àî.
-U
-java:S1128"8Remove this unused import 'android.view.LayoutInflater'.(À¯ÑÇ8Ğöòòè.
-W	java:S110f"<This class has 9 parents which is greater than 5 authorized.( ‚ê*8¶æÊêä.
 F
-java:S1604±"(Make this anonymous inner class a lambda(¨È÷8¨¾Àî.
-u
-java:S3776Œ"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(æÔü®ıÿÿÿÿ8ÙÛµî.
-b
-java:S3398÷"?Move this method into the anonymous class declared at line 796.(ƒ½…ˆøÿÿÿÿ8ÙÛµî.
+java:S1604–"(Make this anonymous inner class a lambda(‚‡²8¨¾Àî.
 n
-java:S1128-"LRemove this unused import 'com.google.android.gms.tasks.OnCompleteListener'.(Çğ¸Òÿÿÿÿÿ8Î´ÿ»í.
-¤
-java:S1186ì"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ì¤Èÿÿÿÿÿ8ÙÛµî.
-k
-java:S1128["IRemove this unused import 'cm.deone.corp.imopro.outils.Constant.DB_POST'.(âı“Âøÿÿÿÿ8¶æÊêä.
-i
-java:S1192ã"FDefine a constant instead of duplicating this literal "nNote" 3 times.(šùŞûÿÿÿÿ8¨¾Àî.
-€
-java:S11282"^Remove this unused import 'com.google.android.material.bottomnavigation.BottomNavigationView'.(ºØÇÿÿÿÿÿ8¶æÊêä.
-g
-java:S1128P"ERemove this unused import 'cm.deone.corp.imopro.models.NotChildItem'.(ŸŒŠ°øÿÿÿÿ8˜®ïôâ.
-~
-java:S1128_"\Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION'.(«¨¿²ùÿÿÿÿ8¾Œş»í.
-b
-java:S3398"?Move this method into the anonymous class declared at line 864.(¾İÚÿúÿÿÿÿ8ÙÛµî.
-K
-java:S1604ë"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8¨¾Àî.
-K
-java:S1604æ"(Make this anonymous inner class a lambda(×àŒÔúÿÿÿÿ8¨¾Àî.
-F
-java:S1604Æ"(Make this anonymous inner class a lambda(Õä8¨¾Àî.
-W
-java:S1128#"5Remove this unused import 'android.widget.RatingBar'.(ØªÛŒıÿÿÿÿ8¤ßîä.
+java:S1128;"LRemove this unused import 'com.google.firebase.messaging.FirebaseMessaging'.(Ë¾Òªşÿÿÿÿ8Î´ÿ»í.
+n	java:S117Ø"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÊÄ—×8¨¾Àî.
 K
 java:S1604×"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8¨¾Àî.
-j
-java:S1128L"HRemove this unused import 'cm.deone.corp.imopro.fragments.HomeFragment'.( ò­‰üÿÿÿÿ8Ùß‹œá.
-h
-java:S1128"FRemove this unused import 'androidx.fragment.app.FragmentTransaction'.(¦İÚ¿şÿÿÿÿ8½©æõá.
-F	java:S108Ô")Either remove or fill this block of code.(£ìüš8ÙÛµî.
+d
+java:S1192î"FDefine a constant instead of duplicating this literal "uName" 5 times.(Âşçô8ã”Ñçê.
 Y	java:S125º"<This block of commented-out lines of code should be removed.(€ñË8ÙÛµî.
-K	java:S108Ö")Either remove or fill this block of code.(è¦‡£şÿÿÿÿ8ÙÛµî.
-Ÿ
-java:S1186ü"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ô°¤¦8¥İÆî.
-^	java:S125É"<This block of commented-out lines of code should be removed.(ÎÏôÿÿÿÿÿ8ğÂ€î.
+s	java:S117Ù"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ş¾Úúÿÿÿÿ8ä”Ñçê.
+W
+java:S1128":Remove this unused import 'android.widget.CompoundButton'.(®½¤Ş8‰Õ’¼í.
+F	java:S108Ô")Either remove or fill this block of code.(£ìüš8ÙÛµî.
 F
 java:S1604É"(Make this anonymous inner class a lambda(¨È÷8¨¾Àî.
-K
-java:S1604Ô"(Make this anonymous inner class a lambda(•Å¨åùÿÿÿÿ8¨¾Àî.
-m
-java:S1128J"KRemove this unused import 'cm.deone.corp.imopro.fragments.CommentFragment'.( İ‰ùÿÿÿÿ8Ùß‹œá.
-g
-java:S1128K"KRemove this unused import 'cm.deone.corp.imopro.fragments.GalleryFragment'.(ÎâÈO8Ùß‹œá.
 }
 java:S1128c"[Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION'.(ÿö¥¨şÿÿÿÿ8¶æÊêä.
-Z
-java:S1128">Remove this unused import 'android.content.SharedPreferences'.(íÎÉr8çæï»í.
-Y
-java:S1128!"7Remove this unused import 'android.widget.ImageButton'.(‚ÏÉõÿÿÿÿÿ8¤¯¿ºã.
+U
+java:S1128"8Remove this unused import 'android.view.LayoutInflater'.(À¯ÑÇ8Ğöòòè.
 V
 java:S1117Ï"8Rename "ref" which hides the field declared at line 117.(€ÚÆ²8ÙÛµî.
 ¤
 java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ì¤Èÿÿÿÿÿ8¥İÆî.
-b
-java:S3398Œ"?Move this method into the anonymous class declared at line 796.(š•ùûÿÿÿÿ8ÙÛµî.
-s	java:S117Ù"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ş¾Úúÿÿÿÿ8ä”Ñçê.
-Y
-java:S1128 "7Remove this unused import 'android.widget.FrameLayout'.(ºÍ‹Ùúÿÿÿÿ8šœÏ˜ä.
-\
-java:S1155ø">Use isEmpty() to check whether the collection is empty or not.( Ú“×8¥İÆî.
-K
-java:S1604Î"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8¨¾Àî.
-S
-java:S1172÷"0Remove this unused method parameter "postCover".(ƒ½…ˆøÿÿÿÿ8ÙÛµî.
-K
-java:S1604Ñ"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8¨¾Àî.
-{
-java:S1128a"YRemove this unused import 'cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION'.(óÃ’–ùÿÿÿÿ8ŞÉÔöá.
-f
-java:S1192ï"HDefine a constant instead of duplicating this literal "uAvatar" 5 times.(¾½Îİ8‘¥¼í.
-E
-java:S1604ö"(Make this anonymous inner class a lambda(–§º8¨¾Àî.
-g
-java:S1128I"JRemove this unused import 'cm.deone.corp.imopro.adapter.NotParentAdaptor'.(¼İúÜ8˜®ïôâ.
-K
-java:S1604Á"(Make this anonymous inner class a lambda(®Ø¡öúÿÿÿÿ8¨¾Àî.
-e
-java:S1192"GDefine a constant instead of duplicating this literal "pNVues" 3 times.(¸Ùì8¨¾Àî.
-n	java:S117Ø"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÊÄ—×8¨¾Àî.
-P
-java:S1128"3Remove this unused import 'android.view.ViewGroup'.(‹îá8Ğöòòè.
-W
-java:S1128":Remove this unused import 'android.widget.CompoundButton'.(®½¤Ş8‰Õ’¼í.
-F
-java:S1604Á"(Make this anonymous inner class a lambda(õò˜8¨¾Àî.
-]
-java:S3398ˆ"?Move this method into the anonymous class declared at line 796.(æ†ç¯8ÙÛµî.
-n
-java:S1128;"LRemove this unused import 'com.google.firebase.messaging.FirebaseMessaging'.(Ë¾Òªşÿÿÿÿ8Î´ÿ»í.
-`
-java:S1128"CRemove this unused import 'androidx.appcompat.widget.SwitchCompat'.(õÕÂÕ8¾Œş»í.
-y
-java:S1192°"[Define a constant instead of duplicating this literal "SÃ©lectionner une action :" 3 times.(ÌĞ‚8¨¾Àî.
-s	java:S117×"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Øº†©ûÿÿÿÿ8¨¾Àî.
-m
-java:S1128]"PRemove this unused import 'cm.deone.corp.imopro.outils.Constant.DB_SIGNALEMENT'.(ÿŞª8»Ø½í.
-w
-java:S1128b"[Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION'.(ü©Ä%8…™Ğˆâ.
-n
-java:S1192’"KDefine a constant instead of duplicating this literal "pNComments" 5 times.(ä™ä’ùÿÿÿÿ8¨¾Àî.
-d
-java:S1192î"FDefine a constant instead of duplicating this literal "uName" 5 times.(Âşçô8ã”Ñçê.
 g
 java:S1192Û"IDefine a constant instead of duplicating this literal "pCreator" 3 times.(ù¯á¦8€‰½í.
 K
-java:S1604ş"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8¨¾Àî.
-]
-java:S1128";Remove this unused import 'androidx.fragment.app.Fragment'.(‚Š©“ùÿÿÿÿ8Ùß‹œá.
-[
-java:S11280">Remove this unused import 'com.google.android.gms.tasks.Task'.(¦âÏô8Î´ÿ»í.
-X
-java:S1874Ê"5Remove this use of "getActionView"; it is deprecated.(äœÂ«ûÿÿÿÿ8ÙÛµî.
-b
-java:S3398Å"?Move this method into the anonymous class declared at line 897.(¢©†‰ıÿÿÿÿ8ÙÛµî.
-s
-java:S1128M"QRemove this unused import 'cm.deone.corp.imopro.fragments.NotificationsFragment'.(¥„†øÿÿÿÿ8¶æÊêä.
-~
-java:S1450„"[Remove the "tvDeletePost" field and declare it as a local variable in the relevant methods.(Ê¡Íéøÿÿÿÿ8÷şÄçê.
+java:S1604Ô"(Make this anonymous inner class a lambda(•Å¨åùÿÿÿÿ8¨¾Àî.
 K
-java:S1604´"(Make this anonymous inner class a lambda(Ì¼Ôúÿÿÿÿ8¨¾Àî.
+java:S1604ƒ"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8¨¾Àî.
+P
+java:S1128"3Remove this unused import 'android.view.ViewGroup'.(‹îá8Ğöòòè.
+Z
+java:S1128">Remove this unused import 'android.content.SharedPreferences'.(íÎÉr8çæï»í.
+]
+java:S3398ÿ"?Move this method into the anonymous class declared at line 796.(µÚ®ñ8ÙÛµî.
 F
-java:S1604–"(Make this anonymous inner class a lambda(‚‡²8¨¾Àî.
-n	java:S117Ú"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±¼¦»8‘¥¼í.
-c
-java:S1128"ARemove this unused import 'androidx.appcompat.widget.SearchView'.(şçşËúÿÿÿÿ8ÁñÖõâ.
-F
-java:S1604ğ"(Make this anonymous inner class a lambda(ÑÂğ8¨¾Àî.
-h
-java:S1128Q"FRemove this unused import 'cm.deone.corp.imopro.models.NotParentItem'.(Í °„ıÿÿÿÿ8¶æÊêä.
+java:S1604Æ"(Make this anonymous inner class a lambda(Õä8¨¾Àî.
 K
 java:S1604ï"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8¨¾Àî.
+K
+java:S1604´"(Make this anonymous inner class a lambda(Ì¼Ôúÿÿÿÿ8¨¾Àî.
+K
+java:S1604æ"(Make this anonymous inner class a lambda(×àŒÔúÿÿÿÿ8¨¾Àî.
+j
+java:S1128L"HRemove this unused import 'cm.deone.corp.imopro.fragments.HomeFragment'.( ò­‰üÿÿÿÿ8Ùß‹œá.
+f
+java:S1192ï"HDefine a constant instead of duplicating this literal "uAvatar" 5 times.(¾½Îİ8‘¥¼í.
+S
+java:S1172÷"0Remove this unused method parameter "postCover".(ƒ½…ˆøÿÿÿÿ8ÙÛµî.
+w
+java:S1128b"[Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION'.(ü©Ä%8…™Ğˆâ.
+X
+java:S1874Ê"5Remove this use of "getActionView"; it is deprecated.(äœÂ«ûÿÿÿÿ8ÙÛµî.
+F
+java:S1604Á"(Make this anonymous inner class a lambda(õò˜8¨¾Àî.
+b
+java:S3398"?Move this method into the anonymous class declared at line 864.(¾İÚÿúÿÿÿÿ8ÙÛµî.
+h
+java:S1128"FRemove this unused import 'androidx.fragment.app.FragmentTransaction'.(¦İÚ¿şÿÿÿÿ8½©æõá.
+n
+java:S1192’"KDefine a constant instead of duplicating this literal "pNComments" 5 times.(ä™ä’ùÿÿÿÿ8¨¾Àî.
+Ÿ
+java:S1186ü"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ô°¤¦8¥İÆî.
+g
+java:S1128K"KRemove this unused import 'cm.deone.corp.imopro.fragments.GalleryFragment'.(ÎâÈO8Ùß‹œá.
+h
+java:S1128Q"FRemove this unused import 'cm.deone.corp.imopro.models.NotParentItem'.(Í °„ıÿÿÿÿ8¶æÊêä.
+g
+java:S1128I"JRemove this unused import 'cm.deone.corp.imopro.adapter.NotParentAdaptor'.(¼İúÜ8˜®ïôâ.
+F
+java:S1604ğ"(Make this anonymous inner class a lambda(ÑÂğ8¨¾Àî.
+~
+java:S1128_"\Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION'.(«¨¿²ùÿÿÿÿ8¾Œş»í.
+g
+java:S1128P"ERemove this unused import 'cm.deone.corp.imopro.models.NotChildItem'.(ŸŒŠ°øÿÿÿÿ8˜®ïôâ.
+s	java:S117×"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Øº†©ûÿÿÿÿ8¨¾Àî.
+Y
+java:S1128!"7Remove this unused import 'android.widget.ImageButton'.(‚ÏÉõÿÿÿÿÿ8¤¯¿ºã.
+¤
+java:S1186ì"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ì¤Èÿÿÿÿÿ8ÙÛµî.
+Y
+java:S1128 "7Remove this unused import 'android.widget.FrameLayout'.(ºÍ‹Ùúÿÿÿÿ8šœÏ˜ä.
+b
+java:S3398÷"?Move this method into the anonymous class declared at line 796.(ƒ½…ˆøÿÿÿÿ8ÙÛµî.
+i
+java:S1192ã"FDefine a constant instead of duplicating this literal "nNote" 3 times.(šùŞûÿÿÿÿ8¨¾Àî.
+y
+java:S1192°"[Define a constant instead of duplicating this literal "SÃ©lectionner une action :" 3 times.(ÌĞ‚8¨¾Àî.
+e
+java:S1192"GDefine a constant instead of duplicating this literal "pNVues" 3 times.(¸Ùì8¨¾Àî.
+\
+java:S1155ø">Use isEmpty() to check whether the collection is empty or not.( Ú“×8¥İÆî.
+K
+java:S1604ë"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8¨¾Àî.
+b
+java:S3398Å"?Move this method into the anonymous class declared at line 897.(¢©†‰ıÿÿÿÿ8ÙÛµî.
+K
+java:S1604Á"(Make this anonymous inner class a lambda(®Ø¡öúÿÿÿÿ8¨¾Àî.
+u
+java:S3776Œ"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(æÔü®ıÿÿÿÿ8ÙÛµî.
+{
+java:S1128a"YRemove this unused import 'cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION'.(óÃ’–ùÿÿÿÿ8ŞÉÔöá.
+c
+java:S1128"ARemove this unused import 'androidx.appcompat.widget.SearchView'.(şçşËúÿÿÿÿ8ÁñÖõâ.
+b
+java:S3398Œ"?Move this method into the anonymous class declared at line 796.(š•ùûÿÿÿÿ8ÙÛµî.
+K
+java:S1604Ñ"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8¨¾Àî.
+]
+java:S1128";Remove this unused import 'androidx.fragment.app.Fragment'.(‚Š©“ùÿÿÿÿ8Ùß‹œá.
+`
+java:S1128"CRemove this unused import 'androidx.appcompat.widget.SwitchCompat'.(õÕÂÕ8¾Œş»í.
+K
+java:S1604Î"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8¨¾Àî.
+K
+java:S1604ê"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8¨¾Àî.
+m
+java:S1128]"PRemove this unused import 'cm.deone.corp.imopro.outils.Constant.DB_SIGNALEMENT'.(ÿŞª8»Ø½í.
+s
+java:S1128M"QRemove this unused import 'cm.deone.corp.imopro.fragments.NotificationsFragment'.(¥„†øÿÿÿÿ8¶æÊêä.
+W	java:S110f"<This class has 9 parents which is greater than 5 authorized.( ‚ê*8¶æÊêä.
+K
+java:S1604ş"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8¨¾Àî.
+n	java:S117Ú"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±¼¦»8‘¥¼í.
+k
+java:S1128["IRemove this unused import 'cm.deone.corp.imopro.outils.Constant.DB_POST'.(âı“Âøÿÿÿÿ8¶æÊêä.
+€
+java:S11282"^Remove this unused import 'com.google.android.material.bottomnavigation.BottomNavigationView'.(ºØÇÿÿÿÿÿ8¶æÊêä.
+K	java:S108Ö")Either remove or fill this block of code.(è¦‡£şÿÿÿÿ8ÙÛµî.
+^	java:S125É"<This block of commented-out lines of code should be removed.(ÎÏôÿÿÿÿÿ8ğÂ€î.
+F
+java:S1604±"(Make this anonymous inner class a lambda(¨È÷8¨¾Àî.
+n
+java:S1128-"LRemove this unused import 'com.google.android.gms.tasks.OnCompleteListener'.(Çğ¸Òÿÿÿÿÿ8Î´ÿ»í.
+~
+java:S1450„"[Remove the "tvDeletePost" field and declare it as a local variable in the relevant methods.(Ê¡Íéøÿÿÿÿ8÷şÄçê.
+W
+java:S1128#"5Remove this unused import 'android.widget.RatingBar'.(ØªÛŒıÿÿÿÿ8¤ßîä.
+m
+java:S1128J"KRemove this unused import 'cm.deone.corp.imopro.fragments.CommentFragment'.( İ‰ùÿÿÿÿ8Ùß‹œá.
+]
+java:S3398ˆ"?Move this method into the anonymous class declared at line 796.(æ†ç¯8ÙÛµî.
+E
+java:S1604ö"(Make this anonymous inner class a lambda(–§º8¨¾Àî.
