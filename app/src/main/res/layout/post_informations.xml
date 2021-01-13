@@ -1,134 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@null"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/rlDescription"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/white"
+            android:padding="5dp">
 
-            <RelativeLayout
-                android:id="@+id/rlDescription"
+            <TextView
+                android:id="@+id/tvPostTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/rubanRl"
+                android:text="Description de la publication"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/postDescriptionTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvPostTitle"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@+id/rubanRl"
+                android:textStyle="italic"
+                android:text="@string/post_description"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:id="@+id/footerOnePost"
+                android:layout_below="@+id/postDescriptionTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:background="@color/white"
+                android:orientation="horizontal"
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/tvPostTitle"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/likeTv"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/rubanRl"
-                    android:text="Description de la publication"
+                    android:layout_weight="1"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:ellipsize="end"
+                    android:textStyle="bold"
+                    android:background="@null"
+                    android:maxLines="1"
+                    android:gravity="center"
+                    android:textSize="9sp"
+                    android:text="0"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    app:drawableStartCompat="@drawable/ic_no_like" />
 
                 <TextView
-                    android:id="@+id/postDescriptionTv"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/favoriteTv"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvPostTitle"
-                    android:layout_marginStart="20dp"
-                    android:layout_toEndOf="@+id/rubanRl"
-                    android:textStyle="italic"
-                    android:text="@string/post_description"
-                    android:textColor="@color/black" />
+                    android:layout_weight="1"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:ellipsize="end"
+                    android:textStyle="bold"
+                    android:background="@null"
+                    android:maxLines="1"
+                    android:gravity="center"
+                    android:textSize="9sp"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    app:drawableStartCompat="@drawable/ic_no_favorite" />
 
-                <LinearLayout
-                    android:id="@+id/footerOnePost"
-                    android:layout_below="@+id/postDescriptionTv"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/shareTv"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:layout_weight="1"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:ellipsize="end"
+                    android:textStyle="bold"
+                    android:background="@null"
+                    android:maxLines="1"
+                    android:gravity="center"
+                    android:textSize="9sp"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    app:drawableStartCompat="@drawable/ic_no_share" />
 
-                    <TextView
-                        android:id="@+id/likeTv"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:ellipsize="end"
-                        android:textStyle="bold"
-                        android:background="@null"
-                        android:maxLines="1"
-                        android:gravity="center"
-                        android:textSize="9sp"
-                        android:text="0"
-                        android:textColor="@color/black"
-                        app:drawableStartCompat="@drawable/ic_no_like" />
+                <TextView
+                    android:id="@+id/noteTv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:ellipsize="end"
+                    android:textStyle="bold"
+                    android:background="@null"
+                    android:maxLines="1"
+                    android:gravity="center"
+                    android:textSize="9sp"
+                    android:text="15/20"
+                    android:textColor="@color/black"
+                    app:drawableStartCompat="@drawable/ic_no_note" />
 
-                    <TextView
-                        android:id="@+id/favoriteTv"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:ellipsize="end"
-                        android:textStyle="bold"
-                        android:background="@null"
-                        android:maxLines="1"
-                        android:gravity="center"
-                        android:textSize="9sp"
-                        android:text="0"
-                        android:textColor="@color/black"
-                        app:drawableStartCompat="@drawable/ic_no_favorite" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/shareTv"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:ellipsize="end"
-                        android:textStyle="bold"
-                        android:background="@null"
-                        android:maxLines="1"
-                        android:gravity="center"
-                        android:textSize="9sp"
-                        android:text="0"
-                        android:textColor="@color/black"
-                        app:drawableStartCompat="@drawable/ic_no_share" />
+        </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/noteTv"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:ellipsize="end"
-                        android:textStyle="bold"
-                        android:background="@null"
-                        android:maxLines="1"
-                        android:gravity="center"
-                        android:textSize="9sp"
-                        android:text="15/20"
-                        android:textColor="@color/black"
-                        app:drawableStartCompat="@drawable/ic_no_note" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:id="@+id/rlCommentaires"
+                android:id="@+id/rlActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -136,53 +137,255 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/tvCommentaires"
+                    android:id="@+id/tvActivity"
                     android:layout_width="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_height="30dp"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:text="Commentaires"/>
+                    android:text="Activités"/>
 
-                <RelativeLayout
-                    android:id="@+id/rlNewComment"
-                    android:layout_below="@+id/tvCommentaires"
+                <TextView
+                    android:id="@+id/tvLikeActivity"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvActivity"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="fill_vertical"
+                    android:padding="10dp"
+                    android:text="J'aime"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_no_like"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                    <EditText
-                        android:id="@+id/edtvComment"
-                        android:hint="Votre commentaire"
-                        android:background="@color/white"
-                        android:layout_toStartOf="@+id/ibSend"
-                        android:padding="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/tvVuesctivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvLikeActivity"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="fill_vertical"
+                    android:padding="10dp"
+                    android:text="Vues"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_no_vues"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                    <ImageButton
-                        android:id="@+id/ibSend"
-                        android:text="0 Commentaires"
-                        android:background="@null"
-                        android:src="@drawable/ic_send"
-                        android:layout_alignParentEnd="true"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"/>
+                <TextView
+                    android:id="@+id/tvCommentsctivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvVuesctivity"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="fill_vertical"
+                    android:padding="10dp"
+                    android:text="Commentaires"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_no_comment"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                </RelativeLayout>
+                <TextView
+                    android:id="@+id/tvFavoriteActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvCommentsctivity"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="fill_vertical"
+                    android:padding="10dp"
+                    android:text="Favories"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_no_favorite"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <TextView
+                    android:id="@+id/tvNotesctivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvFavoriteActivity"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="fill_vertical"
+                    android:padding="10dp"
+                    android:text="Notes"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_no_note"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <TextView
+                    android:id="@+id/tvShareActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvNotesctivity"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="fill_vertical"
+                    android:padding="10dp"
+                    android:text="Partages"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_no_share"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <TextView
+                    android:id="@+id/tvSgnalerActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvShareActivity"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="fill_vertical"
+                    android:padding="10dp"
+                    android:text="Signalements"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_no_signaler"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             </RelativeLayout>
 
-        </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/rlNotification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:layout_below="@+id/rlActivity"
+                android:padding="5dp">
 
-    </androidx.core.widget.NestedScrollView>
+                <TextView
+                    android:id="@+id/notificationsTv"
+                    android:layout_width="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_height="30dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="Notifications"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvComments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_comment" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/commentNotificationSw"
+                    android:layout_below="@+id/notificationsTv"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_no_comment"
+                    android:text="@string/comment_notifications"
+                    android:textStyle="bold"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-</LinearLayout>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/galleryNotificationSw"
+                    android:layout_below="@+id/commentNotificationSw"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_no_gallery"
+                    android:drawablePadding="10dp"
+                    android:text="@string/gallery_notifications"
+                    android:textStyle="bold"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlGeolocalisation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:layout_below="@+id/rlNotification"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvGeolocalisation"
+                    android:layout_width="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_height="30dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="Géolocalisation"/>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swtvGeolocalisation"
+                    android:layout_below="@+id/tvGeolocalisation"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pas de localisation"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_no_localisation"
+                    android:textStyle="bold"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlSignaler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlGeolocalisation"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvSignalerPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Signaler cette publication"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:drawablePadding="10dp"
+                    app:drawableStartCompat="@drawable/ic_signaler" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlSignaler"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvDeletePost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Supprimer la publication"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:drawablePadding="10dp"
+                    app:drawableStartCompat="@drawable/ic_delete" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/fond_ecran"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditText
+        android:id="@+id/edtvSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="2dp"
+        android:background="@color/white"
+        android:drawableStart="@drawable/ic_no_search"
+        android:hint="Recherche ..."
+        android:padding="15dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSignalers"
+        android:layout_below="@+id/edtvSearch"
+        android:layout_above="@+id/rlComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_signaler_activity"/>
+
+    <RelativeLayout
+        android:id="@+id/rlComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:layout_margin="2dp"
+        android:layout_alignParentBottom="true">
+
+        <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+            android:id="@+id/userIv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_user"
+            android:scaleType="centerCrop"/>
+
+        <EditText
+            android:id="@+id/commentEdtv"
+            android:hint="Votre commentaire"
+            android:background="@color/white"
+            android:layout_toEndOf="@+id/userIv"
+            android:layout_toStartOf="@+id/sendIb"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/sendIb"
+            android:text="0 Commentaires"
+            android:background="@null"
+            android:src="@drawable/ic_send"
+            android:layout_alignParentEnd="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

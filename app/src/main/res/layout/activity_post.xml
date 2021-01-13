@@ -24,11 +24,12 @@
             app:expandedTitleGravity="bottom"
             app:title="@string/app_name"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="exitUntilCollapsed|scroll">
+            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="parallax">
 
                 <ImageView
                     android:id="@+id/coverIv"

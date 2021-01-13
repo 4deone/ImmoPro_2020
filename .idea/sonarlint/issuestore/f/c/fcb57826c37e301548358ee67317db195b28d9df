@@ -1,133 +1,133 @@
 
 F
+java:S1604õ"(Make this anonymous inner class a lambda(ŞÇÓ÷8’¾·æ.
+D	java:S131¬""Add a default case to this switch.(×ö³–úÿÿÿÿ8’¾·æ.
+f
+java:S1854÷"CRemove this useless assignment to local variable "locationAddress".(¤…¥Êúÿÿÿÿ8øáÁ‚ì.
+F
 java:S1604"(Make this anonymous inner class a lambda(¼‡Ç8’¾·æ.
-Y	java:S125ú"<This block of commented-out lines of code should be removed.(ı‚–ÿ8Ñšƒ“ì.
+F
+java:S1604µ"(Make this anonymous inner class a lambda(Õä8’¾·æ.
+K
+java:S1604ô"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8’¾·æ.
+Y
+java:S2696÷"6Make the enclosing method "static" or remove this set.(×æÏ°ùÿÿÿÿ8’¾·æ.
+P
+java:S1874Ÿ"2Remove this use of "setMessage"; it is deprecated.(÷¯™î8’¾·æ.
+^
+java:S1854å"@Remove this useless assignment to local variable "appBarLayout".(Œ¦¥‰8’¾·æ.
+O
+java:S1481å"1Remove this unused "appBarLayout" local variable.(Œ¦¥‰8’¾·æ.
+R
+java:S2440÷"/Remove this instantiation of "LocationAddress".(¤…¥Êúÿÿÿÿ8û¯·ëî.
+]	java:S125v"<This block of commented-out lines of code should be removed.(ŠÂÙöøÿÿÿÿ8û¯·ëî.
+Y	java:S125¯"<This block of commented-out lines of code should be removed.(ß¢û8’¾·æ.
+K
+java:S1604ç"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8’¾·æ.
+`
+java:S2259Ÿ"BA "NullPointerException" could be thrown; "data" is nullable here.(¿´“¿8’¾·æ.
+F
+java:S1604á"(Make this anonymous inner class a lambda(ŞÇÓ÷8’¾·æ.
+{
+java:S1450b"YRemove the "userInfoTv" field and declare it as a local variable in the relevant methods.(¿´¨Åùÿÿÿÿ8µæ¯æ.
 K
 java:S1604ú"(Make this anonymous inner class a lambda(„¬é¿øÿÿÿÿ8’¾·æ.
-n
-java:S1301—"KReplace this "switch" statement by "if" statements to increase readability.(Ñ¯áÆÿÿÿÿÿ8âÅÿµæ.
-]	java:S125}"<This block of commented-out lines of code should be removed.(ŠÂÙöøÿÿÿÿ8³Ô·ëî.
-¤
-java:S1186¬"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8’¾·æ.
-D	java:S131¬""Add a default case to this switch.(×ö³–úÿÿÿÿ8’¾·æ.
-]	java:S110O"<This class has 9 parents which is greater than 5 authorized.(°’ÈĞüÿÿÿÿ8µæ¯æ.
 K
-java:S1604ˆ"(Make this anonymous inner class a lambda(„¬é¿øÿÿÿÿ8’¾·æ.
-`
-java:S1126†"BReplace this if-then-else statement by a single method invocation.(¸Èõş8’¾·æ.
-y
-java:S3252»"[Use static access with "android.provider.MediaStore$Images$ImageColumns" for "DESCRIPTION".(ŠÉå8’¾·æ.
+java:S1604Ê"(Make this anonymous inner class a lambda(Ì¼Ôúÿÿÿÿ8’¾·æ.
+i
+java:S1192£"FDefine a constant instead of duplicating this literal "uName" 3 times.(ù¯Š³ûÿÿÿÿ8’¾·æ.
 F
 java:S1604Ì"(Make this anonymous inner class a lambda(Õä8’¾·æ.
 F
-java:S1604‹"(Make this anonymous inner class a lambda(Î¬¯”8âÅÿµæ.
-q
-java:S3252º"NUse static access with "android.provider.MediaStore$MediaColumns" for "TITLE".(š‹æÜıÿÿÿÿ8´¹šæ.
-Y
-java:S1874Ó";Remove this use of "updateConfiguration"; it is deprecated.(Ó½ »8’¾·æ.
-¤
-java:S1186£"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8’¾·æ.
-L
-java:S1874Ò".Remove this use of "locale"; it is deprecated.(¹ã†É8´¹šæ.
-^
-java:S1854å"@Remove this useless assignment to local variable "appBarLayout".(Œ¦¥‰8’¾·æ.
-^	java:S125Ú"<This block of commented-out lines of code should be removed.(›‡íúøÿÿÿÿ8’¾·æ.
-F
-java:S1604á"(Make this anonymous inner class a lambda(ŞÇÓ÷8’¾·æ.
-`
-java:S2259Ÿ"BA "NullPointerException" could be thrown; "data" is nullable here.(¿´“¿8’¾·æ.
-X
-java:S1874e"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8´¹šæ.
-]	java:S125v"<This block of commented-out lines of code should be removed.(ŠÂÙöøÿÿÿÿ8û¯·ëî.
-K
-java:S1604é"(Make this anonymous inner class a lambda(Ì¼Ôúÿÿÿÿ8’¾·æ.
-F
 java:S1604›"(Make this anonymous inner class a lambda(¨È÷8’¾·æ.
+n
+java:S1301—"KReplace this "switch" statement by "if" statements to increase readability.(Ñ¯áÆÿÿÿÿÿ8âÅÿµæ.
 K
 java:S1604ç"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8’¾·æ.
-P
-java:S1874Ÿ"2Remove this use of "setMessage"; it is deprecated.(÷¯™î8’¾·æ.
-
-java:S1488³"^Immediately return this expression instead of assigning it to the temporary variable "result".(ÖÔíÊûÿÿÿÿ8’¾·æ.
-U
-java:S1874¥"2Remove this use of "setMessage"; it is deprecated.(™‚Õ¶øÿÿÿÿ8’¾·æ.
-U
-java:S1874¨"2Remove this use of "setMessage"; it is deprecated.(İ¾ØÆşÿÿÿÿ8’¾·æ.
+F
+java:S1604ï"(Make this anonymous inner class a lambda(õò˜8’¾·æ.
 F
 java:S1604„"(Make this anonymous inner class a lambda(Î¬¯”8âÅÿµæ.
-d
-java:S1144ı"ARemove this unused private "updateAvatarInPostAndComment" method.(ï‹à§şÿÿÿÿ8’¾·æ.
+¤
+java:S1186£"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8’¾·æ.
 F
-java:S1604Ñ"(Make this anonymous inner class a lambda(ºÙİ¤8’¾·æ.
-R
-java:S2440÷"/Remove this instantiation of "LocationAddress".(¤…¥Êúÿÿÿÿ8û¯·ëî.
+java:S1604Ü"(Make this anonymous inner class a lambda(õò˜8’¾·æ.
+x
+java:S1128L"\Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION'.(‡¢(8øˆèê.
+q
+java:S3252º"NUse static access with "android.provider.MediaStore$MediaColumns" for "TITLE".(š‹æÜıÿÿÿÿ8´¹šæ.
+^	java:S125Ú"<This block of commented-out lines of code should be removed.(›‡íúøÿÿÿÿ8’¾·æ.
+Y	java:S125ú"<This block of commented-out lines of code should be removed.(ı‚–ÿ8Ñšƒ“ì.
 K
-java:S1604Ê"(Make this anonymous inner class a lambda(Ì¼Ôúÿÿÿÿ8’¾·æ.
+java:S1604ˆ"(Make this anonymous inner class a lambda(„¬é¿øÿÿÿÿ8’¾·æ.
+~
+java:S1128K"\Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION'.(«¨¿²ùÿÿÿÿ8øˆèê.
+^	java:S125î"<This block of commented-out lines of code should be removed.(ªŸÛ¯úÿÿÿÿ8’¾·æ.
 r
 java:S1450Z"URemove the "editor" field and declare it as a local variable in the relevant methods.(–ñèˆ8µæ¯æ.
 F
-java:S1604Š"(Make this anonymous inner class a lambda(¨È÷8’¾·æ.
-U
-java:S1874¢"2Remove this use of "setMessage"; it is deprecated.(î²ê³üÿÿÿÿ8’¾·æ.
-K
-java:S1604Ô"(Make this anonymous inner class a lambda(Â‡¯†üÿÿÿÿ8’¾·æ.
+java:S1604Ñ"(Make this anonymous inner class a lambda(ºÙİ¤8’¾·æ.
+u
+java:S3776«"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(Ó»×¶şÿÿÿÿ8’¾·æ.
+i
+java:S1301Ô"KReplace this "switch" statement by "if" statements to increase readability.(•’˜Ç8øˆèê.
+P
+java:S1199­"-Extract this nested code block into a method.(®¹ƒúÿÿÿÿ8’¾·æ.
 F
 java:S1604á"(Make this anonymous inner class a lambda(’áñú8’¾·æ.
-f
-java:S1192Ş"HDefine a constant instead of duplicating this literal "uAvatar" 3 times.(Ï²Š8’¾·æ.
-i
-java:S1192£"FDefine a constant instead of duplicating this literal "uName" 3 times.(ù¯Š³ûÿÿÿÿ8’¾·æ.
-K
-java:S1604ç"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8’¾·æ.
-~
-java:S1128K"\Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION'.(«¨¿²ùÿÿÿÿ8øˆèê.
+d
+java:S1144ı"ARemove this unused private "updateAvatarInPostAndComment" method.(ï‹à§şÿÿÿÿ8’¾·æ.
 F
 java:S1604¶"(Make this anonymous inner class a lambda(¨È÷8’¾·æ.
+]	java:S125}"<This block of commented-out lines of code should be removed.(ŠÂÙöøÿÿÿÿ8³Ô·ëî.
+U
+java:S1874¨"2Remove this use of "setMessage"; it is deprecated.(İ¾ØÆşÿÿÿÿ8’¾·æ.
+K
+java:S1199Ä"-Extract this nested code block into a method.(“í‘ê8’¾·æ.
+K
+java:S1604ı"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8’¾·æ.
+Y
+java:S1874ï"6Remove this use of "ProgressDialog"; it is deprecated.(ÚšÊùıÿÿÿÿ8’¾·æ.
+^	java:S125…"<This block of commented-out lines of code should be removed.(ŠÂÙöøÿÿÿÿ8œö·ëî.
+X
+java:S1874e"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8´¹šæ.
+U
+java:S1874¢"2Remove this use of "setMessage"; it is deprecated.(î²ê³üÿÿÿÿ8’¾·æ.
+L
+java:S1874Ò".Remove this use of "locale"; it is deprecated.(¹ã†É8´¹šæ.
+¤
+java:S1186‹"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8’¾·æ.
+Y
+java:S1874Ó";Remove this use of "updateConfiguration"; it is deprecated.(Ó½ »8’¾·æ.
+`
+java:S1126†"BReplace this if-then-else statement by a single method invocation.(¸Èõş8’¾·æ.
 ^	java:S125ñ"<This block of commented-out lines of code should be removed.(¶¤Éùÿÿÿÿ8ûƒÀ‚ì.
+K
+java:S1604é"(Make this anonymous inner class a lambda(Ì¼Ôúÿÿÿÿ8’¾·æ.
+¤
+java:S1186¬"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8’¾·æ.
+]	java:S110O"<This class has 9 parents which is greater than 5 authorized.(°’ÈĞüÿÿÿÿ8µæ¯æ.
+F
+java:S1604‹"(Make this anonymous inner class a lambda(Î¬¯”8âÅÿµæ.
 W
 java:S1481÷"4Remove this unused "locationAddress" local variable.(¤…¥Êúÿÿÿÿ8øáÁ‚ì.
 P
-java:S1199­"-Extract this nested code block into a method.(®¹ƒúÿÿÿÿ8’¾·æ.
-Y	java:S125¬"<This block of commented-out lines of code should be removed.(¥ï¢‰8’¾·æ.
+java:S1199¹"-Extract this nested code block into a method.(Ï¥‰§üÿÿÿÿ8’¾·æ.
+Y	java:S125Ö"<This block of commented-out lines of code should be removed.(Î¶¹Â8’¾·æ.
 F
-java:S1604µ"(Make this anonymous inner class a lambda(Õä8’¾·æ.
+java:S1604Š"(Make this anonymous inner class a lambda(¨È÷8’¾·æ.
 
 java:S1488ª"^Immediately return this expression instead of assigning it to the temporary variable "result".(ò±òşÿÿÿÿ8’¾·æ.
-^	java:S125…"<This block of commented-out lines of code should be removed.(ŠÂÙöøÿÿÿÿ8œö·ëî.
-Y
-java:S1874ï"6Remove this use of "ProgressDialog"; it is deprecated.(ÚšÊùıÿÿÿÿ8’¾·æ.
+
+java:S1488³"^Immediately return this expression instead of assigning it to the temporary variable "result".(ÖÔíÊûÿÿÿÿ8’¾·æ.
+Y	java:S125¬"<This block of commented-out lines of code should be removed.(¥ï¢‰8’¾·æ.
+y
+java:S3252»"[Use static access with "android.provider.MediaStore$Images$ImageColumns" for "DESCRIPTION".(ŠÉå8’¾·æ.
+K
+java:S1604Ô"(Make this anonymous inner class a lambda(Â‡¯†üÿÿÿÿ8’¾·æ.
 Z
 java:S1128"=Remove this unused import 'android.location.LocationManager'.(Ü©ÎÎ8İ‘´ëî.
-Y
-java:S2696÷"6Make the enclosing method "static" or remove this set.(×æÏ°ùÿÿÿÿ8’¾·æ.
-¤
-java:S1186‹"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ğ÷‘Şÿÿÿÿÿ8’¾·æ.
-u
-java:S3776«"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(Ó»×¶şÿÿÿÿ8’¾·æ.
-Y	java:S125¯"<This block of commented-out lines of code should be removed.(ß¢û8’¾·æ.
-F
-java:S1604ï"(Make this anonymous inner class a lambda(õò˜8’¾·æ.
-O
-java:S1481å"1Remove this unused "appBarLayout" local variable.(Œ¦¥‰8’¾·æ.
-F
-java:S1604Ü"(Make this anonymous inner class a lambda(õò˜8’¾·æ.
-P
-java:S1199¹"-Extract this nested code block into a method.(Ï¥‰§üÿÿÿÿ8’¾·æ.
-K
-java:S1604ô"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8’¾·æ.
-{
-java:S1450b"YRemove the "userInfoTv" field and declare it as a local variable in the relevant methods.(¿´¨Åùÿÿÿÿ8µæ¯æ.
-Y	java:S125Ö"<This block of commented-out lines of code should be removed.(Î¶¹Â8’¾·æ.
-x
-java:S1128L"\Remove this unused import 'cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION'.(‡¢(8øˆèê.
-F
-java:S1604õ"(Make this anonymous inner class a lambda(ŞÇÓ÷8’¾·æ.
-i
-java:S1301Ô"KReplace this "switch" statement by "if" statements to increase readability.(•’˜Ç8øˆèê.
-K
-java:S1604ı"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8’¾·æ.
 f
-java:S1854÷"CRemove this useless assignment to local variable "locationAddress".(¤…¥Êúÿÿÿÿ8øáÁ‚ì.
-^	java:S125î"<This block of commented-out lines of code should be removed.(ªŸÛ¯úÿÿÿÿ8’¾·æ.
-K
-java:S1199Ä"-Extract this nested code block into a method.(“í‘ê8’¾·æ.
+java:S1192Ş"HDefine a constant instead of duplicating this literal "uAvatar" 3 times.(Ï²Š8’¾·æ.
+U
+java:S1874¥"2Remove this use of "setMessage"; it is deprecated.(™‚Õ¶øÿÿÿÿ8’¾·æ.

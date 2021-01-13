@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
@@ -13,13 +15,20 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,6 +80,7 @@ import java.util.Map;
 import cm.deone.corp.imopro.adapter.CommentAdaptor;
 import cm.deone.corp.imopro.adapter.GalleryAdaptor;
 import cm.deone.corp.imopro.adapter.NotParentAdaptor;
+import cm.deone.corp.imopro.adapter.SignalerAdaptor;
 import cm.deone.corp.imopro.fragments.CommentFragment;
 import cm.deone.corp.imopro.fragments.GalleryFragment;
 import cm.deone.corp.imopro.fragments.HomeFragment;
@@ -80,6 +90,9 @@ import cm.deone.corp.imopro.models.Gallery;
 import cm.deone.corp.imopro.models.NotChildItem;
 import cm.deone.corp.imopro.models.NotParentItem;
 import cm.deone.corp.imopro.models.Post;
+import cm.deone.corp.imopro.models.Signaler;
+import cm.deone.corp.imopro.outils.AppLocationService;
+import cm.deone.corp.imopro.outils.LocationAddress;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 import static cm.deone.corp.imopro.outils.Constant.DB_BLOCKED_USERS;
@@ -99,15 +112,22 @@ import static cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_POST_NOTIFICATION;
 
-public class PostActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
+public class PostActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener  {
 
     private boolean userVue = true;
     private boolean mProcessLikes = false;
     private boolean mProcessFavorites = false;
-
+    private boolean mProcessSignal = false;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor ;
     private Post post;
-
-    private String pId;
+    private static final int REQUEST_CODE_PERMISSION = 500;
+    private final String mPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+    private AppLocationService appLocationService;
+    private static double latitude;
+    private static double longitude;
+    private boolean isGeolocalisationEnable = false;
+    private static String pId;
     private String pCreator;
     private String myUID;
     private String myNAME;
@@ -118,11 +138,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView coverIv;
 
-    private EditText edtvComment;
+    private EditText commentEdtv;
 
     private RelativeLayout rlNewComment;
     private RelativeLayout rlCommentaires;
-
+    private SwitchCompat swtvGeolocalisation;
     private TextView likeTv;
     private TextView favoriteTv;
     private TextView shareTv;
@@ -134,6 +154,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView postImagesRv;
     private List<Gallery> galleryList;
     private GalleryAdaptor galleryAdaptor;
+
+    private SignalerAdaptor signalerAdaptor;
+    private List<Signaler> signalerList;
 
     private RecyclerView rvComments;
     private List<Comment> commentList;
@@ -174,7 +197,17 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             sharePost(post.getpTitre(), post.getpDescription());
         }else if (v.getId() == R.id.noteTv && !pCreator.equals(myUID)){
             showGiveNoteDialog();
-        }else if (v.getId() == R.id.ibSend && !pCreator.equals(myUID)){
+        }else if (v.getId() == R.id.tvSignalerPost && !pCreator.equals(myUID)){
+            showGiveWarningDialog();
+        }else if (v.getId() == R.id.tvDeletePost){
+            deleteConfirmation();
+        }else if (v.getId() == R.id.tvSgnalerActivity){
+            showActivitiesDialog("signalers");
+        }else if (v.getId() == R.id.tvCommentsctivity){
+            showActivitiesDialog("comments");
+        }else if (v.getId() == R.id.tvNotesctivity){
+            showNotesDialog();
+        }else if (v.getId() == R.id.sendIb && !pCreator.equals(myUID)){
             verificationDeSaisie();
         }
     }
@@ -188,11 +221,59 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()){
+            case R.id.commentNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
+                }else{
+                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
+                }
+                break;
+            case R.id.galleryNotificationSw :
+                editor = sharedPreferences.edit();
+                editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, isChecked);
+                editor.apply();
+                if (isChecked){
+                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+                }else{
+                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+                }
+                break;
+            case R.id.swtvGeolocalisation :
+                if (isChecked){
+                    if (!isGeolocalisationEnable)
+                        showLocaliserDialog();
+                }
+                else{
+                    if (isGeolocalisationEnable)
+                        showUnLocaliserDialog();
+                }
+                break;
+            default:
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_PERMISSION){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                getPostAddress();
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
         menu.findItem(R.id.menu_search).setVisible(false);
         menu.findItem(R.id.menu_add_operation).setVisible(false);
         menu.findItem(R.id.menu_add_image).setVisible(false);
+        menu.findItem(R.id.menu_show_settings).setVisible(false);
         MenuItem itemVues = menu.findItem(R.id.menu_show_vues);
         itemVues.setVisible(true);
         View rootViewVues = MenuItemCompat.getActionView(itemVues);
@@ -213,11 +294,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
         }else if (item.getItemId() == R.id.menu_show_vues){
 
-        }else if (item.getItemId() == R.id.menu_show_settings){
-            Intent intent = new Intent(PostActivity.this, SettingsPost.class);
-            intent.putExtra("pId", pId);
-            intent.putExtra("pCreator", pCreator);
-            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -252,6 +328,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         pId = getIntent().getStringExtra("pId");
         pCreator = getIntent().getStringExtra("pCreator");
         ref = FirebaseDatabase.getInstance().getReference("Posts");
+        sharedPreferences = getSharedPreferences("POST_NOTIF_SP", MODE_PRIVATE);
+        appLocationService = new AppLocationService(PostActivity.this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -261,13 +339,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
         coverIv = findViewById(R.id.coverIv);
 
-        edtvComment = findViewById(R.id.edtvComment);
-
-        rlCommentaires = findViewById(R.id.rlCommentaires);
-        rlNewComment = findViewById(R.id.rlNewComment);
         tvDeletePost = findViewById(R.id.tvDeletePost);
-
-        rlNewComment.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
 
         favoriteTv = findViewById(R.id.favoriteTv);
         shareTv = findViewById(R.id.shareTv);
@@ -280,73 +352,54 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         postImagesRv = findViewById(R.id.postImagesRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(PostActivity.this, LinearLayoutManager.HORIZONTAL, false);
         postImagesRv.setLayoutManager(layoutManager);
-        rvComments = findViewById(R.id.rvComments);
+
+        RelativeLayout rlDelete = findViewById(R.id.rlDelete);
+        rlDelete.setVisibility(pCreator.equals(myUID)? View.VISIBLE: View.GONE);
+        TextView tvDeletePost = findViewById(R.id.tvDeletePost);
+        RelativeLayout rlSignaler = findViewById(R.id.rlSignaler);
+        rlSignaler.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
+        TextView tvSignalerPost = findViewById(R.id.tvSignalerPost);
+
+        TextView tvSgnalerActivity = findViewById(R.id.tvSgnalerActivity);
+        TextView tvNotesctivity = findViewById(R.id.tvNotesctivity);
+        TextView tvCommentsctivity = findViewById(R.id.tvCommentsctivity);
+
+        swtvGeolocalisation = findViewById(R.id.swtvGeolocalisation);
+        swtvGeolocalisation.setEnabled(pCreator.equals(myUID));
+        SwitchCompat galleryNotificationSw = findViewById(R.id.galleryNotificationSw);
+        galleryNotificationSw.setVisibility(pCreator.equals(myUID)? View.GONE: View.VISIBLE);
+        SwitchCompat commentNotificationSw = findViewById(R.id.commentNotificationSw);
+
+        boolean isCommentEnable = sharedPreferences.getBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, false);
+        boolean isGalleryEnable = sharedPreferences.getBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, false);
+
+        commentNotificationSw.setChecked(isCommentEnable);
+        galleryNotificationSw.setChecked(isGalleryEnable);
 
         coverIv.setOnLongClickListener(this);
-        findViewById(R.id.ibSend).setOnClickListener(this);
         likeTv.setOnClickListener(this);
         favoriteTv.setOnClickListener(this);
         noteTv.setOnClickListener(this);
         shareTv.setOnClickListener(this);
+
+        tvSgnalerActivity.setOnClickListener(this);
+        tvNotesctivity.setOnClickListener(this);
+        tvCommentsctivity.setOnClickListener(this);
+
+        tvSignalerPost.setOnClickListener(this);
+        tvDeletePost.setOnClickListener(this);
+
+        commentNotificationSw.setOnCheckedChangeListener(this);
+        galleryNotificationSw.setOnCheckedChangeListener(this);
+        swtvGeolocalisation.setOnCheckedChangeListener(this);
+
     }
 
     private void getPost() {
         galleryList = new ArrayList<>();
-        commentList = new ArrayList<>();
         blockedList = new ArrayList<>();
         Query query = ref.orderByKey().equalTo(pId);
         query.addValueEventListener(postInfosVal);
-    }
-
-    private void showCoverDialog() {
-        String[] options = {"Créer une galerie", "Modifier l'image"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Sélectionner une action :");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch(which){
-                    case 0 :
-                        // Créer une galerie
-                        Intent intent = new Intent(PostActivity.this, CreateGalleryActivity.class);
-                        intent.putExtra("pId", pId);
-                        startActivity(intent);
-                        break;
-                    case 1 :
-                        // Modifier l'image
-                        break;
-                    default:
-                }
-            }
-        });
-        builder.create().show();
-    }
-
-    private void showGalleryMenu() {
-        String[] options = {"Ajouter une image", "Modifier l'image", "Supprimer l'image"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Sélectionner une action :");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch(which){
-                    case 0 :
-                        // Ajouter une image
-                        Intent intent = new Intent(PostActivity.this, CreateGalleryActivity.class);
-                        intent.putExtra("pId", pId);
-                        startActivity(intent);
-                        break;
-                    case 1 :
-                        // Details du commentaire
-                        break;
-                    case 2 :
-                        // Envoyer un message
-                        break;
-                    default:
-                }
-            }
-        });
-        builder.create().show();
     }
 
     private void likePost() {
@@ -446,34 +499,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         ref.child(pId).child(DB_SHARES).child(myUID).setValue(TextUtils.isEmpty(numShared)?"1":""+(Integer.parseInt(numShared)+1));
     }
 
-    private void showGiveNoteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Noter ce post");
-        final View customLayout = getLayoutInflater().inflate(R.layout.item_note, null);
-        builder.setView(customLayout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // send data from the AlertDialog to the Activity
-                EditText noteEdtv = customLayout.findViewById(R.id.noteEdtv);
-                String userNote = noteEdtv.getText().toString().trim();
-
-                if (TextUtils.isEmpty(userNote) || Integer.parseInt(userNote)<=0 || Integer.parseInt(userNote)>20){
-                    Toast.makeText(PostActivity.this, "Votre note est incorrecte!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                setPostNote(""+userNote);
-            }
-        }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
     private void setPostNote(String note) {
 
         String timestamp = String.valueOf(System.currentTimeMillis());
@@ -523,38 +548,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setHisNotePost(DataSnapshot ds) {
         noteTv.setText(!ds.child(DB_NOTES).hasChild(myUID)?"0":""+ds.child(DB_NOTES).child(myUID).child("nNote").getValue(String.class));
-    }
-
-    private void showCommentDialog(Comment comment, boolean isblocked) {
-        String[] optionsUsers = {"Supprimer le commentaire", "Details du commentaire", "Envoyer un message", "Pofile de l'utilisateur"};
-        String[] optionsCreator = {isblocked ? "Débloquer l'utilisateur" : "Bloquer l'utilisateur",
-                "Details du commentaire", "Envoyer un message"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Sélectionner une action :");
-        builder.setItems(pCreator.equals(myUID) ? optionsCreator : optionsUsers, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch(which){
-                    case 0 :
-                        if (comment.getcCreator().equals(myUID))
-                            confirmationRequise("Supprimer", ""+comment.getcId());
-                        else if (pCreator.equals(myUID))
-                            confirmationRequise(isblocked ? "Débloquer" : "Bloquer", ""+comment.getcCreator());
-                        break;
-                    case 1 :
-                        // Details du commentaire
-                        break;
-                    case 2 :
-                        // Envoyer un message
-                        break;
-                    case 3 :
-                        // Pofile de l'utilisateur
-                        break;
-                    default:
-                }
-            }
-        });
-        builder.create().show();
     }
 
     private void confirmationRequise(String action, String identifiant) {
@@ -675,7 +668,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void verificationDeSaisie() {
-        String message = edtvComment.getText().toString().trim();
+        String message = commentEdtv.getText().toString().trim();
         if (TextUtils.isEmpty(message)){
             Toast.makeText(PostActivity.this, "Votre commentaire est vide!", Toast.LENGTH_SHORT).show();
             return;
@@ -707,7 +700,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(Void aVoid) {
                 resetVues();
                 ref.child(pId).child("pNComments").setValue(""+ (Integer.parseInt(post.getpNComments()) + 1));
-                String description = edtvComment.getText().toString().trim();
+                String description = commentEdtv.getText().toString().trim();
                 prepareNotification(
                         ""+timestamp,
                         ""+myNAME+" a ajouté un commentaire",
@@ -775,8 +768,404 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void resetVues() {
-        edtvComment.setText(null);
-        edtvComment.setHint("Votre commentaire");
+        commentEdtv.setText(null);
+        commentEdtv.setHint("Votre commentaire");
+    }
+
+    private void getPostAddress() {
+        if (!checkLocationPermission()){
+            requestLocationPermission();
+        }else {
+            Location location = appLocationService.getLocation();
+
+            if (location != null) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                //LocationAddress locationAddress = new LocationAddress();
+                LocationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(), new GeocoderHandler());
+            } else {
+                swtvGeolocalisation.setText("Recherche de localisation...");
+                showSettingsAlert();
+            }
+        }
+    }
+
+    private boolean checkLocationPermission() {
+        boolean result = ContextCompat.checkSelfPermission(PostActivity.this, mPermission) == (PackageManager.PERMISSION_GRANTED);
+        return result;
+    }
+
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{mPermission}, REQUEST_CODE_PERMISSION);
+    }
+
+    private void deleteConfirmation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Sélectionner une action :");
+        builder.setMessage("Etes vous sure de vouloir supprime cette publication ?");
+        builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deletePost();
+            }
+        }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void deletePost() {
+        //
+    }
+
+    private void showActivitiesDialog(String activity) {
+        Dialog dialog = new Dialog(PostActivity.this);
+        dialog.setContentView(R.layout.dialog_signaler);
+        RecyclerView recyclerView = dialog.findViewById(R.id.rvSignalers);
+        EditText edtvSearch = dialog.findViewById(R.id.edtvSearch);
+        RelativeLayout rlComment = dialog.findViewById(R.id.rlComment);
+        rlComment.setVisibility(activity.equals("comments") && !pCreator.equals(myUID) ? View.VISIBLE: View.GONE);
+        if (activity.equals("comments")){
+            ImageButton sendIb = dialog.findViewById(R.id.sendIb);
+            sendIb.setOnClickListener(this);
+            commentEdtv = dialog.findViewById(R.id.commentEdtv);
+            ImageView userIv = dialog.findViewById(R.id.userIv);
+            try {
+                Picasso.get().load(myAVATAR).placeholder(R.drawable.ic_user).into(userIv);
+            } catch (Exception e) {
+                Picasso.get().load(R.drawable.ic_user).into(userIv);
+            }
+            commentList = new ArrayList<>();
+            ref.child(pId).child(DB_COMMENT).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    commentList.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()){
+                        Comment comment = ds.getValue(Comment.class);
+                        commentList.add(comment);
+                        commentAdaptor = new CommentAdaptor(PostActivity.this, commentList, pId);
+                        recyclerView.setAdapter(commentAdaptor);
+                        commentAdaptor.setOnItemClickListener(new ViewsClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+                                Comment comment = commentList.get(position);
+                                if (comment.getcCreator().equals(myUID) || pCreator.equals(myUID))
+                                    showCommentDialog(comment, blockedList.contains(comment.getcCreator()));
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }else if (activity.equals("signalers")){
+            signalerList = new ArrayList<>();
+            ref.child(pId).child(DB_SIGNALEMENT).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    signalerList.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()){
+                        Signaler signaler = ds.getValue(Signaler.class);
+                        signalerList.add(signaler);
+                        signalerAdaptor = new SignalerAdaptor(PostActivity.this, signalerList);
+                        recyclerView.setAdapter(signalerAdaptor);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+        dialog.show();
+    }
+
+    private void showNotesDialog() {
+
+    }
+
+    private void procederAuSignalement() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Signaler ce post");
+        final View customLayout = getLayoutInflater().inflate(R.layout.item_signaler, null);
+        builder.setView(customLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // send data from the AlertDialog to the Activity
+                EditText signalerEdtv = customLayout.findViewById(R.id.signalerEdtv);
+                String signaler = signalerEdtv.getText().toString().trim();
+
+                if (TextUtils.isEmpty(signaler)){
+                    Toast.makeText(PostActivity.this, "Vous n'avez donné aucune raison!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                setPostSignalement(""+signaler);
+            }
+        }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void setPostSignalement(String signaler) {
+        if (mProcessSignal){
+            ref.child(post.getpId()).child("pNSignals")
+                    .setValue(""+ (Integer.parseInt(post.getpNSignals()) - 1));
+            ref.child(post.getpId()).child(DB_SIGNALEMENT).child(myUID).removeValue();
+            mProcessSignal = false;
+        }else {
+            ref.child(post.getpId()).child("pNSignals")
+                    .setValue(""+ (Integer.parseInt(post.getpNSignals()) + 1));
+
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("sId", myUID);
+            hashMap.put("sMessage", signaler);
+            hashMap.put("sDate", timestamp);
+            hashMap.put("uName", myNAME);
+            hashMap.put("uAvatar", myAVATAR);
+
+            ref.child(post.getpId()).child(DB_SIGNALEMENT).child(myUID).setValue(hashMap);
+            mProcessSignal = true;
+        }
+    }
+
+    private void unsuscribeNotification(String topic) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = ""+getResources().getString(R.string.not_receive_notification);
+                        if(!task.isSuccessful()){
+                            msg = ""+getResources().getString(R.string.subscription_failed);
+                        }
+                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void showCoverDialog() {
+        String[] options = {"Créer une galerie", "Modifier l'image"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Sélectionner une action :");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which){
+                    case 0 :
+                        // Créer une galerie
+                        Intent intent = new Intent(PostActivity.this, CreateGalleryActivity.class);
+                        intent.putExtra("pId", pId);
+                        startActivity(intent);
+                        break;
+                    case 1 :
+                        // Modifier l'image
+                        break;
+                    default:
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showGalleryMenu() {
+        String[] options = {"Ajouter une image", "Modifier l'image", "Supprimer l'image"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Sélectionner une action :");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which){
+                    case 0 :
+                        // Ajouter une image
+                        Intent intent = new Intent(PostActivity.this, CreateGalleryActivity.class);
+                        intent.putExtra("pId", pId);
+                        startActivity(intent);
+                        break;
+                    case 1 :
+                        // Details du commentaire
+                        break;
+                    case 2 :
+                        // Envoyer un message
+                        break;
+                    default:
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    private void suscribeNotification(String topic) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = ""+getResources().getString(R.string.receive_notification);
+                        if(!task.isSuccessful()){
+                            msg = ""+getResources().getString(R.string.unsubscription_failed);
+                        }
+                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void showGiveNoteDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Noter ce post");
+        final View customLayout = getLayoutInflater().inflate(R.layout.item_note, null);
+        builder.setView(customLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // send data from the AlertDialog to the Activity
+                EditText noteEdtv = customLayout.findViewById(R.id.noteEdtv);
+                String userNote = noteEdtv.getText().toString().trim();
+
+                if (TextUtils.isEmpty(userNote) || Integer.parseInt(userNote)<=0 || Integer.parseInt(userNote)>20){
+                    Toast.makeText(PostActivity.this, "Votre note est incorrecte!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                setPostNote(""+userNote);
+            }
+        }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showCommentDialog(Comment comment, boolean isblocked) {
+        String[] optionsUsers = {"Supprimer le commentaire", "Details du commentaire", "Envoyer un message", "Pofile de l'utilisateur"};
+        String[] optionsCreator = {isblocked ? "Débloquer l'utilisateur" : "Bloquer l'utilisateur",
+                "Details du commentaire", "Envoyer un message"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Sélectionner une action :");
+        builder.setItems(pCreator.equals(myUID) ? optionsCreator : optionsUsers, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which){
+                    case 0 :
+                        if (comment.getcCreator().equals(myUID))
+                            confirmationRequise("Supprimer", ""+comment.getcId());
+                        else if (pCreator.equals(myUID))
+                            confirmationRequise(isblocked ? "Débloquer" : "Bloquer", ""+comment.getcCreator());
+                        break;
+                    case 1 :
+                        // Details du commentaire
+                        break;
+                    case 2 :
+                        // Envoyer un message
+                        break;
+                    case 3 :
+                        // Pofile de l'utilisateur
+                        break;
+                    default:
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    public void showSettingsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PostActivity.this);
+        alertDialog.setTitle("SETTINGS");
+        alertDialog.setMessage("Enable Location Provider! Go to settings menu?");
+        alertDialog.setPositiveButton("Settings",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        PostActivity.this.startActivity(intent);
+                    }
+                });
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void showGiveWarningDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Signaler ce post");
+        builder.setMessage(mProcessSignal ? "Etes-vous sur de vouloir supprimer le signalement ce post ?" : "Etes-vous sur de vouloir signaler ce post ?")
+                .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mProcessSignal){
+                            setPostSignalement("");
+                        }
+                        else{
+                            procederAuSignalement();
+                        }
+                    }
+                }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showLocaliserDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Localiser ce post");
+        builder.setMessage("Etes-vous sur de vouloir localiser ce post ?")
+                .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getPostAddress();
+                    }
+                }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                swtvGeolocalisation.setChecked(false);
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showUnLocaliserDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+        builder.setTitle("Localiser ce post");
+        builder.setMessage("Etes-vous sur de vouloir supprimer la localisation ce post ?")
+                .setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        swtvGeolocalisation.setText("Pas de localisation");
+                        ref.child(pId).child("Geolocalisation").removeValue();
+                    }
+                }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                swtvGeolocalisation.setChecked(true);
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     private final ValueEventListener valUpdateCommentNumber = new ValueEventListener() {
@@ -846,10 +1235,16 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                         mProcessLikes = true;
                     else
                         mProcessLikes = false;*/
+                    mProcessSignal = ds.child(DB_SIGNALEMENT).hasChild(myUID);
+
+                    String adresse = ds.child("Geolocalisation").child("adresse").getValue(String.class);
+                    isGeolocalisationEnable = ds.child("Geolocalisation").hasChild("adresse");
+                    swtvGeolocalisation.setChecked(isGeolocalisationEnable);
+                    swtvGeolocalisation.setText(isGeolocalisationEnable && ds.child("Geolocalisation").hasChild("adresse") ? adresse:"Pas de localisation");
+
                 }
                 afficherPhotoCouverturePost(""+post.getpCover());
                 ref.child(pId).child(DB_GALLERY).addValueEventListener(valPostGallery);
-                ref.child(pId).child(DB_COMMENT).addValueEventListener(valAllComments);
                 ref.child(pId).child(DB_NOTES).addValueEventListener(valPostNotes);
                 ref.child(pId).child(DB_BLOCKED_USERS).addValueEventListener(valPostBlokedUsers);
             }
@@ -858,39 +1253,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
             Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private final ValueEventListener valAllComments = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            commentList.clear();
-            for (DataSnapshot ds : snapshot.getChildren()){
-                Comment comment = ds.getValue(Comment.class);
-                commentList.add(comment);
-                commentAdaptor = new CommentAdaptor(PostActivity.this, commentList, pId);
-                rvComments.setNestedScrollingEnabled(false);
-                rvComments.setAdapter(commentAdaptor);
-                commentAdaptor.setOnItemClickListener(new ViewsClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        Comment comment = commentList.get(position);
-                        if (comment.getcCreator().equals(myUID) || pCreator.equals(myUID))
-                            showCommentDialog(comment, blockedList.contains(comment.getcCreator()));
-                    }
-                });
-            }
-            rlCommentaires.setVisibility((pCreator.equals(myUID)&&commentList.size()==0)? View.GONE : View.VISIBLE);
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-
         }
     };
 
@@ -968,5 +1330,30 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
         }
     };
+
+    private static class GeocoderHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    break;
+                default:
+                    locationAddress = null;
+            }
+            //swtvGeolocalisation.setText(locationAddress);
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("id", timestamp);
+            hashMap.put("latitude", ""+latitude);
+            hashMap.put("longitude", ""+longitude);
+            hashMap.put("adresse", locationAddress);
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+            reference.child(pId).child("Geolocalisation").setValue(hashMap);
+        }
+    }
 
 }
