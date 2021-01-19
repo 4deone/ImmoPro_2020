@@ -3,20 +3,19 @@ package cm.deone.corp.imopro;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,17 +30,14 @@ import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +52,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -73,25 +68,20 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import cm.deone.corp.imopro.adapter.CommentAdaptor;
 import cm.deone.corp.imopro.adapter.GalleryAdaptor;
-import cm.deone.corp.imopro.adapter.NotParentAdaptor;
 import cm.deone.corp.imopro.adapter.SignalerAdaptor;
-import cm.deone.corp.imopro.fragments.CommentFragment;
-import cm.deone.corp.imopro.fragments.GalleryFragment;
-import cm.deone.corp.imopro.fragments.HomeFragment;
-import cm.deone.corp.imopro.fragments.NotificationsFragment;
 import cm.deone.corp.imopro.models.Comment;
 import cm.deone.corp.imopro.models.Gallery;
-import cm.deone.corp.imopro.models.NotChildItem;
-import cm.deone.corp.imopro.models.NotParentItem;
 import cm.deone.corp.imopro.models.Post;
 import cm.deone.corp.imopro.models.Signaler;
 import cm.deone.corp.imopro.outils.AppLocationService;
+import cm.deone.corp.imopro.outils.GeocoderHandler;
 import cm.deone.corp.imopro.outils.LocationAddress;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
@@ -101,16 +91,26 @@ import static cm.deone.corp.imopro.outils.Constant.DB_FAVORIES;
 import static cm.deone.corp.imopro.outils.Constant.DB_GALLERY;
 import static cm.deone.corp.imopro.outils.Constant.DB_LIKES;
 import static cm.deone.corp.imopro.outils.Constant.DB_NOTES;
-import static cm.deone.corp.imopro.outils.Constant.DB_POST;
 import static cm.deone.corp.imopro.outils.Constant.DB_SHARES;
 import static cm.deone.corp.imopro.outils.Constant.DB_SIGNALEMENT;
 import static cm.deone.corp.imopro.outils.Constant.DB_VUES;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION;
-import static cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION;
-import static cm.deone.corp.imopro.outils.Constant.TYPE_COMMENT_NOTIFICATION;
-import static cm.deone.corp.imopro.outils.Constant.TYPE_GALLERY_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TYPE_POST_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.bloquerLutilisateur;
+import static cm.deone.corp.imopro.outils.Constant.checkLocationPermission;
+import static cm.deone.corp.imopro.outils.Constant.convertDateToTimestamp;
+import static cm.deone.corp.imopro.outils.Constant.convertTimestampToDate;
+import static cm.deone.corp.imopro.outils.Constant.debloquerLutilisateur;
+import static cm.deone.corp.imopro.outils.Constant.differenceBetweenTwoDates;
+import static cm.deone.corp.imopro.outils.Constant.prepareNotification;
+import static cm.deone.corp.imopro.outils.Constant.requestLocationPermission;
+import static cm.deone.corp.imopro.outils.Constant.showCoverDialog;
+import static cm.deone.corp.imopro.outils.Constant.showGalleryMenu;
+import static cm.deone.corp.imopro.outils.Constant.showSettingsAlert;
+import static cm.deone.corp.imopro.outils.Constant.supprimerLeCommentaire;
+import static cm.deone.corp.imopro.outils.Constant.suscribeNotification;
+import static cm.deone.corp.imopro.outils.Constant.unsuscribeNotification;
 
 public class PostActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener  {
 
@@ -118,6 +118,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private boolean mProcessLikes = false;
     private boolean mProcessFavorites = false;
     private boolean mProcessSignal = false;
+    private boolean mProcessDispo = false;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor ;
     private Post post;
@@ -150,6 +151,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private TextView postDescriptionTv;
     private TextView tvPostTitle;
     private TextView tvDeletePost;
+    private TextView tvDispoActivity;
 
     private RecyclerView postImagesRv;
     private List<Gallery> galleryList;
@@ -209,13 +211,37 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             showNotesDialog();
         }else if (v.getId() == R.id.sendIb && !pCreator.equals(myUID)){
             verificationDeSaisie();
+        }else if (v.getId() == R.id.tvDispoActivity){
+            if(pCreator.equals(myUID) && !mProcessDispo){
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR);
+                int mMonth = c.get(Calendar.MONTH);
+                int mDay = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                //txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                String timestamp = ""+convertDateToTimestamp(dayOfMonth, monthOfYear, year);
+                                HashMap<String, Object> hashMap = new HashMap<>();
+                                hashMap.put("pDisponible", timestamp);
+                                ref.child(pId).updateChildren(hashMap);
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }else if(mProcessDispo){
+
+            }
+        }else if (v.getId() == R.id.tvConfidentialiteUser){
+
         }
     }
 
     @Override
     public boolean onLongClick(View v) {
         if (v.getId() == R.id.coverIv && pCreator.equals(myUID)){
-            showCoverDialog();
+            showCoverDialog(PostActivity.this, ""+pId);
         }
         return true;
     }
@@ -228,9 +254,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 editor.putBoolean(""+TOPIC_COMMENT_NOTIFICATION+""+pId, isChecked);
                 editor.apply();
                 if (isChecked){
-                    suscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
+                    suscribeNotification(PostActivity.this, ""+TOPIC_COMMENT_NOTIFICATION+""+pId);
                 }else{
-                    unsuscribeNotification(""+TOPIC_COMMENT_NOTIFICATION+""+pId);
+                    unsuscribeNotification(PostActivity.this, ""+TOPIC_COMMENT_NOTIFICATION+""+pId);
                 }
                 break;
             case R.id.galleryNotificationSw :
@@ -238,9 +264,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 editor.putBoolean(""+TOPIC_GALLERY_NOTIFICATION+""+pId, isChecked);
                 editor.apply();
                 if (isChecked){
-                    suscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+                    suscribeNotification(PostActivity.this, ""+TOPIC_GALLERY_NOTIFICATION+""+pId);
                 }else{
-                    unsuscribeNotification(""+TOPIC_GALLERY_NOTIFICATION+""+pId);
+                    unsuscribeNotification(PostActivity.this, ""+TOPIC_GALLERY_NOTIFICATION+""+pId);
                 }
                 break;
             case R.id.swtvGeolocalisation :
@@ -340,6 +366,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         coverIv = findViewById(R.id.coverIv);
 
         tvDeletePost = findViewById(R.id.tvDeletePost);
+        tvDispoActivity = findViewById(R.id.tvDispoActivity);
 
         favoriteTv = findViewById(R.id.favoriteTv);
         shareTv = findViewById(R.id.shareTv);
@@ -385,6 +412,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         tvSgnalerActivity.setOnClickListener(this);
         tvNotesctivity.setOnClickListener(this);
         tvCommentsctivity.setOnClickListener(this);
+        tvDispoActivity.setOnClickListener(this);
 
         tvSignalerPost.setOnClickListener(this);
         tvDeletePost.setOnClickListener(this);
@@ -454,6 +482,16 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void shareTextOnly(String pTitle, String pDescription) {
+        String shareBody = pTitle + "\n"+ pDescription + "\n" + getResources().getString(R.string.signature);
+        Intent sIntent =new Intent(Intent.ACTION_SEND);
+        sIntent.setType("text/plain");
+        sIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
+        sIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sIntent, "Share Via"));
+        sharedPost();
+    }
+
     private void shareImageAndTextOnly(String pTitle, String pDescription, Bitmap bitmap) {
         String shareBody = pTitle + "\n" + pDescription + "\n" + getResources().getString(R.string.signature);
         Uri uri = saveImageToShare(bitmap);
@@ -482,16 +520,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return uri;
-    }
-
-    private void shareTextOnly(String pTitle, String pDescription) {
-        String shareBody = pTitle + "\n"+ pDescription + "\n" + getResources().getString(R.string.signature);
-        Intent sIntent =new Intent(Intent.ACTION_SEND);
-        sIntent.setType("text/plain");
-        sIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
-        sIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-        startActivity(Intent.createChooser(sIntent, "Share Via"));
-        sharedPost();
     }
 
     private void sharedPost() {
@@ -558,13 +586,13 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (action.equals("Bloquer")){
-                            bloquerLutilisateur(""+identifiant);
+                            bloquerLutilisateur(PostActivity.this, ""+identifiant, ""+pId);
                         }else if (action.equals("Débloquer")){
-                            debloquerLutilisateur(""+identifiant);
+                            debloquerLutilisateur(PostActivity.this, ""+identifiant, ""+pId);
                         }else if (action.equals("Supprimer")){
                             // Delete comment
                             // Reduidre la valeur du nombre de commenataire du post
-                            supprimerLeCommentaire(""+identifiant);
+                            supprimerLeCommentaire(PostActivity.this, ""+identifiant, ""+pId);
                         }
                     }
                 }).setNegativeButton("NON", new DialogInterface.OnClickListener() {
@@ -574,72 +602,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         builder.create().show();
-    }
-
-    private void bloquerLutilisateur(String cCreator) {
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("bId", cCreator);
-        hashMap.put("bDate", timestamp);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
-        ref.child(pId).child("BlockedUsers").child(cCreator).setValue(hashMap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(PostActivity.this, "Utilisateur bloqué", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void debloquerLutilisateur(String cCreator) {
-        ref.child(pId).child("BlockedUsers").orderByChild("bId").equalTo(cCreator)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot ds : snapshot.getChildren()){
-                            if (ds.exists()){
-                                ds.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(PostActivity.this, "Utilisateur débloqué", Toast.LENGTH_SHORT).show();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void supprimerLeCommentaire(String cId) {
-        ref.child(pId).child("Comments").child(cId).removeValue()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(PostActivity.this, "Commentaire supprimé", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        ref.child(pId).addListenerForSingleValueEvent(valUpdateCommentNumber);
     }
 
     private void menuPost(final TextView tvComments, final TextView tvVues) {
@@ -702,6 +664,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 ref.child(pId).child("pNComments").setValue(""+ (Integer.parseInt(post.getpNComments()) + 1));
                 String description = commentEdtv.getText().toString().trim();
                 prepareNotification(
+                        PostActivity.this,
+                        ""+myUID,
                         ""+timestamp,
                         ""+myNAME+" a ajouté un commentaire",
                         ""+  description,
@@ -716,65 +680,14 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void prepareNotification(String pId, String titre, String description, String notificationType, String notificationTopic){
-        String NOTIFICATION_TOPIC = "/topics/" + notificationTopic;
-        String NOTIFICATION_TITLE = titre;
-        String NOTIFICATION_DESCRIPTION = description;
-        String NOTIFICATION_TYPE = notificationType;
-
-        JSONObject notificationJo = new JSONObject();
-        JSONObject notificationBodyJo = new JSONObject();
-
-        try {
-            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
-            notificationBodyJo.put("sender", myUID);
-            notificationBodyJo.put("pId", pId);
-            notificationBodyJo.put("pTitre", NOTIFICATION_TITLE);
-            notificationBodyJo.put("pDescription", NOTIFICATION_DESCRIPTION);
-
-            notificationJo.put("to", NOTIFICATION_TOPIC);
-            notificationJo.put("data", notificationBodyJo);
-        }catch (Exception e){
-            Toast.makeText(PostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-        sendPostNotification(notificationJo);
-    }
-
-    private void sendPostNotification(JSONObject notificationJo) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("FCM_RESPONSE", "onResponse: "+ response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PostActivity.this, ""+error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "key=AAAAZCzfbyE:APA91bFgMvLCJrB-y0h_8jzGXYePXl5gicO0KcfMwXWRK8rHNv81UGdhvxzD9_SGADkKFxbvXFXut6ZX7bFx6RleoFbawR7igk-t1BALJGyFrSuhSZYu9hQkAimLNOya0REEAfRe2rYl");
-                return headers;
-            }
-        };
-
-        Volley.newRequestQueue(this).add(jsonObjectRequest);
-    }
-
     private void resetVues() {
         commentEdtv.setText(null);
         commentEdtv.setHint("Votre commentaire");
     }
 
     private void getPostAddress() {
-        if (!checkLocationPermission()){
-            requestLocationPermission();
+        if (!checkLocationPermission(PostActivity.this)){
+            requestLocationPermission(PostActivity.this);
         }else {
             Location location = appLocationService.getLocation();
 
@@ -782,21 +695,13 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
                 //LocationAddress locationAddress = new LocationAddress();
-                LocationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(), new GeocoderHandler());
+                LocationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(),
+                        new GeocoderHandler(latitude, longitude, pId, ""));
             } else {
                 swtvGeolocalisation.setText("Recherche de localisation...");
-                showSettingsAlert();
+                showSettingsAlert(PostActivity.this);
             }
         }
-    }
-
-    private boolean checkLocationPermission() {
-        boolean result = ContextCompat.checkSelfPermission(PostActivity.this, mPermission) == (PackageManager.PERMISSION_GRANTED);
-        return result;
-    }
-
-    private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{mPermission}, REQUEST_CODE_PERMISSION);
     }
 
     private void deleteConfirmation() {
@@ -947,85 +852,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void unsuscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = ""+getResources().getString(R.string.not_receive_notification);
-                        if(!task.isSuccessful()){
-                            msg = ""+getResources().getString(R.string.subscription_failed);
-                        }
-                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void showCoverDialog() {
-        String[] options = {"Créer une galerie", "Modifier l'image"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Sélectionner une action :");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch(which){
-                    case 0 :
-                        // Créer une galerie
-                        Intent intent = new Intent(PostActivity.this, CreateGalleryActivity.class);
-                        intent.putExtra("pId", pId);
-                        startActivity(intent);
-                        break;
-                    case 1 :
-                        // Modifier l'image
-                        break;
-                    default:
-                }
-            }
-        });
-        builder.create().show();
-    }
-
-    private void showGalleryMenu() {
-        String[] options = {"Ajouter une image", "Modifier l'image", "Supprimer l'image"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
-        builder.setTitle("Sélectionner une action :");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch(which){
-                    case 0 :
-                        // Ajouter une image
-                        Intent intent = new Intent(PostActivity.this, CreateGalleryActivity.class);
-                        intent.putExtra("pId", pId);
-                        startActivity(intent);
-                        break;
-                    case 1 :
-                        // Details du commentaire
-                        break;
-                    case 2 :
-                        // Envoyer un message
-                        break;
-                    default:
-                }
-            }
-        });
-        builder.create().show();
-    }
-
-    private void suscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = ""+getResources().getString(R.string.receive_notification);
-                        if(!task.isSuccessful()){
-                            msg = ""+getResources().getString(R.string.unsubscription_failed);
-                        }
-                        Toast.makeText(PostActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
     private void showGiveNoteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
         builder.setTitle("Noter ce post");
@@ -1084,26 +910,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         builder.create().show();
-    }
-
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PostActivity.this);
-        alertDialog.setTitle("SETTINGS");
-        alertDialog.setMessage("Enable Location Provider! Go to settings menu?");
-        alertDialog.setPositiveButton("Settings",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        PostActivity.this.startActivity(intent);
-                    }
-                });
-        alertDialog.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
     }
 
     private void showGiveWarningDialog() {
@@ -1168,19 +974,13 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         builder.create().show();
     }
 
-    private final ValueEventListener valUpdateCommentNumber = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            String comments = "" + snapshot.child("pNComments").getValue();
-            int newCommentVal = Integer.parseInt(comments) - 1;
-            ref.child(pId).child("pNComments").setValue(""+newCommentVal);
-        }
+    private void showDisponibility(DataSnapshot ds) {
+        long timestamp = System.currentTimeMillis();
+        long endDate = Long.parseLong(mProcessDispo ? ds.child("pDisponible").getValue(String.class):"0");
+        tvDispoActivity.setText(mProcessDispo ? "Disponible dans "
+                + differenceBetweenTwoDates(timestamp, endDate):"Pas disponible");
 
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    };
+    }
 
     private final ValueEventListener postInfosVal =  new ValueEventListener() {
         @Override
@@ -1193,6 +993,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 noteTv.setText(""+post.getpNote()+"/20");
                 shareTv.setText(""+post.getpNShares());
                 favoriteTv.setText(""+post.getpNFavories());
+                mProcessDispo = ds.hasChild("pDisponible");
+                showDisponibility(ds);
+                isGeolocalisationEnable = ds.hasChild("Geolocalisation");
+                swtvGeolocalisation.setText(isGeolocalisationEnable?ds.child("Geolocalisation").child("adresse").getValue(String.class):"Pas de localisation");
+
                 if (!post.getpCreator().equals(myUID)){
                     initialiserNombreVuesPost(ds);
                     setHisNombreSharePost(ds);
@@ -1243,6 +1048,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     swtvGeolocalisation.setText(isGeolocalisationEnable && ds.child("Geolocalisation").hasChild("adresse") ? adresse:"Pas de localisation");
 
                 }
+
                 afficherPhotoCouverturePost(""+post.getpCover());
                 ref.child(pId).child(DB_GALLERY).addValueEventListener(valPostGallery);
                 ref.child(pId).child(DB_NOTES).addValueEventListener(valPostNotes);
@@ -1275,7 +1081,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onLongItemClick(View view, int position) {
                         if (pCreator.equals(myUID)){
-                            showGalleryMenu();
+                            showGalleryMenu(PostActivity.this, pId);
                         }
                     }
                 });
@@ -1330,30 +1136,5 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(PostActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
         }
     };
-
-    private static class GeocoderHandler extends Handler {
-
-        @Override
-        public void handleMessage(Message message) {
-            String locationAddress;
-            switch (message.what) {
-                case 1:
-                    Bundle bundle = message.getData();
-                    locationAddress = bundle.getString("address");
-                    break;
-                default:
-                    locationAddress = null;
-            }
-            //swtvGeolocalisation.setText(locationAddress);
-            String timestamp = String.valueOf(System.currentTimeMillis());
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("id", timestamp);
-            hashMap.put("latitude", ""+latitude);
-            hashMap.put("longitude", ""+longitude);
-            hashMap.put("adresse", locationAddress);
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
-            reference.child(pId).child("Geolocalisation").setValue(hashMap);
-        }
-    }
 
 }

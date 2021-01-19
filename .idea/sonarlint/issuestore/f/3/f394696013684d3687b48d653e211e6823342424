@@ -1,2 +1,4 @@
 
-^	java:S107"BConstructor has 16 parameters, which is greater than 7 authorized.(¤Î±Š8çÆ²îä.
+^	java:S107"BConstructor has 19 parameters, which is greater than 7 authorized.(¤Î±Š8¼ÈóÛï.
+|
+java:S1210Ò"YOverride "equals(Object obj)" to comply with the contract of the "compareTo(T o)" method.(›ŠàÀşÿÿÿÿ8ÙÉÔàï.

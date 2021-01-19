@@ -1,5 +1,17 @@
 package cm.deone.corp.imopro;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -7,19 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,20 +31,27 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import cm.deone.corp.imopro.adapter.PostsAdaptor;
 import cm.deone.corp.imopro.models.Post;
-import cm.deone.corp.imopro.outils.ViewsClickListener;
 import cm.deone.corp.imopro.notification.Token;
+import cm.deone.corp.imopro.outils.AppLocationService;
+import cm.deone.corp.imopro.outils.GeocoderHandler;
+import cm.deone.corp.imopro.outils.LocationAddress;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 
-import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
 import static cm.deone.corp.imopro.outils.Constant.DB_POST;
+import static cm.deone.corp.imopro.outils.Constant.LOCATION_REQUEST_CODE;
+import static cm.deone.corp.imopro.outils.Constant.checkLocationPermission;
+import static cm.deone.corp.imopro.outils.Constant.requestLocationPermission;
+import static cm.deone.corp.imopro.outils.Constant.showSettingsAlert;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private String myUID;
+    private AppLocationService appLocationService;
+    private static String myUID;
     private String search;
     private RecyclerView postsRv;
     private List<Post> postList;
@@ -58,7 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         checkUsers();
         initVues();
-        initGroupTopic();
+        getPostAddress();
         allPosts();
         updateToken();
     }
@@ -66,7 +72,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         checkUsers();
-        initGroupTopic();
         allPosts();
         updateToken();
         super.onStart();
@@ -75,7 +80,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         checkUsers();
-        initGroupTopic();
         allPosts();
         updateToken();
         super.onResume();
@@ -100,6 +104,17 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_REQUEST_CODE){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                getPostAddress();
+            }
+        }
+    }
+
+
     private void checkUsers(){
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         if (fUser != null){
@@ -115,6 +130,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initVues(){
+        appLocationService = new AppLocationService(HomeActivity.this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.app_name));
         toolbar.setSubtitle(getResources().getString(R.string.app_subtitle));
@@ -127,16 +143,6 @@ public class HomeActivity extends AppCompatActivity {
         postsRv.setLayoutManager(llManager);
         searchFab.setOnClickListener(searchListener);
     }
-
-    private final View.OnClickListener searchListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // Create new search
-            Intent intent = new Intent(HomeActivity.this, CreateSearchActivity.class);
-            intent.putExtra("sDescription", search);
-            startActivity(intent);
-        }
-    };
 
     private void manageSearchView(SearchView searchView) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -175,7 +181,9 @@ public class HomeActivity extends AppCompatActivity {
                     if (!ds.child("BlockedUsers").hasChild(myUID) && (post.getpPublicOrPrivate().equals("public") || post.getpCreator().equals(myUID))){
                         postList.add(post);
                     }*/
-                    postList.add(post);
+                    //if (countryName.equals(post.getpCountryName()) && locality.equals(post.getpLocality()))
+                        postList.add(post);
+                    Collections.sort(postList);
                     postsAdaptor = new PostsAdaptor(HomeActivity.this, postList, myUID);
                     postsRv.setAdapter(postsAdaptor);
                     postsAdaptor.setOnItemClickListener(new ViewsClickListener() {
@@ -227,6 +235,7 @@ public class HomeActivity extends AppCompatActivity {
                             postList.add(post);
                         }
                     }
+                    Collections.sort(postList);
                     postsAdaptor = new PostsAdaptor(HomeActivity.this, postList, myUID);
                     postsRv.setAdapter(postsAdaptor);
                     postsAdaptor.setOnItemClickListener(new ViewsClickListener() {
@@ -268,7 +277,31 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("Tokens").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(token);
     }
 
-    private void initGroupTopic() {
+    private void getPostAddress() {
+        if (!checkLocationPermission(HomeActivity.this)){
+            requestLocationPermission(HomeActivity.this);
+        }else {
+            Location location = appLocationService.getLocation();
 
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                LocationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(),
+                        new GeocoderHandler(latitude, longitude, "", myUID));
+            } else {
+                showSettingsAlert(HomeActivity.this);
+            }
+        }
     }
+
+    private final View.OnClickListener searchListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // Create new search
+            Intent intent = new Intent(HomeActivity.this, CreateSearchActivity.class);
+            intent.putExtra("sDescription", search);
+            startActivity(intent);
+        }
+    };
+
 }

@@ -66,62 +66,187 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:layout_marginBottom="2dp"
-            android:background="@color/white">
+            android:background="@null">
 
-            <TextView
-                android:id="@+id/notificationInfoTv"
-                android:layout_toEndOf="@+id/rubanNotificationRl"
-                android:layout_marginStart="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:text="@string/notifications"/>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/postNotificationSw"
-                android:layout_below="@+id/notificationInfoTv"
-                android:layout_toEndOf="@+id/rubanNotificationRl"
+            <RelativeLayout
+                android:id="@+id/rlSettingsSecurity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:checked="true"
-                android:text="@string/post_notifications"
-                android:textStyle="bold"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                android:padding="5dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/white">
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/tvConfidentialiteUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Confidentialité"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_confidentialite"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:background="@color/white"
-            android:padding="5dp">
+            </RelativeLayout>
 
-            <TextView
-                android:id="@+id/languageInfoTv"
-                android:layout_marginStart="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:text="@string/langue"/>
-
-            <TextView
-                android:id="@+id/languageTv"
-                android:layout_below="@+id/languageInfoTv"
+            <RelativeLayout
+                android:id="@+id/rlSettingsNotif"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:checked="true"
-                android:text="@string/francais"
-                android:textStyle="bold"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                android:layout_below="@+id/rlSettingsSecurity"
+                android:padding="5dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/notificationInfoTv"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="@string/notifications"/>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/postNotificationSw"
+                    android:layout_below="@+id/notificationInfoTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:checked="true"
+                    android:text="@string/post_notifications"
+                    android:textStyle="bold"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlMesPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlSettingsNotif"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvMesposts"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="Publications"
+                    android:drawableEnd="@drawable/ic_no_search" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMesposts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvMesposts"
+                    android:layout_marginStart="20dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_post_settings"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlClientele"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlMesPost"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvClientele"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clientèle"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:drawablePadding="10dp"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_user" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlVisitorBlocked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlClientele"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvVisitorBlocked"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/visitors_blocked"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:drawablePadding="10dp"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_signaler" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlSignaler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlVisitorBlocked"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvLogoutUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/d_connexion_du_compte"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:drawablePadding="10dp"
+                    app:drawableStartCompat="@drawable/ic_exit" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlSignaler"
+                android:background="@color/white"
+                android:layout_marginBottom="2dp"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvDeleteUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/supprimer_le_compte"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_delete"/>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

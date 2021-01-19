@@ -1,11 +1,12 @@
 package cm.deone.corp.imopro.models;
 
-public class Post {
+public class Post implements Comparable<Post>{
     private String pId;
     private String pCover;
     private String pDate;
     private String pTitre;
     private String pDescription;
+    private String pDisponible;
     private String pNote;
     private String pNLikes;
     private String pNFavories;
@@ -15,25 +16,30 @@ public class Post {
     private String pNShares;
     private String pCreator;
     private String pPublicOrPrivate;
+    private String pCountryName;
+    private String pSubLocality;
+    private String pLocality;
     private String uName;
     private String uAvatar;
 
     public Post() {
     }
 
-    public Post(String pId, String pCover,
-                String pDate, String pTitre,
-                String pDescription, String pNote,
+    public Post(String pId, String pCover, String pDate,
+                String pTitre, String pDescription,
+                String pDisponible, String pNote,
                 String pNLikes, String pNFavories,
                 String pNVues, String pNComments,
                 String pNSignals, String pNShares,
                 String pCreator, String pPublicOrPrivate,
-                String uName, String uAvatar) {
+                String pCountryName, String pSubLocality,
+                String pLocality, String uName, String uAvatar) {
         this.pId = pId;
         this.pCover = pCover;
         this.pDate = pDate;
         this.pTitre = pTitre;
         this.pDescription = pDescription;
+        this.pDisponible = pDisponible;
         this.pNote = pNote;
         this.pNLikes = pNLikes;
         this.pNFavories = pNFavories;
@@ -43,6 +49,9 @@ public class Post {
         this.pNShares = pNShares;
         this.pCreator = pCreator;
         this.pPublicOrPrivate = pPublicOrPrivate;
+        this.pCountryName = pCountryName;
+        this.pSubLocality = pSubLocality;
+        this.pLocality = pLocality;
         this.uName = uName;
         this.uAvatar = uAvatar;
     }
@@ -173,5 +182,42 @@ public class Post {
 
     public void setuAvatar(String uAvatar) {
         this.uAvatar = uAvatar;
+    }
+
+    public String getpCountryName() {
+        return pCountryName;
+    }
+
+    public void setpCountryName(String pCountryName) {
+        this.pCountryName = pCountryName;
+    }
+
+    public String getpSubLocality() {
+        return pSubLocality;
+    }
+
+    public void setpSubLocality(String pSubLocality) {
+        this.pSubLocality = pSubLocality;
+    }
+
+    public String getpLocality() {
+        return pLocality;
+    }
+
+    public void setpLocality(String pLocality) {
+        this.pLocality = pLocality;
+    }
+
+    public String getpDisponible() {
+        return pDisponible;
+    }
+
+    public void setpDisponible(String pDisponible) {
+        this.pDisponible = pDisponible;
+    }
+
+    @Override
+    public int compareTo(Post post) {
+        return (Integer.parseInt(post.pNVues) - Integer.parseInt(this.pNVues));
     }
 }

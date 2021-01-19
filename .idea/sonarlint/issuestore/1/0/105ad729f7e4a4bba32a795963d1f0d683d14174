@@ -1,26 +1,26 @@
 
-E
-java:S1604`"(Make this anonymous inner class a lambda(…äìş8ë¹èµÜ.
-K
-java:S1604Š"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8ë¹èµÜ.
-Q
-java:S1128"4Remove this unused import 'android.content.Context'.(©Ê‰è8ë¹èµÜ.
 O
 java:S1874D"2Remove this use of "setMessage"; it is deprecated.(¬ÀÅ„8ë¹èµÜ.
 E
-java:S1604~"(Make this anonymous inner class a lambda(³Ö×•8ë¹èµÜ.
+java:S1604S"(Make this anonymous inner class a lambda(³Ö×•8ë¹èµÜ.
+K
+java:S1604Š"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ø“ÕÚï.
 [
 java:S1117X"9Rename "email" which hides the field declared at line 32.(ò¢ô¥şÿÿÿÿ8ë¹èµÜ.
 J
-java:S1604u"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8ë¹èµÜ.
-
-java:S1450'"_Remove the "checkPasswordFab" field and declare it as a local variable in the relevant methods.(´ª­üÿÿÿÿ8á‘“×Ø.
-X
-java:S1874#"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8ë¹èµÜ.
-Q	java:S110"<This class has 9 parents which is greater than 5 authorized.(ŒÃŒ
+java:S1604u"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ø“ÕÚï.
 X
 java:S1874@"6Remove this use of "ProgressDialog"; it is deprecated.(¿Ú•ğúÿÿÿÿ8ë¹èµÜ.
+X
+java:S1874#"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8ë¹èµÜ.
 E
-java:S1604S"(Make this anonymous inner class a lambda(³Ö×•8ë¹èµÜ.
+java:S1604~"(Make this anonymous inner class a lambda(³Ö×•8Ø“ÕÚï.
+Q	java:S110"<This class has 9 parents which is greater than 5 authorized.(ŒÃŒ
+E
+java:S1604`"(Make this anonymous inner class a lambda(…äìş8Ø“ÕÚï.
+
+java:S1450'"_Remove the "checkPasswordFab" field and declare it as a local variable in the relevant methods.(´ª­üÿÿÿÿ8á‘“×Ø.
 J
-java:S1604h"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8ë¹èµÜ.
+java:S1604h"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ø“ÕÚï.
+Q
+java:S1128"4Remove this unused import 'android.content.Context'.(©Ê‰è8ë¹èµÜ.

@@ -67,7 +67,7 @@
     <string name="search_head">Bienvenue sur l\'interface de recherche d\'une publication.\nPour que vous puissiez avoir des reponses pertinentes, il faudrait que les champs de saisies suivants soient bien remplis.</string>
     <string name="ex_terrain_vendre">Ex : Terrain à vendre</string>
     <string name="ex_bastos">Ex : Bastos</string>
-    <string name="post_description">Description: 1S+2C+1D+1C\nQuartier: Bastos\nPrix: 25000 XFA\netc...</string>
+    <string name="post_description">Description: 1S+2C+1D+1C\nQuartier: Bastos\nPrix: 25000 XFA\netc…</string>
     <string name="titre_du_post">Titre de la publication</string>
     <string name="rendre_ce_post_public">Rendre publique cette publication ?</string>
     <string name="votre_budget">Quel est votre budget ?</string>
@@ -80,8 +80,8 @@
     <string name="y_a_t_il_une_cheance_cette_recherche">Y a t\'il une écheance à cette recherche ?</string>
     <string name="echeance_search">Echéance le : %s/%s/%s</string>
 
-    <string name="toast_images_updated">Images mises à jour...</string>
-    <string name="toast_error_updating_images">Erreur lors de la mise à jour des images...</string>
+    <string name="toast_images_updated">Images mises à jour…</string>
+    <string name="toast_error_updating_images">Erreur lors de la mise à jour des images…</string>
     <string name="toast_some_error_occured">Une erreur est survenue</string>
     <string name="toast_updated_phone">Mise à jour du numéro de téléphone</string>
 
@@ -112,5 +112,11 @@
     <string name="notif_add_image">" a ajouté une nouvelle image"</string>
     <string name="operation_reussie">"Opération réussie"</string>
     <string name="location_permission">Please enable location permissions.</string>
+    <string name="ajouter_une_image">Ajouter une image</string>
+    <string name="administration">Administration</string>
+    <string name="vues">Vues</string>
+    <string name="d_connexion_du_compte">Déconnexion du compte</string>
+    <string name="supprimer_le_compte">Supprimer le compte</string>
+    <string name="visitors_blocked">Visiteurs bloqués</string>
 
 </resources>

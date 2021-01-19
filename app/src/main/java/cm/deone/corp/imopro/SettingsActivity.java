@@ -1,6 +1,7 @@
 package cm.deone.corp.imopro;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -24,7 +25,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +39,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,16 +61,28 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
+import cm.deone.corp.imopro.adapter.CommentAdaptor;
+import cm.deone.corp.imopro.adapter.PostsAdaptor;
+import cm.deone.corp.imopro.adapter.SettingsPostAdaptor;
+import cm.deone.corp.imopro.adapter.SignalerAdaptor;
+import cm.deone.corp.imopro.models.Comment;
+import cm.deone.corp.imopro.models.Post;
+import cm.deone.corp.imopro.models.Signaler;
 import cm.deone.corp.imopro.models.User;
 import cm.deone.corp.imopro.outils.AppLocationService;
 import cm.deone.corp.imopro.outils.LocationAddress;
+import cm.deone.corp.imopro.outils.ViewsClickListener;
 
 import static cm.deone.corp.imopro.outils.Constant.CAMERA_REQUEST_CODE;
 import static cm.deone.corp.imopro.outils.Constant.DB_COMMENT;
 import static cm.deone.corp.imopro.outils.Constant.DB_POST;
+import static cm.deone.corp.imopro.outils.Constant.DB_SIGNALEMENT;
 import static cm.deone.corp.imopro.outils.Constant.DB_USER;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_CAMERA_CODE;
 import static cm.deone.corp.imopro.outils.Constant.IMAGE_PICK_GALLERY_CODE;
@@ -75,12 +91,13 @@ import static cm.deone.corp.imopro.outils.Constant.STORAGE_REQUEST_CODE;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_COMMENT_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_GALLERY_NOTIFICATION;
 import static cm.deone.corp.imopro.outils.Constant.TOPIC_POST_NOTIFICATION;
+import static cm.deone.corp.imopro.outils.Constant.suscribeNotification;
+import static cm.deone.corp.imopro.outils.Constant.unsuscribeNotification;
 
-public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
+public class SettingsActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
 
     private String[] cameraPermissions;
     private String[] storagePermissions;
-    private String[] locationPermissions;
 
     private Uri imageUri;
 
@@ -96,33 +113,32 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     private TextView phoneTv;
 
     private TextView userInfoTv;
-    private TextView languageTv;
+
+    private RecyclerView rvMesposts;
+    private SettingsPostAdaptor settingsPostAdaptor;
+    private List<Post> postList;
 
     private ProgressDialog progressDialog;
 
     private String myUID;
-    private String myLanguage;
 
     private FirebaseAuth firebaseAuth;
-
-    private AppLocationService appLocationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadLocale();
         setContentView(R.layout.activity_settings);
         initVues();
         checkUsers();
         getUserInfos();
-        //getAddressUser();
+        allPosts();
     }
 
     @Override
     protected void onStart() {
         checkUsers();
         getUserInfos();
-        //getAddressUser();
+        allPosts();
         super.onStart();
     }
 
@@ -130,7 +146,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     protected void onResume() {
         checkUsers();
         getUserInfos();
-        //getAddressUser();
+        allPosts();
         super.onResume();
     }
 
@@ -144,12 +160,21 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_edit_profil){
             showEditProfileDialog();
-        }else if (item.getItemId() == R.id.menu_exit_app){
-            exitAccount();
-        }else if (item.getItemId() == R.id.menu_delete_account){
-            deleteAccount();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.tvLogoutUser: exitAccount();
+                break;
+            case R.id.tvDeleteUser: deleteAccount();
+                break;
+            case R.id.tvVisitorBlocked: showBlockedVisitorDialog();
+                break;
+            default:
+        }
     }
 
     @Override
@@ -193,17 +218,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 }
             }
             break;
-            case LOCATION_REQUEST_CODE:{
-                if (grantResults.length>0){
-                    boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (locationAccepted){
-                        getAddressUser();
-                    }else {
-                        Toast.makeText(SettingsActivity.this, ""+getResources().getString(R.string.location_permission), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-            break;
         }
     }
 
@@ -215,9 +229,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 editor.putBoolean(""+TOPIC_POST_NOTIFICATION, isChecked);
                 editor.apply();
                 if (isChecked){
-                    suscribeNotification(""+TOPIC_POST_NOTIFICATION);
+                    suscribeNotification(SettingsActivity.this, ""+TOPIC_POST_NOTIFICATION);
                 }else{
-                    unsuscribeNotification(""+TOPIC_POST_NOTIFICATION);
+                    unsuscribeNotification(SettingsActivity.this, ""+TOPIC_POST_NOTIFICATION);
                 }
                 break;
             default:
@@ -232,8 +246,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         toolbar.setTitle(getResources().getString(R.string.settings));
         setSupportActionBar(toolbar);
 
-        appLocationService = new AppLocationService(SettingsActivity.this);
-
         sharedPreferences = getSharedPreferences("Notification_SP", MODE_PRIVATE);
 
         progressDialog = new ProgressDialog(SettingsActivity.this);
@@ -243,19 +255,19 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         SwitchCompat postNotificationSw = findViewById(R.id.postNotificationSw);
 
         avatarIv = findViewById(R.id.avatarIv);
+        rvMesposts = findViewById(R.id.rvMesposts);
 
         deviseTv = findViewById(R.id.deviseTv);
         emailTv = findViewById(R.id.emailTv);
         phoneTv = findViewById(R.id.phoneTv);
-
         userInfoTv = findViewById(R.id.userInfoTv);
-        languageTv = findViewById(R.id.languageTv);
+
+        TextView tvVisitorBlocked = findViewById(R.id.tvVisitorBlocked);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        locationPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
 
         boolean isPostEnable = sharedPreferences.getBoolean(""+TOPIC_POST_NOTIFICATION, false);
 
@@ -266,13 +278,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         }
 
         postNotificationSw.setOnCheckedChangeListener(this);
-
-        languageTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSelectLanguageDialog();
-            }
-        });
+        tvVisitorBlocked.setOnClickListener(this);
 
     }
 
@@ -300,11 +306,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                         /*toolbar.setTitle(""+user.getuName());
                         toolbar.setSubtitle(""+user.getuDevise());*/
 
-                        //deviseTv.setText(user.getuDevise());
+                        deviseTv.setText(user.getuDevise());
                         emailTv.setText(user.getuEmail());
                         phoneTv.setText(user.getuPhone());
-
-                        languageTv.setText(myLanguage.equals("fr") ? getResources().getString(R.string.francais) : getResources().getString(R.string.anglais));
 
                         try {
                             Picasso.get().load(user.getuAvatar()).placeholder(R.drawable.ic_user).into(avatarIv);
@@ -321,6 +325,79 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 Toast.makeText(SettingsActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void allPosts() {
+        postList = new ArrayList<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postList.clear();
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    Post post = ds.getValue(Post.class);
+                    if (myUID.equals(post.getpCreator()))
+                        postList.add(post);
+                    Collections.sort(postList);
+                    settingsPostAdaptor = new SettingsPostAdaptor(SettingsActivity.this, postList);
+                    rvMesposts.setAdapter(settingsPostAdaptor);
+                    settingsPostAdaptor.setOnItemClickListener(new ViewsClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Intent intent = new Intent(SettingsActivity.this, PostActivity.class);
+                            intent.putExtra("pId", postList.get(position).getpId());
+                            intent.putExtra("pCreator", postList.get(position).getpCreator());
+                            intent.putExtra("nType", DB_POST);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onLongItemClick(View view, int position) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(SettingsActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showBlockedVisitorDialog() {
+        Dialog dialog = new Dialog(SettingsActivity.this);
+        dialog.setContentView(R.layout.dialog_signaler);
+        dialog.show();
+    }
+
+    private void showEditProfileDialog() {
+        String[] options = {""+getResources().getString(R.string.edit_avatar),
+                ""+getResources().getString(R.string.edit_username),
+                ""+getResources().getString(R.string.edit_user_phone),
+                ""+getResources().getString(R.string.edit_slogan) };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Action");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0){
+                    progressDialog.setMessage(""+getResources().getString(R.string.updating_avatar));
+                    showImagePicDialog();
+                }else if (which == 1){
+                    progressDialog.setMessage(""+getResources().getString(R.string.updating_username));
+                    showNameDeviseUpdateDialog("uName");
+                }else if (which == 2){
+                    progressDialog.setMessage(""+getResources().getString(R.string.updating_userphone));
+                    showPhoneUpdateDialog();
+                }else if (which == 3){
+                    progressDialog.setMessage(""+getResources().getString(R.string.updating_userslogan));
+                    showNameDeviseUpdateDialog("uDevise");
+                }
+            }
+        });
+        builder.create().show();
     }
 
     private void deleteAccount() {
@@ -368,62 +445,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void unsuscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = ""+getResources().getString(R.string.not_receive_notification);
-                        if(!task.isSuccessful()){
-                            msg = ""+getResources().getString(R.string.subscription_failed);
-                        }
-                        Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void suscribeNotification(String topic) {
-        FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = ""+getResources().getString(R.string.receive_notification);
-                        if(!task.isSuccessful()){
-                            msg = ""+getResources().getString(R.string.unsubscription_failed);
-                        }
-                        Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void showEditProfileDialog() {
-        String[] options = {""+getResources().getString(R.string.edit_avatar),
-                ""+getResources().getString(R.string.edit_username),
-                ""+getResources().getString(R.string.edit_user_phone),
-                ""+getResources().getString(R.string.edit_slogan) };
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose Action");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0){
-                    progressDialog.setMessage(""+getResources().getString(R.string.updating_avatar));
-                    showImagePicDialog();
-                }else if (which == 1){
-                    progressDialog.setMessage(""+getResources().getString(R.string.updating_username));
-                    showNameDeviseUpdateDialog("uName");
-                }else if (which == 2){
-                    progressDialog.setMessage(""+getResources().getString(R.string.updating_userphone));
-                    showPhoneUpdateDialog();
-                }else if (which == 3){
-                    progressDialog.setMessage(""+getResources().getString(R.string.updating_userslogan));
-                    showNameDeviseUpdateDialog("uDevise");
-                }
             }
         });
         builder.create().show();
@@ -544,15 +565,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
-    }
-
-    private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, locationPermissions, LOCATION_REQUEST_CODE);
-    }
-
-    private boolean checkLocationPermission() {
-        boolean result = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == (PackageManager.PERMISSION_GRANTED);
-        return result;
     }
 
     private void requestStoragePermission() {
@@ -685,119 +697,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
             }
         });
-    }
-
-    private void showSelectLanguageDialog() {
-        String[] options = {this.getResources().getString(R.string.francais), this.getResources().getString(R.string.anglais)};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(this.getResources().getString(R.string.select_language));
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0){
-                    setLocale("fr");
-                    recreate();
-                }else if (which == 1){
-                    setLocale("en");
-                    recreate();
-                }
-            }
-        });
-        builder.create().show();
-    }
-
-    private void setLocale(String language) {
-
-        Locale locale = new Locale(language.toLowerCase());
-        Locale.setDefault(locale);
-
-        Resources resource = getBaseContext().getResources();
-
-        Configuration config = resource.getConfiguration();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(locale);
-            createConfigurationContext(config);
-        } else {
-            config.locale = locale;
-            resource.updateConfiguration(config, resource.getDisplayMetrics());
-        }
-
-        /*SharedPreferences.Editor spEditor = getSharedPreferences("Language_SP", MODE_PRIVATE).edit();
-        spEditor.putString("My_Lang", language);
-        spEditor.apply();*/
-
-        /*String currentLanguage = Locale.getDefault().getDisplayLanguage();
-        if (currentLanguage.toLowerCase().contains("en")) {
-            Toast.makeText(this, "Current language is English", Toast.LENGTH_SHORT).show();
-        }else if (currentLanguage.toLowerCase().contains("fr")) {
-            Toast.makeText(this, "La langue courante est le Français", Toast.LENGTH_SHORT).show();
-        }*/
-
-    }
-
-    public void loadLocale(){
-        SharedPreferences sp = getSharedPreferences("Language_SP", MODE_PRIVATE);
-        myLanguage = sp.getString("My_Lang", "");
-        setLocale(""+myLanguage);
-    }
-
-    private void getAddressUser() {
-        if (!checkLocationPermission()){
-            requestLocationPermission();
-        }else {
-            Location location = appLocationService.getLocation();
-
-            //you can hard-code the lat & long if you have issues with getting it
-            //remove the below if-condition and use the following couple of lines
-            //double latitude = 37.422005;
-            //double longitude = -122.084095
-
-            if (location != null) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                LocationAddress locationAddress = new LocationAddress();
-                LocationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(), new GeocoderHandler());
-            } else {
-                //showSettingsAlert();
-            }
-        }
-    }
-
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SettingsActivity.this);
-        alertDialog.setTitle("SETTINGS");
-        alertDialog.setMessage("Enable Location Provider! Go to settings menu?");
-        alertDialog.setPositiveButton("Settings",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        SettingsActivity.this.startActivity(intent);
-                    }
-                });
-        alertDialog.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
-    }
-
-    private static class GeocoderHandler extends Handler {
-        @Override
-        public void handleMessage(Message message) {
-            String locationAddress;
-            switch (message.what) {
-                case 1:
-                    Bundle bundle = message.getData();
-                    locationAddress = bundle.getString("address");
-                    break;
-                default:
-                    locationAddress = null;
-            }
-            deviseTv.setText(locationAddress);
-        }
     }
 
 }

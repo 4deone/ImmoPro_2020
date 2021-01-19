@@ -9,31 +9,28 @@
 
     <ImageView
         android:id="@+id/iTemCoverIv"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
         android:layout_width="match_parent"
-        android:background="@drawable/bg_img"
-        android:elevation="20dp"
         android:layout_height="400dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_post"
-        android:contentDescription="@string/todo_create_post" />
+        android:layout_margin="5dp"
+        android:background="@drawable/bg_img"
+        android:contentDescription="@string/todo_create_post"
+        android:elevation="20dp"
+        android:src="@drawable/ic_post" />
 
     <EditText
         android:id="@+id/itemDescriptionEdtv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iTemCoverIv"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        android:elevation="20dp"
+        android:layout_margin="5dp"
         android:background="@color/white"
         android:drawableEnd="@drawable/ic_description"
+        android:elevation="20dp"
         android:gravity="top"
-        android:minHeight="150dp"
         android:hint="Description de l'image"
         android:inputType="textMultiLine|textCapSentences"
+        android:minHeight="150dp"
         android:padding="20dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -11,24 +11,24 @@
     <item  android:id="@+id/menu_add_operation"
         android:title= "@string/ajouter_un_post"
         android:icon="@drawable/ic_menu_add_post"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="withText"/>
 
     <item  android:id="@+id/menu_add_image"
-        android:title= "Ajouter une image"
+        android:title= "@string/ajouter_une_image"
         android:icon="@drawable/ic_menu_settings"
         android:visible="false"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/menu_show_vues"
-        android:title="Vues"
+        android:title="@string/vues"
         android:visible="false"
         app:actionLayout="@layout/menu_item_vues"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_show_comments"
-        android:title="Commentaires"
+        android:title="@string/comment_notifications"
         android:visible="false"
         app:actionLayout="@layout/menu_item_comments"
         app:showAsAction="ifRoom" />
@@ -36,6 +36,6 @@
     <item  android:id="@+id/menu_show_settings"
         android:title= "@string/settings"
         android:icon="@drawable/ic_menu_settings"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="withText"/>
 
 </menu>

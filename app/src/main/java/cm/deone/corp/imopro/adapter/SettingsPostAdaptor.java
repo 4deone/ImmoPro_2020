@@ -5,59 +5,67 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import cm.deone.corp.imopro.R;
-import cm.deone.corp.imopro.models.NotChildItem;
+import cm.deone.corp.imopro.models.Post;
+import cm.deone.corp.imopro.models.Signaler;
 import cm.deone.corp.imopro.outils.ViewsClickListener;
 
-public class NotChildAdapter extends RecyclerView.Adapter<NotChildAdapter.MyHolder> {
+public class SettingsPostAdaptor extends RecyclerView.Adapter<SettingsPostAdaptor.MyHolder> {
 
-    private Context context;
+    private FirebaseUser firebaseUser;
+
+    private final Context context;
     private ViewsClickListener listener;
-    private final List<NotChildItem> notChildItemList;
+    private final List<Post> postList;
 
-    public NotChildAdapter(Context context, List<NotChildItem> notChildItemList) {
+    public SettingsPostAdaptor(Context context, List<Post> postList) {
         this.context = context;
-        this.notChildItemList = notChildItemList;
+        this.postList = postList;
     }
 
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_not_child, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_settings, parent, false);
         return new MyHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MyHolder holder, final int position) {
 
-        NotChildItem notChildItem = notChildItemList.get(position);
+        String avatar = postList.get(position).getpCover();
+        String titre = postList.get(position).getpTitre();
+        String description = postList.get(position).getpDescription();
+        String vues = postList.get(position).getpNVues();
 
-        String titre = notChildItem.getnActivite();
-        String description = notChildItem.getnMessage();
-        String timestamp = notChildItem.getnTime();
+        holder.itemTitlePostTv.setText(titre);
+        holder.itemDescriptionPostTv.setText(description);
+        holder.itemViewsPostTv.setText(vues);
 
-        Calendar cal = Calendar.getInstance(Locale.FRANCE);
-        cal.setTimeInMillis(Long.parseLong(timestamp));
-        String dateTime = DateFormat.format("EEEE dd MMMM yyyy", cal).toString();
-
-        holder.titreTv.setText(titre);
-        holder.notifTv.setText(description);
-        holder.timeTv.setText(dateTime);
+        try {
+            Picasso.get().load(avatar).placeholder(R.drawable.ic_user).into(holder.ivItemPost);
+        } catch (Exception e) {
+            Picasso.get().load(R.drawable.ic_user).into(holder.ivItemPost);
+        }
 
     }
 
     @Override
     public int getItemCount() {
-        return notChildItemList.size();
+        return postList.size();
     }
 
     public void setOnItemClickListener(ViewsClickListener listener){
@@ -65,17 +73,18 @@ public class NotChildAdapter extends RecyclerView.Adapter<NotChildAdapter.MyHold
     }
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
-
-        TextView titreTv;
-        TextView notifTv;
-        TextView timeTv;
+        ImageView ivItemPost;
+        TextView itemTitlePostTv;
+        TextView itemDescriptionPostTv;
+        TextView itemViewsPostTv;
 
         MyHolder(@NonNull View itemView) {
             super(itemView);
 
-            titreTv = itemView.findViewById(R.id.titreTv);
-            notifTv = itemView.findViewById(R.id.notifTv);
-            timeTv = itemView.findViewById(R.id.timeTv);
+            ivItemPost = itemView.findViewById(R.id.ivItemPost);
+            itemTitlePostTv = itemView.findViewById(R.id.itemTitlePostTv);
+            itemDescriptionPostTv = itemView.findViewById(R.id.itemDescriptionPostTv);
+            itemViewsPostTv = itemView.findViewById(R.id.itemViewsPostTv);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);

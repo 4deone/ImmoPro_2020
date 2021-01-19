@@ -71,7 +71,7 @@
     <string name="ex_terrain_vendre">Ex : Lot for sale</string>
     <string name="ex_bastos">Ex : Bastos</string>
 
-    <string name="post_description">Description: 1S+2C+1D+1C\nDistrict: Bastos\nPrice: 25000 XFA\netc...</string>
+    <string name="post_description">Description: 1S+2C+1D+1C\nDistrict: Bastos\nPrice: 25000 XFA\netc…</string>
     <string name="titre_du_post">Title of post</string>
     <string name="rendre_ce_post_public">Make this post public ?</string>
     <string name="votre_budget">What is your budget ?</string>
@@ -84,10 +84,10 @@
     <string name="y_a_t_il_une_cheance_cette_recherche">Is there a deadline for this research ?</string>
     <string name="echeance_search">Due on : %s/%s/%s</string>
 
-    <string name="toast_images_updated">Images Updated...</string>
-    <string name="toast_error_updating_images">Error Updating Images...</string>
-    <string name="toast_some_error_occured">Some error occured</string>
-    <string name="toast_updated_phone">Updated phone...</string>
+    <string name="toast_images_updated">Images Updated…</string>
+    <string name="toast_error_updating_images">Error Updating Images…</string>
+    <string name="toast_some_error_occured">Some error occurred</string>
+    <string name="toast_updated_phone">Updated phone…</string>
 
     <string name="votre_nom_complet">Your full name</string>
     <string name="votre_devise">Your slogan</string>
@@ -115,7 +115,10 @@
     <string name="storage_permission">Please enable storage permissions.</string>
     <string name="camera_permission">Please enable camera and storage permissions.</string>
     <string name="notif_add_image">" added new image"</string>
-    <string name="operation_reussie">"Success..."</string>
+    <string name="operation_reussie">"Success…"</string>
     <string name="location_permission">Please enable location permissions.</string>
+    <string name="ajouter_une_image">Add picture</string>
+    <string name="administration">Administration</string>
+    <string name="vues">Views</string>
 
 </resources>

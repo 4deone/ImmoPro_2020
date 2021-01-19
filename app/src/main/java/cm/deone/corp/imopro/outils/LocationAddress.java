@@ -20,6 +20,9 @@ public class LocationAddress {
             public void run() {
                 Geocoder geocoder = new Geocoder(context, Locale.getDefault());
                 String result = null;
+                String subLocality = null;
+                String locality = null;
+                String countryName = null;
                 try {
                     List<Address> addressList = geocoder.getFromLocation(
                             latitude, longitude, 1);
@@ -29,9 +32,12 @@ public class LocationAddress {
                         for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                             sb.append(address.getAddressLine(i)).append("\n");
                         }
+                        subLocality = address.getSubLocality();
                         sb.append(address.getSubLocality()).append(" - ");
+                        locality = address.getLocality();
                         sb.append(address.getLocality()).append(", ");
                         //sb.append(address.getPostalCode()).append("\n");
+                        countryName = address.getCountryName();
                         sb.append(address.getCountryName());
                         result = sb.toString();
                     }
@@ -45,6 +51,10 @@ public class LocationAddress {
                         Bundle bundle = new Bundle();
                         //result = "Latitude: " + latitude + "\nLongitude: " + longitude + "\nAddress: " + result;
                         bundle.putString("address", result);
+                        bundle.putString("address", result);
+                        bundle.putString("subLocality", subLocality);
+                        bundle.putString("locality", locality);
+                        bundle.putString("countryName", countryName);
                         message.setData(bundle);
                     } else {
                         message.what = 1;
@@ -52,6 +62,9 @@ public class LocationAddress {
                         //result = "Latitude: " + latitude + " Longitude: " + longitude + "\n Unable to get address for this lat-long.";
                         result = "Unable to get address for this lat-long.";
                         bundle.putString("address", result);
+                        bundle.putString("subLocality", subLocality);
+                        bundle.putString("locality", locality);
+                        bundle.putString("countryName", countryName);
                         message.setData(bundle);
                     }
                     message.sendToTarget();

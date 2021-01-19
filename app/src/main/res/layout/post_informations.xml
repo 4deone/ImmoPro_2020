@@ -258,6 +258,22 @@
                     app:drawableStartCompat="@drawable/ic_no_signaler"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
+                <TextView
+                    android:id="@+id/tvDispoActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvSgnalerActivity"
+                    android:layout_marginStart="20dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="fill_vertical"
+                    android:padding="10dp"
+                    android:text="Pas disponible"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_next"
+                    app:drawableStartCompat="@drawable/ic_no_dispo"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
             </RelativeLayout>
 
             <RelativeLayout
